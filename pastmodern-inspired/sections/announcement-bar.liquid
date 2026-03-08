@@ -1,4 +1,10 @@
 {%- if section.settings.enable and section.settings.message != blank -%}
+  <style>
+    #shopify-section-{{ section.id }} {
+      --ann-bg:   {{ section.settings.bg_color }};
+      --ann-text: {{ section.settings.text_color }};
+    }
+  </style>
   <div
     class="announcement-bar{% if section.settings.dismissible %} announcement-bar--dismissible{% endif %}"
     role="region"

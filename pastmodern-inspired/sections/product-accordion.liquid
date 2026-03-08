@@ -132,23 +132,23 @@
     /* The trigger and panel sit as direct children; no extra wrapper needed */
   }
 
-  /* ── Panel body ── */
-  .accordion-item__body {
+  /* ── Panel body — matches .accordion-body rendered by accordion-item.liquid ── */
+  .accordion-body {
     padding-block: var(--space-5) var(--space-8);
     font-size: var(--text-base);
     line-height: var(--leading-relaxed);
     color: var(--color-text-muted);
   }
 
-  .accordion-item__body :is(p, ul, ol) {
+  .accordion-body :is(p, ul, ol) {
     margin-block: var(--space-2);
   }
 
-  .accordion-item__body :is(p, ul, ol):first-child { margin-block-start: 0; }
-  .accordion-item__body :is(p, ul, ol):last-child  { margin-block-end:   0; }
+  .accordion-body :is(p, ul, ol):first-child { margin-block-start: 0; }
+  .accordion-body :is(p, ul, ol):last-child  { margin-block-end:   0; }
 
-  .accordion-item__body ul,
-  .accordion-item__body ol {
+  .accordion-body ul,
+  .accordion-body ol {
     padding-inline-start: var(--space-5);
   }
 

@@ -18,6 +18,29 @@ body {
   background-color: var(--color-bg);
 }
 
+/* ── Utility classes ───────────────────────────────────────── */
+.text-muted {
+  color: var(--color-text-muted);
+}
+
+.text-secondary {
+  color: var(--color-text-secondary);
+}
+
+/* Rich text — used in sections that render {{ text }} blocks */
+.rte a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--color-border);
+  transition: text-decoration-color var(--duration-fast) var(--ease-default);
+}
+.rte a:hover {
+  text-decoration-color: currentcolor;
+}
+.rte p + p {
+  margin-block-start: var(--space-4);
+}
+
 /* Offset anchors below sticky header */
 :target {
   scroll-margin-top: calc(var(--header-height) + var(--space-4));
@@ -52,12 +75,20 @@ img {
 }
 
 /* ── Section heading group ─────────────────────────────────── */
+/*
+ * Used by sections that don't define their own header class.
+ * Provides consistent vertical space below eyebrow + title groups.
+ */
 .section-header {
   margin-block-end: var(--space-20);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
 }
 
 .section-header--centered {
   text-align: center;
+  align-items: center;
 }
 
 .section-title {
@@ -146,6 +177,11 @@ img {
 
 [data-accordion-trigger][aria-expanded="true"]::after {
   transform: rotate(45deg);
+}
+
+/* Hide the redundant span icon rendered by accordion-item.liquid — ::after handles it */
+[data-accordion-trigger] .accordion-icon {
+  display: none;
 }
 
 /* ── Price ─────────────────────────────────────────────────── */
@@ -293,12 +329,16 @@ img {
 }
 
 /* ── Scroll reveal ──────────────────────────────────────────── */
+/*
+ * Composed, unhurried reveal — editorial fashion pacing.
+ * Small translateY so content doesn't 'jump' on reveal.
+ */
 .reveal {
   opacity: 0;
-  transform: translateY(var(--space-3));
+  transform: translateY(0.75rem);
   transition:
-    opacity   0.75s var(--ease-brand, var(--ease-out)),
-    transform 0.75s var(--ease-brand, var(--ease-out));
+    opacity   0.8s  var(--ease-brand, var(--ease-out)),
+    transform 0.9s  var(--ease-brand, var(--ease-out));
 }
 
 .reveal.is-revealed {
@@ -306,12 +346,14 @@ img {
   transform: none;
 }
 
-/* Staggered cascade for sibling groups */
-.reveal.is-revealed:nth-child(2) { transition-delay: 0.08s; }
-.reveal.is-revealed:nth-child(3) { transition-delay: 0.16s; }
-.reveal.is-revealed:nth-child(4) { transition-delay: 0.24s; }
-.reveal.is-revealed:nth-child(5) { transition-delay: 0.32s; }
-.reveal.is-revealed:nth-child(6) { transition-delay: 0.40s; }
+/* Staggered cascade — column-aware offset for product grids */
+.reveal.is-revealed:nth-child(2) { transition-delay: 0.07s; }
+.reveal.is-revealed:nth-child(3) { transition-delay: 0.14s; }
+.reveal.is-revealed:nth-child(4) { transition-delay: 0.21s; }
+.reveal.is-revealed:nth-child(5) { transition-delay: 0.28s; }
+.reveal.is-revealed:nth-child(6) { transition-delay: 0.35s; }
+.reveal.is-revealed:nth-child(7) { transition-delay: 0.42s; }
+.reveal.is-revealed:nth-child(8) { transition-delay: 0.49s; }
 
 @media (prefers-reduced-motion: reduce) {
   .reveal {

@@ -39,12 +39,16 @@
     constructor(header) {
       this.header  = header;
       this.toggle  = header.querySelector('[data-hamburger]');
-      this.menu    = header.querySelector('[data-mobile-menu]');
-      this.overlay = header.querySelector('[data-mobile-overlay]');
+      // Drawer and overlay are rendered as siblings of <header data-header>,
+      // not as children — use document scope to locate them.
+      this.menu    = document.querySelector('[data-mobile-menu]');
+      this.overlay = document.querySelector('[data-mobile-overlay]');
       if (!this.toggle || !this.menu) return;
 
       this.toggle.addEventListener('click', () => this.isOpen() ? this.close() : this.open());
       this.overlay?.addEventListener('click', () => this.close());
+      // Close button inside the drawer panel
+      this.menu.querySelector('[data-drawer-close]')?.addEventListener('click', () => this.close());
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && this.isOpen()) this.close();
       });
@@ -54,14 +58,21 @@
 
     open() {
       this.toggle.setAttribute('aria-expanded', 'true');
-      this.menu.removeAttribute('hidden');
+      // CSS animates via .is-open class; aria + inert control keyboard/screen-reader access
+      this.menu.classList.add('is-open');
+      this.menu.removeAttribute('aria-hidden');
+      this.menu.removeAttribute('inert');
       document.body.classList.add('menu-open');
-      this.menu.querySelector('a, button')?.focus();
+      // Move focus into menu — prefer first focusable element after close button
+      const firstFocusable = this.menu.querySelector('a[href], button:not([data-drawer-close])');
+      (firstFocusable || this.menu.querySelector('[data-drawer-close]'))?.focus();
     }
 
     close() {
       this.toggle.setAttribute('aria-expanded', 'false');
-      this.menu.setAttribute('hidden', '');
+      this.menu.classList.remove('is-open');
+      this.menu.setAttribute('aria-hidden', 'true');
+      this.menu.setAttribute('inert', '');
       document.body.classList.remove('menu-open');
       this.toggle.focus();
     }
