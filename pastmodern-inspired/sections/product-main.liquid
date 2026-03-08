@@ -65,7 +65,7 @@
   <div class="product-main__inner">
 
     {%- comment -%}━━━━━━━━━━━━━━━━━━━━━━━━ GALLERY (left) ━━━━━━━━━━━━━━━━━━━━━━━━{%- endcomment -%}
-
+        {%- assign pdp_img_alt = first_media.alt | default: product.title | escape -%}
     <div
       class="product-gallery"
       data-product-gallery
@@ -119,7 +119,7 @@
                 loading: 'eager',
                 fetchpriority: 'high',
                 class: 'product-gallery__main-img',
-                alt: first_media.alt | default: product.title | escape,
+                alt: pdp_img_alt,
                 itemprop: 'image',
                 data: { 'gallery-main': '' }
           }}
@@ -141,7 +141,7 @@
         <nav aria-label="Breadcrumb">
           <ol class="product-breadcrumbs">
             <li>
-              <a href="/" class="product-breadcrumbs__link">Home</a>
+              <a href="{{ routes.root_url }}" class="product-breadcrumbs__link">Home</a>
               <span class="product-breadcrumbs__sep" aria-hidden="true">&#8250;</span>
             </li>
             {%- if collection != blank -%}
@@ -189,9 +189,9 @@
         itemtype="https://schema.org/Offer"
       >
         <meta itemprop="priceCurrency" content="{{ cart.currency.iso_code }}">
-        <link
+        <meta
           itemprop="availability"
-          href="https://schema.org/{% if current_variant.available %}InStock{% else %}OutOfStock{% endif %}"
+          content="https://schema.org/{% if current_variant.available %}InStock{% else %}OutOfStock{% endif %}"
         >
 
         {%- if is_sale -%}
@@ -249,14 +249,11 @@
       {%- endif -%}
 
       {%- comment -%}══════════════ PRODUCT FORM ══════════════{%- endcomment -%}
-      <form
-        method="post"
-        action="{{ routes.cart_add_url }}"
-        enctype="multipart/form-data"
-        id="product-form"
-        data-product-form
-        novalidate
-      >
+      {%- form 'product', product,
+          id: 'product-form',
+          data-product-form: '',
+          novalidate: 'novalidate'
+      -%}
         <input type="hidden" name="id" value="{{ current_variant.id }}">
 
         {%- comment -%} Variant pickers {%- endcomment -%}
@@ -403,7 +400,7 @@
           </div>
         {%- endif -%}
 
-      </form>
+      {%- endform -%}
 
       {%- comment -%}══════════════ TRUST STRIP ══════════════{%- endcomment -%}
       {%- if delivery != blank or shipping_note != blank or return_note != blank -%}
