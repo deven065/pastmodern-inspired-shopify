@@ -39,11 +39,6 @@ body {
   background-color: var(--color-bg-subtle);
 }
 
-/* ── Headings — editorial italic treatment ─────────────────── */
-h1, h2, h3 {
-  font-style: italic;
-}
-
 /* ── Horizontal rule ───────────────────────────────────────── */
 hr {
   border: none;
@@ -58,7 +53,7 @@ img {
 
 /* ── Section heading group ─────────────────────────────────── */
 .section-header {
-  margin-block-end: var(--space-10);
+  margin-block-end: var(--space-16);
 }
 
 .section-header--centered {

@@ -1,20 +1,145 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "sections": {
-    "main": {
-      "type": "hello-world",
-      "settings": {}
+    "hero": {
+      "type": "hero-editorial",
+      "settings": {
+        "eyebrow": "New Season",
+        "heading": "The Art of Dressing",
+        "subtext": "Elevated essentials and occasion wear for the considered wardrobe.",
+        "cta1_label": "Shop New Arrivals",
+        "cta1_url": "/collections/new-arrivals",
+        "cta2_label": "Explore Collections",
+        "cta2_url": "/collections",
+        "min_height_desktop": 880,
+        "min_height_mobile": 600,
+        "overlay_opacity": 38,
+        "text_align": "left",
+        "text_color": "#f5f3ef"
+      }
+    },
+    "promo-grid": {
+      "type": "promo-grid",
+      "settings": {
+        "eyebrow": "Explore",
+        "heading": "Shop by category",
+        "columns": "4",
+        "image_ratio": "3/4"
+      },
+      "blocks": {
+        "card-new": {
+          "type": "card",
+          "settings": {
+            "heading": "New Arrivals",
+            "cta_label": "Discover",
+            "cta_url": "/collections/new-arrivals"
+          }
+        },
+        "card-bridal": {
+          "type": "card",
+          "settings": {
+            "heading": "Bridal",
+            "cta_label": "Discover",
+            "cta_url": "/collections/bridal"
+          }
+        },
+        "card-couture": {
+          "type": "card",
+          "settings": {
+            "heading": "Couture",
+            "cta_label": "Discover",
+            "cta_url": "/collections/couture"
+          }
+        },
+        "card-dresses": {
+          "type": "card",
+          "settings": {
+            "heading": "Dresses",
+            "cta_label": "Discover",
+            "cta_url": "/collections/dresses"
+          }
+        }
+      },
+      "block_order": ["card-new", "card-bridal", "card-couture", "card-dresses"]
+    },
+    "featured": {
+      "type": "featured-collection",
+      "settings": {
+        "eyebrow": "The Edit",
+        "heading": "Featured pieces",
+        "product_limit": 8,
+        "columns_desktop": "4",
+        "columns_mobile": "2",
+        "image_ratio": "3/4",
+        "show_quick_add": true,
+        "cta_label": "View all"
+      }
+    },
+    "image-text": {
+      "type": "image-with-text",
+      "settings": {
+        "eyebrow": "Our Philosophy",
+        "heading": "Crafted with intention",
+        "text": "<p>Each piece is designed for longevity — thoughtfully constructed using natural fabrics and traditional techniques. We believe fashion should be a quiet act of self-expression.</p>",
+        "cta_label": "Discover our story",
+        "cta_url": "/pages/about",
+        "image_position": "right",
+        "image_ratio": "4/5"
+      }
+    },
+    "testimonials": {
+      "type": "testimonials",
+      "settings": {
+        "eyebrow": "Client voices",
+        "heading": "What our clients say",
+        "columns": "3"
+      },
+      "blocks": {
+        "quote-1": {
+          "type": "quote",
+          "settings": {
+            "text": "The quality exceeded every expectation. The fabric is extraordinary and the cut is simply perfect.",
+            "author": "Amelia R.",
+            "location": "London"
+          }
+        },
+        "quote-2": {
+          "type": "quote",
+          "settings": {
+            "text": "I wore this to a gallery opening and received compliments all evening. Effortlessly elegant.",
+            "author": "Isabelle C.",
+            "location": "Paris"
+          }
+        },
+        "quote-3": {
+          "type": "quote",
+          "settings": {
+            "text": "Beautifully packaged, thoughtfully made. This is what conscious luxury looks like.",
+            "author": "Sophia M.",
+            "location": "New York"
+          }
+        }
+      },
+      "block_order": ["quote-1", "quote-2", "quote-3"]
+    },
+    "newsletter": {
+      "type": "newsletter",
+      "settings": {
+        "eyebrow": "Stay connected",
+        "heading": "Exclusive access",
+        "subtext": "New arrivals, private events, and stories from our ateliers — delivered to your inbox.",
+        "button_label": "Subscribe",
+        "input_placeholder": "Your email address",
+        "bg_style": "dark",
+        "text_align": "center"
+      }
     }
   },
   "order": [
-    "main"
+    "hero",
+    "promo-grid",
+    "featured",
+    "image-text",
+    "testimonials",
+    "newsletter"
   ]
 }

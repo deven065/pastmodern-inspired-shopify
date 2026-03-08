@@ -22,17 +22,17 @@
 
     /* ── Colors ─────────────────────────────────────────────── */
     --color-bg:          {{ settings.color_background }};
-    --color-bg-subtle:   {{ settings.color_background | color_darken: 4 }};
+    --color-bg-subtle:   {{ settings.color_background | color_darken: 3 }};
     --color-text:        {{ settings.color_text }};
-    --color-text-muted:  {{ settings.color_text | color_modify: 'alpha', 0.45 }};
+    --color-text-muted:  {{ settings.color_text | color_modify: 'alpha', 0.50 }};
     --color-accent:      {{ settings.color_accent }};
-    --color-border:      {{ settings.color_text | color_modify: 'alpha', 0.12 }};
+    --color-border:      {{ settings.color_text | color_modify: 'alpha', 0.09 }};
     --color-overlay:     {{ settings.color_text | color_modify: 'alpha', 0.5 }};
 
-    /* ── Layout ─────────────────────────────────────────────── */
+    /* ── Layout ─────────────────────────────────────────────────── */
     --page-width:    {{ settings.page_width }};
     --page-margin:   {{ settings.page_margin }}px;
-    --header-height: 4rem;
+    --header-height: 5rem;
 
     /* ── Shape ──────────────────────────────────────────────── */
     --radius-input: {{ settings.input_radius }}px;

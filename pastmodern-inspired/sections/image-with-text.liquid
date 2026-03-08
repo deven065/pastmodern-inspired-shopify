@@ -1,0 +1,302 @@
+{%- liquid
+  assign img          = section.settings.image
+  assign img_position = section.settings.image_position
+  assign img_ratio    = section.settings.image_ratio
+  assign eyebrow      = section.settings.eyebrow
+  assign heading      = section.settings.heading
+  assign text         = section.settings.text
+  assign cta_label    = section.settings.cta_label
+  assign cta_url      = section.settings.cta_url
+  assign cta_style    = section.settings.cta_style
+  assign text_align   = section.settings.text_align
+-%}
+
+<div
+  class="iwt iwt--image-{{ img_position }}"
+  data-text-align="{{ text_align }}"
+>
+  {%- comment -%} ── Image column ── {%- endcomment -%}
+  <div class="iwt__media" style="--iwt-ratio: {{ img_ratio }};">
+    {%- if img != blank -%}
+      {{
+        img
+        | image_url: width: 1200
+        | image_tag:
+            sizes: '(max-width: 48rem) 100vw, 50vw',
+            widths: '400, 600, 800, 1000, 1200',
+            loading: 'lazy',
+            class: 'iwt__img',
+            alt: img.alt | default: heading | escape
+      }}
+    {%- else -%}
+      <div class="iwt__placeholder">
+        {{ 'lifestyle-2' | placeholder_svg_tag: 'iwt__placeholder-svg' }}
+      </div>
+    {%- endif -%}
+  </div>
+
+  {%- comment -%} ── Text column ── {%- endcomment -%}
+  <div class="iwt__content">
+    {%- if eyebrow != blank -%}
+      <p class="eyebrow iwt__eyebrow">{{ eyebrow }}</p>
+    {%- endif -%}
+
+    {%- if heading != blank -%}
+      <h2 class="iwt__heading">{{ heading }}</h2>
+    {%- endif -%}
+
+    {%- if text != blank -%}
+      <div class="iwt__text rte">{{ text }}</div>
+    {%- endif -%}
+
+    {%- if cta_label != blank -%}
+      <a
+        href="{{ cta_url | default: '#' }}"
+        class="btn iwt__cta {% if cta_style == 'primary' %}btn-primary{% elsif cta_style == 'secondary' %}btn-secondary{% else %}btn-ghost{% endif %}"
+      >
+        {{- cta_label -}}
+        {%- if cta_style == 'ghost' -%}
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" width="14" height="14">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        {%- endif -%}
+      </a>
+    {%- endif -%}
+  </div>
+</div>
+
+{% stylesheet %}
+  /* ── Wrapper ───────────────────────────────────────────────── */
+  .iwt {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-16);
+    align-items: center;
+  }
+
+  /* Image-right: swap columns */
+  .iwt--image-right {
+    direction: rtl;
+  }
+
+  .iwt--image-right > * {
+    direction: ltr;
+  }
+
+  /* ── Media ─────────────────────────────────────────────────── */
+  .iwt__media {
+    aspect-ratio: var(--iwt-ratio, 4/5);
+    overflow: hidden;
+    background-color: var(--color-bg-subtle);
+  }
+
+  .iwt__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    transition: transform var(--duration-slow) var(--ease-out);
+  }
+
+  .iwt:hover .iwt__img {
+    transform: scale(1.02);
+  }
+
+  .iwt__placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .iwt__placeholder-svg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* ── Content ───────────────────────────────────────────────── */
+  .iwt__content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+    max-width: 48ch;
+  }
+
+  .iwt--image-right .iwt__content {
+    margin-inline-start: auto;
+  }
+
+  .iwt__eyebrow {
+    margin: 0;
+  }
+
+  .iwt__heading {
+    font-family: var(--font-heading);
+    font-weight: var(--font-heading-weight);
+    font-style: italic;
+    font-size: clamp(var(--text-2xl), 4vw, var(--text-3xl));
+    line-height: var(--leading-tight);
+    letter-spacing: var(--tracking-tight);
+    margin: 0;
+  }
+
+  .iwt__text {
+    font-size: var(--text-base);
+    line-height: var(--leading-loose);
+    color: var(--color-text-muted);
+  }
+
+  .iwt__text p {
+    margin: 0;
+  }
+
+  .iwt__text p + p {
+    margin-block-start: var(--space-4);
+  }
+
+  .iwt__cta {
+    align-self: flex-start;
+  }
+
+  /* ── Text alignment variants ───────────────────────────────── */
+  [data-text-align="center"] .iwt__content {
+    align-items: center;
+    text-align: center;
+    margin-inline: auto;
+  }
+
+  [data-text-align="right"] .iwt__content {
+    align-items: flex-end;
+    text-align: right;
+  }
+
+  /* ── Mobile: stack ─────────────────────────────────────────── */
+  @media (max-width: 48rem) {
+    .iwt,
+    .iwt--image-right {
+      grid-template-columns: 1fr;
+      gap: var(--space-10);
+      direction: ltr;
+    }
+
+    .iwt__content {
+      max-width: none;
+      margin-inline-start: 0;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Image with text",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "select",
+      "id": "image_position",
+      "label": "Image position",
+      "options": [
+        { "value": "left",  "label": "Left" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "Image ratio",
+      "options": [
+        { "value": "3/4",  "label": "Portrait 3:4" },
+        { "value": "4/5",  "label": "Portrait 4:5" },
+        { "value": "1/1",  "label": "Square" },
+        { "value": "16/9", "label": "Landscape 16:9" }
+      ],
+      "default": "4/5"
+    },
+    {
+      "type": "header",
+      "content": "Text"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow label",
+      "placeholder": "Our story"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Crafted with intention"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Body text",
+      "default": "<p>Tell your brand story here. Speak to your values, your craft, and the world you are building.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Call to action"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Button label",
+      "placeholder": "Discover more"
+    },
+    {
+      "type": "url",
+      "id": "cta_url",
+      "label": "Button link"
+    },
+    {
+      "type": "select",
+      "id": "cta_style",
+      "label": "Button style",
+      "options": [
+        { "value": "ghost",     "label": "Underline arrow" },
+        { "value": "secondary", "label": "Outlined" },
+        { "value": "primary",   "label": "Filled" }
+      ],
+      "default": "ghost"
+    },
+    {
+      "type": "header",
+      "content": "Alignment"
+    },
+    {
+      "type": "select",
+      "id": "text_align",
+      "label": "Text alignment",
+      "options": [
+        { "value": "left",   "label": "Left" },
+        { "value": "center", "label": "Centre" },
+        { "value": "right",  "label": "Right" }
+      ],
+      "default": "left"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Image with text",
+      "settings": {
+        "heading":       "Crafted with intention",
+        "text":          "<p>Tell your brand story here. Speak to your values, your craft, and the world you are building.</p>",
+        "image_position": "left",
+        "image_ratio":    "4/5",
+        "cta_style":      "ghost"
+      }
+    }
+  ],
+  "disabled_on": {
+    "groups": ["header", "footer", "aside"]
+  }
+}
+{% endschema %}
