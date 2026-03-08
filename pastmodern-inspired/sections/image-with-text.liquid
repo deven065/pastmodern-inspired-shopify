@@ -67,10 +67,12 @@
 
 {% stylesheet %}
   /* ── Wrapper ───────────────────────────────────────────────── */
+  /* Image column is intentionally dominant (57 %) — editorial photography
+     should lead the narrative; text is the supporting counterpoint.     */
   .iwt {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--space-20);
+    grid-template-columns: 57fr 43fr;
+    gap: clamp(var(--space-14), 7vw, var(--space-24));
     align-items: center;
   }
 

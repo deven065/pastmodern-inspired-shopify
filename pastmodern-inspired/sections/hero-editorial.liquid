@@ -135,7 +135,8 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center;
+    /* top-anchored: faces & upper body always visible on crop */
+    object-position: center top;
   }
 
   .hero__img--mobile { display: none; }
@@ -152,16 +153,18 @@
     object-fit: cover;
   }
 
-  /* Directional gradient: heavier at bottom + left edge for left-aligned text */
+  /* Directional gradient calibrated for deep editorial photography:
+     reduced bottom multiplier avoids crushing naturally dark image bases;
+     fade clears higher so upper image detail (faces, skies) breathes. */
   .hero__overlay {
     position: absolute;
     inset: 0;
     background:
       linear-gradient(
         to top,
-        rgba(0, 0, 0, calc(var(--hero-overlay, 0.4) * 1.55)) 0%,
-        rgba(0, 0, 0, var(--hero-overlay, 0.4))               40%,
-        transparent                                            70%
+        rgba(0, 0, 0, calc(var(--hero-overlay, 0.4) * 1.3)) 0%,
+        rgba(0, 0, 0, var(--hero-overlay, 0.4))              40%,
+        transparent                                          85%
       ),
       linear-gradient(
         to right,
@@ -173,9 +176,9 @@
   .hero[data-text-align="center"] .hero__overlay {
     background: linear-gradient(
       to top,
-      rgba(0, 0, 0, calc(var(--hero-overlay, 0.4) * 1.4)) 0%,
-      rgba(0, 0, 0, var(--hero-overlay, 0.4))              50%,
-      rgba(0, 0, 0, calc(var(--hero-overlay, 0.4) * 0.25)) 100%
+      rgba(0, 0, 0, calc(var(--hero-overlay, 0.4) * 1.25)) 0%,
+      rgba(0, 0, 0, var(--hero-overlay, 0.4))               50%,
+      rgba(0, 0, 0, calc(var(--hero-overlay, 0.4) * 0.15)) 100%
     );
   }
 
@@ -193,7 +196,10 @@
     margin: 0;
   }
 
-  /* ── Content ── */
+  /* ── Content ──
+     Independent block-start/end so content sits close to the bottom
+     of the frame while still having generous interior headroom above
+     the eyebrow when the hero is very tall. */
   .hero__content {
     position: relative;
     z-index: 1;
@@ -201,7 +207,8 @@
     max-width: var(--page-width);
     margin-inline: auto;
     padding-inline: var(--page-margin);
-    padding-block: clamp(5rem, 8vw, 11rem);
+    padding-block-start: clamp(var(--space-24), 14vw, var(--space-40));
+    padding-block-end:   clamp(var(--space-10), 6vw, var(--space-20));
     display: flex;
     flex-direction: column;
     gap: var(--space-6);
@@ -237,11 +244,11 @@
     font-weight: var(--font-heading-weight);
     font-style: italic;
     font-size: clamp(var(--text-3xl), 9vw, var(--text-5xl));
-    line-height: 0.95;
+    line-height: 0.9;
     letter-spacing: -0.04em;
     color: inherit;
     margin: 0;
-    max-width: 14ch;
+    max-width: 12ch;
   }
 
   .hero[data-text-align="center"] .hero__heading { max-width: 20ch; }

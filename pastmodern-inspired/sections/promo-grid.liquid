@@ -35,11 +35,6 @@
           assign card_image   = block.settings.image
           assign card_heading = block.settings.heading
           assign card_url     = block.settings.cta_url | default: '#'
-          if forloop.index < 10
-            assign card_num_str = '0' | append: forloop.index
-          else
-            assign card_num_str = forloop.index | append: ''
-          endif
           if forloop.index <= 2
             assign card_loading = 'eager'
           else
@@ -71,7 +66,6 @@
               {%- endif -%}
 
               <div class="promo-card__overlay" aria-hidden="true">
-                <span class="promo-card__num">{{ card_num_str }}</span>
                 <div class="promo-card__footer">
                   {%- if card_heading != blank -%}
                     <span class="promo-card__heading">{{ card_heading }}</span>
@@ -125,7 +119,8 @@
   .promo-grid__cards {
     display: grid;
     grid-template-columns: repeat(var(--pg-cols, 4), 1fr);
-    gap: var(--space-4);
+    /* Near-seamless grid — editorial magazine spread feel */
+    gap: var(--space-1);
     list-style: none;
     margin: 0;
     padding: 0;
@@ -157,8 +152,10 @@
     display: block;
   }
 
+  /* Refined zoom — 1.04 preserves image composition;  1.06+ risks
+     awkward cropping of models' heads on standard portrait shots. */
   .promo-card__link:hover .promo-card__img {
-    transform: scale(1.06);
+    transform: scale(1.04);
   }
 
   .promo-card__placeholder {
@@ -176,19 +173,22 @@
     object-fit: cover;
   }
 
-  /* ── Overlay gradient + text ────────────────────────────── */
+  /* ── Overlay gradient + text ─────────────────────────────
+     Calibrated for editorial fashion photography: the lower third
+     is the natural darkest area of most studio/campaign shots.
+     A lighter touch here lets the image's own depth do the work. */
   .promo-card__overlay {
     position: absolute;
     inset: 0;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    padding: var(--space-5);
+    justify-content: flex-end;
+    padding: var(--space-7);
     background: linear-gradient(
       to top,
-      rgba(0, 0, 0, 0.82) 0%,
-      rgba(0, 0, 0, 0.14) 44%,
-      rgba(0, 0, 0, 0.12) 100%
+      rgba(0, 0, 0, 0.60) 0%,
+      rgba(0, 0, 0, 0.08) 52%,
+      transparent          100%
     );
     transition: background 0.55s var(--ease-out);
   }
@@ -196,23 +196,13 @@
   .promo-card__link:hover .promo-card__overlay {
     background: linear-gradient(
       to top,
-      rgba(0, 0, 0, 0.94) 0%,
-      rgba(0, 0, 0, 0.32) 48%,
-      rgba(0, 0, 0, 0.12) 100%
+      rgba(0, 0, 0, 0.76) 0%,
+      rgba(0, 0, 0, 0.18) 56%,
+      transparent          100%
     );
   }
 
-  /* ── Card number ────────────────────────────────────────── */
-  .promo-card__num {
-    display: block;
-    align-self: flex-start;
-    font-size: var(--text-xs);
-    letter-spacing: var(--tracking-widest);
-    font-weight: 400;
-    opacity: 0.40;
-  }
-
-  /* ── Bottom: heading + arrow ────────────────────────────── */
+  /* ── Footer: heading + arrow ────────────────────────────── */
   .promo-card__footer {
     display: flex;
     align-items: flex-end;
@@ -225,10 +215,13 @@
     font-family: var(--font-heading);
     font-style: italic;
     font-weight: var(--font-heading-weight);
-    font-size: clamp(var(--text-lg), 2vw, var(--text-2xl));
+    /* Larger editorial category type — commands presence over photography */
+    font-size: clamp(var(--text-xl), 2.2vw, var(--text-3xl));
     line-height: var(--leading-tight);
-    letter-spacing: -0.025em;
+    letter-spacing: var(--tracking-tight);
     color: white;
+    /* Ensures legibility over high-key (bright) photography areas */
+    text-shadow: 0 2px 24px rgba(0, 0, 0, 0.35);
   }
 
   .promo-card__arrow {
@@ -249,7 +242,7 @@
   @media (max-width: 62rem) {
     .promo-grid__cards {
       grid-template-columns: repeat(var(--pg-cols-mob, 2), 1fr);
-      gap: var(--space-3);
+      gap: 2px;
     }
   }
 
@@ -257,15 +250,16 @@
   @media (max-width: 30rem) {
     .promo-grid__cards {
       grid-template-columns: repeat(2, 1fr);
-      gap: var(--space-2);
+      gap: 2px;
     }
 
     .promo-card__overlay {
-      padding: var(--space-3);
+      padding: var(--space-4);
     }
 
+    /* Maintain editorial scale even on small screens */
     .promo-card__heading {
-      font-size: var(--text-lg);
+      font-size: var(--text-xl);
     }
 
     .promo-card__arrow { display: none; }

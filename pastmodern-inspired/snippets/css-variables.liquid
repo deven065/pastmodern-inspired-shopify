@@ -26,13 +26,15 @@
     --color-text:        {{ settings.color_text }};
     --color-text-muted:  {{ settings.color_text | color_modify: 'alpha', 0.50 }};
     --color-accent:      {{ settings.color_accent }};
-    --color-border:      {{ settings.color_text | color_modify: 'alpha', 0.11 }};
-    --color-overlay:     {{ settings.color_text | color_modify: 'alpha', 0.48 }};
+    --color-border:        {{ settings.color_text | color_modify: 'alpha', 0.11 }};
+    --color-overlay:       {{ settings.color_text | color_modify: 'alpha', 0.48 }};
+    --color-accent-subtle: {{ settings.color_accent | color_modify: 'alpha', 0.07 }};
+    --color-accent-dim:    {{ settings.color_accent | color_modify: 'alpha', 0.16 }};
 
     /* ── Layout ─────────────────────────────────────────────────── */
     --page-width:    {{ settings.page_width }};
     --page-margin:   {{ settings.page_margin }}px;
-    --header-height: 5rem;
+    --header-height: 5.5rem;
 
     /* ── Shape ──────────────────────────────────────────────── */
     --radius-input: {{ settings.input_radius }}px;

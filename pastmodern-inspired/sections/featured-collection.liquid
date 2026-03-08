@@ -89,9 +89,10 @@
     grid-template-columns: 1fr auto;
     align-items: end;
     gap: var(--space-4);
-    padding-block-start: var(--space-8);
+    padding-block-start: var(--space-12);
     padding-block-end: var(--space-2);
-    border-block-start: 2px solid var(--color-text);
+    /* Hairline rule — editorial separator, not a utilitarian table header */
+    border-block-start: 1px solid var(--color-border);
   }
 
   .featured-collection__header-text {
@@ -135,7 +136,8 @@
   .featured-collection__grid {
     display: grid;
     grid-template-columns: repeat(var(--fc-cols-desk, 4), 1fr);
-    gap: var(--space-8) var(--space-6);
+    /* Generous row gap lets each portrait image breathe as a distinct piece */
+    gap: var(--space-14) var(--space-6);
     list-style: none;
     margin: 0;
     padding: 0;

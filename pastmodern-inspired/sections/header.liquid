@@ -30,15 +30,30 @@
   hidden
 >
   <div class="header-drawer__inner">
-    <button
-      class="header-drawer__close"
-      data-drawer-close
-      aria-label="Close menu"
-    >
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" width="20" height="20">
-        <path d="M18 6 6 18M6 6l12 12"/>
-      </svg>
-    </button>
+    <div class="header-drawer__header">
+      <button
+        class="header-drawer__close"
+        data-drawer-close
+        aria-label="Close menu"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" width="18" height="18">
+          <path d="M18 6 6 18M6 6l12 12"/>
+        </svg>
+      </button>
+      {%- if logo_image != blank -%}
+        <img
+          src="{{ logo_image | image_url: width: 200 }}"
+          width="{{ logo_width | at_most: 100 }}"
+          height="auto"
+          alt="{{ shop.name }}"
+          class="header-drawer__brand-img"
+          loading="eager"
+          aria-hidden="true"
+        >
+      {%- else -%}
+        <span class="header-drawer__brand-name" aria-hidden="true">{{ shop.name }}</span>
+      {%- endif -%}
+    </div>
 
     <ul class="header-drawer__nav" role="list">
       {%- for link in menu_links -%}
@@ -103,7 +118,7 @@
         aria-controls="header-mobile-menu"
         aria-label="Open menu"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" width="22" height="22">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" width="20" height="20">
           <path d="M3 12h18M3 6h18M3 18h18"/>
         </svg>
       </button>
@@ -234,8 +249,8 @@
   .header.is-sticky {
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
-    background-color: color-mix(in srgb, var(--header-bg, var(--color-bg)) 88%, transparent);
-    box-shadow: 0 1px 0 color-mix(in srgb, var(--color-border) 40%, transparent);
+    background-color: color-mix(in srgb, var(--header-bg, var(--color-bg)) 92%, transparent);
+    box-shadow: 0 1px 0 color-mix(in srgb, var(--color-border) 50%, transparent);
     border-block-end-color: transparent;
   }
 
@@ -248,7 +263,7 @@
     display: grid;
     grid-template-columns: 1fr auto 1fr;
     align-items: center;
-    height: var(--header-height, 5rem);
+    height: var(--header-height, 5.5rem);
     padding-inline: var(--page-margin);
     max-width: var(--page-width);
     margin-inline: auto;
@@ -286,7 +301,7 @@
   .header__end {
     display: flex;
     align-items: center;
-    gap: var(--space-4);
+    gap: var(--space-3);
   }
 
   .header__end {
@@ -340,7 +355,7 @@
   .header__nav-list {
     display: flex;
     align-items: center;
-    gap: var(--space-8);
+    gap: var(--space-10);
     list-style: none;
     margin: 0;
     padding: 0;
@@ -377,10 +392,10 @@
     right: 50%;
     height: 1px;
     background: currentColor;
-    opacity: 0.6;
+    opacity: 0.4;
     transition:
-      left  var(--duration-slow) var(--ease-out),
-      right var(--duration-slow) var(--ease-out);
+      left  var(--duration-measured, 600ms) var(--ease-brand, var(--ease-out)),
+      right var(--duration-measured, 600ms) var(--ease-brand, var(--ease-out));
   }
 
   .header__nav-link:hover::after,
@@ -406,10 +421,10 @@
     min-width: 11rem;
     background-color: var(--color-bg);
     border: none;
-    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.07), 0 2px 8px rgba(0, 0, 0, 0.04);
     list-style: none;
     margin: 0;
-    padding: var(--space-4) 0;
+    padding: var(--space-5) 0;
     opacity: 0;
     pointer-events: none;
     translate: 0 var(--space-2);
@@ -428,7 +443,7 @@
 
   .header__dropdown-link {
     display: block;
-    padding: var(--space-3) var(--space-6);
+    padding: var(--space-4) var(--space-7);
     font-size: var(--text-xs);
     letter-spacing: var(--tracking-widest);
     text-transform: uppercase;
@@ -498,15 +513,37 @@
   .header-drawer__inner {
     display: flex;
     flex-direction: column;
-    gap: var(--space-6);
-    padding: var(--space-6);
+    gap: var(--space-5);
+    padding: var(--space-5) var(--space-7);
+  }
+
+  .header-drawer__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: row-reverse;
+    padding-block-end: var(--space-5);
+    border-block-end: 1px solid var(--color-border);
+  }
+
+  .header-drawer__brand-img {
+    display: block;
+    width: var(--logo-width, 80px);
+    max-width: 100px;
+    height: auto;
+  }
+
+  .header-drawer__brand-name {
+    font-family: var(--font-heading);
+    font-style: italic;
+    font-size: var(--text-lg);
+    letter-spacing: var(--tracking-tight);
   }
 
   .header-drawer__close {
     display: flex;
     align-items: center;
     justify-content: center;
-    align-self: flex-end;
     background: none;
     border: none;
     color: inherit;

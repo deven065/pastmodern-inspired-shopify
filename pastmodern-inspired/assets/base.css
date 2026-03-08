@@ -31,6 +31,7 @@
   --tracking-normal:   0em;
   --tracking-wide:     0.04em;
   --tracking-widest:   0.14em;   /* caps labels, buttons, eyebrows */
+  --tracking-brand:    0.18em;   /* Sulu Luxe — footer headings, editorial eyebrows */
 
   /* ── Spacing (4px increments) ────────────────────────────── */
   --space-1:  0.25rem;   /*   4px */
@@ -55,9 +56,11 @@
   --ease-default: cubic-bezier(0.25, 0, 0.1, 1);
   --ease-out:     cubic-bezier(0, 0, 0.2, 1);
   --ease-in:      cubic-bezier(0.4, 0, 1, 1);
-  --duration-fast: 150ms;
-  --duration-base: 250ms;
-  --duration-slow: 400ms;
+  --ease-brand:   cubic-bezier(0.16, 1, 0.3, 1);  /* Sulu Luxe — weighted, slightly dramatic */
+  --duration-fast:     150ms;
+  --duration-base:     250ms;
+  --duration-slow:     400ms;
+  --duration-measured: 600ms;  /* Sulu Luxe — composed, deliberate reveals */
 
   /* ── Shape ───────────────────────────────────────────────── */
   --radius-sm:   1px;
@@ -207,9 +210,9 @@ select {
   border-radius: var(--btn-radius, 0);
   cursor: pointer;
   transition:
-    background-color var(--duration-base) var(--ease-default),
+    background-color var(--duration-slow) var(--ease-brand, var(--ease-default)),
     color            var(--duration-base) var(--ease-default),
-    border-color     var(--duration-base) var(--ease-default),
+    border-color     var(--duration-slow) var(--ease-brand, var(--ease-default)),
     opacity          var(--duration-fast) var(--ease-default);
 }
 

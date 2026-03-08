@@ -65,21 +65,21 @@
         "id": "color_background",
         "default": "#F5F4F0",
         "label": "Background",
-        "info": "Warm ivory creates a premium editorial feel."
+        "info": "Warm ivory — the Sulu Luxe canvas."
       },
       {
         "type": "color",
         "id": "color_text",
-        "default": "#262420",
+        "default": "#1E1D1B",
         "label": "Text",
-        "info": "Muted warm charcoal \u2014 softer than pure black on ivory."
+        "info": "Warm near-black — depth without harshness against ivory."
       },
       {
         "type": "color",
         "id": "color_accent",
-        "default": "#8B7355",
+        "default": "#2C5546",
         "label": "Accent",
-        "info": "Used sparingly: sale prices, active states, focused highlights."
+        "info": "Sulu Luxe emerald — appears sparingly on sale prices, active states, eyebrow labels, and focus rings."
       }
     ]
   },

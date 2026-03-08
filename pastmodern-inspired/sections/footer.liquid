@@ -79,6 +79,38 @@
             {%- endfor -%}
           </ul>
         {%- endif -%}
+
+        {%- if section.settings.show_newsletter -%}
+          <div class="footer__newsletter">
+            {%- if section.settings.newsletter_heading != blank -%}
+              <p class="footer__newsletter-label">{{ section.settings.newsletter_heading }}</p>
+            {%- endif -%}
+            {%- form 'customer', id: 'footer-newsletter-form' -%}
+              <input type="hidden" name="contact[tags]" value="newsletter">
+              {%- if form.posted_successfully? -%}
+                <p class="footer__newsletter-success">Thank you for subscribing.</p>
+              {%- else -%}
+                <div class="footer__newsletter-field">
+                  <label class="visually-hidden" for="footer-email">Email address</label>
+                  <input
+                    type="email"
+                    id="footer-email"
+                    name="contact[email]"
+                    placeholder="Your email"
+                    autocomplete="email"
+                    required
+                  >
+                  <button type="submit" aria-label="Subscribe">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                  </button>
+                </div>
+                {%- if form.errors -%}
+                  <p class="footer__newsletter-error">{{ form.errors.translated_fields.first | capitalize }} {{ form.errors.messages.first }}</p>
+                {%- endif -%}
+              {%- endif -%}
+            {%- endform -%}
+          </div>
+        {%- endif -%}
       </div>
     {%- endif -%}
 
@@ -145,10 +177,10 @@
 {% stylesheet %}
   /* ── Site footer shell ── */
   .site-footer {
-    padding-block: var(--space-24) var(--space-12);
+    padding-block: var(--space-32) var(--space-16);
     display: flex;
     flex-direction: column;
-    gap: var(--space-16);
+    gap: var(--space-20);
   }
 
   /* ── Upper grid ── */
@@ -158,7 +190,7 @@
       minmax(0, 1.4fr)
       repeat(var(--footer-nav-cols, 2), minmax(0, 1fr))
       minmax(0, 1fr);
-    gap: var(--space-10) var(--space-8);
+    gap: var(--space-14) var(--space-10);
     align-items: start;
   }
 
@@ -166,7 +198,9 @@
   .footer__brand {
     display: flex;
     flex-direction: column;
-    gap: var(--space-5);
+    gap: var(--space-6);
+    padding-inline-end: var(--space-6);
+    border-inline-end: 1px solid var(--color-border);
   }
 
   .footer__logo { height: auto; display: block; }
@@ -183,14 +217,14 @@
   .footer__brand-text {
     font-size: var(--text-sm);
     line-height: var(--leading-relaxed, 1.65);
-    max-width: 28ch;
+    max-width: 26ch;
     margin: 0;
   }
 
   /* ── Social icons ── */
   .footer__social {
     display: flex;
-    gap: var(--space-5);
+    gap: var(--space-4);
     list-style: none;
     margin: 0;
     padding: 0;
@@ -215,7 +249,7 @@
   .footer__nav-col {
     display: flex;
     flex-direction: column;
-    gap: var(--space-4);
+    gap: var(--space-5);
   }
 
   .footer__col-heading {
@@ -223,7 +257,7 @@
     font-style: normal;
     font-weight: 500;
     font-size: var(--text-xs);
-    letter-spacing: var(--tracking-widest);
+    letter-spacing: var(--tracking-brand, 0.18em);
     text-transform: uppercase;
     margin: 0;
   }
@@ -231,7 +265,7 @@
   .footer__nav-list {
     display: flex;
     flex-direction: column;
-    gap: var(--space-3);
+    gap: var(--space-4);
     list-style: none;
     margin: 0;
     padding: 0;
@@ -271,7 +305,7 @@
 
   /* ── Lower bar ── */
   .footer__lower {
-    padding-block-start: var(--space-10);
+    padding-block-start: var(--space-12);
     border-block-start: 1px solid var(--color-border);
     display: flex;
     flex-wrap: wrap;
@@ -319,6 +353,82 @@
     opacity: 0.7;
   }
 
+  /* ── Newsletter (footer) ── */
+  .footer__newsletter {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .footer__newsletter-label {
+    font-family: var(--font-body);
+    font-size: var(--text-xs);
+    letter-spacing: var(--tracking-widest);
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+
+  .footer__newsletter-field {
+    display: flex;
+    align-items: center;
+    border-block-end: 1px solid var(--color-border);
+    transition: border-color var(--duration-fast) var(--ease-default);
+  }
+
+  .footer__newsletter-field:focus-within {
+    border-block-end-color: var(--color-text);
+  }
+
+  .footer__newsletter-field input {
+    flex: 1;
+    background: none;
+    border: none;
+    padding: var(--space-2) 0;
+    font-family: var(--font-body);
+    font-size: var(--text-xs);
+    letter-spacing: var(--tracking-wide);
+    color: var(--color-text);
+    min-width: 0;
+  }
+
+  .footer__newsletter-field input::placeholder {
+    color: var(--color-text-muted);
+  }
+
+  .footer__newsletter-field input:focus {
+    outline: none;
+  }
+
+  .footer__newsletter-field button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--color-text);
+    padding: var(--space-2) 0 var(--space-2) var(--space-2);
+    display: flex;
+    align-items: center;
+    transition: opacity var(--duration-fast) var(--ease-default);
+  }
+
+  .footer__newsletter-field button:hover {
+    opacity: 0.55;
+  }
+
+  .footer__newsletter-success {
+    font-size: var(--text-xs);
+    letter-spacing: var(--tracking-widest);
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+
+  .footer__newsletter-error {
+    font-size: var(--text-xs);
+    color: var(--color-text);
+    margin: var(--space-1) 0 0;
+  }
+
   /* ── Mobile ── */
   @media (max-width: 64rem) {
     .footer__upper {
@@ -327,12 +437,17 @@
 
     .footer__brand {
       grid-column: 1 / -1;
+      padding-inline-end: 0;
+      border-inline-end: none;
+      padding-block-end: var(--space-6);
+      border-block-end: 1px solid var(--color-border);
     }
   }
 
   @media (max-width: 40rem) {
-    .footer__upper  { grid-template-columns: 1fr; }
-    .site-footer    { gap: var(--space-8); padding-block: var(--space-10) var(--space-6); }
+    .footer__upper  { grid-template-columns: 1fr; gap: var(--space-8); }
+    .site-footer    { gap: var(--space-8); padding-block: var(--space-14) var(--space-8); }
+    .footer__brand  { border-block-end: none; padding-block-end: 0; }
     .footer__payment-icons { margin-left: 0; }
   }
 {% endstylesheet %}
@@ -412,6 +527,22 @@
       "type": "url",
       "id": "social_youtube_link",
       "label": "YouTube URL"
+    },
+    {
+      "type": "header",
+      "content": "Newsletter"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_newsletter",
+      "label": "Show newsletter sign-up",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "newsletter_heading",
+      "label": "Newsletter label",
+      "default": "Stay in the loop"
     },
     {
       "type": "header",
