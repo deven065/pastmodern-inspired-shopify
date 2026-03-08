@@ -1,44 +1,42 @@
 {% doc %}
-  Renders a single accordion row.
-  Must be placed inside a parent element that has [data-accordion]
-  so theme.js Accordion class can wire up the events.
+  Renders a single accessible accordion item.
+  Accordion open/close behaviour is handled by the Accordion class in theme.js.
+  Must be inside a block with [data-accordion].
 
-  @param {string} id        - Unique string for aria-controls linkage
-  @param {string} heading   - Trigger label text (escaped by caller or here)
-  @param {string} content   - HTML body content rendered inside the panel
-  @param {boolean} [open]   - Whether the panel starts open (default false)
+  @param {string}  title    — Button label and ARIA ID seed (required)
+  @param {string}  [content] — Body HTML rendered inside the panel
+  @param {boolean} [open]    — Start expanded; default false
+
+  @example
+  {%- capture fabric_html -%}<p>100% Silk Crepe</p>{%- endcapture -%}
+  {% render 'accordion-item', title: 'Fabric & Materials', content: fabric_html %}
 {% enddoc %}
 
 {%- liquid
-  assign acc_id         = 'acc-' | append: id
-  assign acc_content_id = acc_id | append: '-panel'
-  assign is_open        = open | default: false
+  assign is_open = open | default: false
+  assign slug    = title | handle
 -%}
 
 <button
-  class="accordion-item__trigger"
-  data-accordion-trigger
   type="button"
-  id="{{ acc_id }}"
+  id="acc-trigger-{{ slug }}"
   aria-expanded="{{ is_open | json }}"
-  aria-controls="{{ acc_content_id }}"
+  aria-controls="acc-body-{{ slug }}"
+  data-accordion-trigger
 >
-  <span>{{ heading | escape }}</span>
+  <span>{{ title | escape }}</span>
+  <span class="accordion-icon" aria-hidden="true"></span>
 </button>
 
 <div
-  class="accordion-item__panel"
-  data-accordion-content
-  id="{{ acc_content_id }}"
-  aria-labelledby="{{ acc_id }}"
+  id="acc-body-{{ slug }}"
   role="region"
-  {%- if is_open %}
-  style="max-height: none;"
-  {%- else %}
+  aria-labelledby="acc-trigger-{{ slug }}"
+  data-accordion-content
   style="max-height: 0;"
-  {%- endif %}
 >
-  <div class="accordion-item__body">
+  <div class="accordion-body">
     {{ content }}
   </div>
 </div>
+

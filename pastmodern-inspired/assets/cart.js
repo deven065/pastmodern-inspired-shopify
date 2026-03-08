@@ -17,6 +17,7 @@
       this.items      = el.querySelector('[data-cart-items]');
       this.subtotal   = el.querySelector('[data-cart-subtotal]');
       this.footer     = el.querySelector('[data-cart-footer]');
+      this.headerCount = el.querySelector('[data-cart-header-count]');
       this.countEls   = document.querySelectorAll('[data-cart-count]');
       this._busy      = false;
       this._lastFocus = null;
@@ -187,6 +188,10 @@
         el.textContent = count;
         el.hidden = count === 0;
       });
+      if (this.headerCount) {
+        this.headerCount.textContent = count;
+        this.headerCount.hidden = count === 0;
+      }
     }
 
     /* ── Focus trap ─────────────────────────────────────────── */

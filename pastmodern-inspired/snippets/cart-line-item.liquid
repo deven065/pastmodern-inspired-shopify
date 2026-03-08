@@ -10,12 +10,14 @@
   {%- comment -%} ── Image ── {%- endcomment -%}
   <a href="{{ item.url }}" class="cart-item__image-link" tabindex="-1" aria-hidden="true">
     {%- if item.image -%}
-      {{- item.image | image_url: width: 160 | image_tag:
-          width: 80,
-          height: 100,
-          loading: 'lazy',
-          alt: item.product.title,
-          class: 'cart-item__image'
+      {{- item.image
+          | image_url: width: 220
+          | image_tag:
+              width: 110,
+              height: 140,
+              loading: 'lazy',
+              alt: item.product.title,
+              class: 'cart-item__image'
       -}}
     {%- else -%}
       <div class="cart-item__image cart-item__image--placeholder"></div>
@@ -24,13 +26,28 @@
 
   {%- comment -%} ── Details ── {%- endcomment -%}
   <div class="cart-item__details">
-    <a href="{{ item.url }}" class="cart-item__title">{{ item.product.title | escape }}</a>
 
+    {%- comment -%} Title — italic serif, links to product ── {%- endcomment -%}
+    <a href="{{ item.url }}" class="cart-item__title">
+      {{- item.product.title | escape -}}
+    </a>
+
+    {%- comment -%} Variant (omit for single-variant products) ── {%- endcomment -%}
     {%- unless item.variant.title == 'Default Title' -%}
-      <p class="cart-item__variant text-muted">{{ item.variant.title | escape }}</p>
+      <p class="cart-item__variant">{{ item.variant.title | escape }}</p>
     {%- endunless -%}
 
-    <div class="cart-item__qty-row">
+    {%- comment -%} Price — shown before qty for visual hierarchy ── {%- endcomment -%}
+    <div class="cart-item__price-row">
+      <span class="cart-item__price">{{ item.final_line_price | money }}</span>
+      {%- if item.original_line_price > item.final_line_price -%}
+        <s class="cart-item__price-compare">{{ item.original_line_price | money }}</s>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} Qty stepper + remove ── {%- endcomment -%}
+    <div class="cart-item__actions">
+
       <div
         class="cart-item__qty"
         role="group"
@@ -44,32 +61,29 @@
           aria-label="Decrease quantity"
           {% if item.quantity <= 1 %}disabled{% endif %}
         >&#8722;</button>
-        <span class="cart-item__qty-num" data-qty-num aria-live="polite">{{ item.quantity }}</span>
+
+        <span class="cart-item__qty-num" data-qty-num aria-live="polite">
+          {{- item.quantity -}}
+        </span>
+
         <button
           class="cart-item__qty-btn"
           type="button"
           data-qty-increase
           data-line-key="{{ item.key }}"
           aria-label="Increase quantity"
-        >+</button>
+        >&#43;</button>
       </div>
 
-      <span class="cart-item__price">{{ item.final_line_price | money }}</span>
+      <button
+        class="cart-item__remove"
+        type="button"
+        data-remove-item
+        data-line-key="{{ item.key }}"
+        aria-label="Remove {{ item.product.title | escape }} from bag"
+      >Remove</button>
+
     </div>
   </div>
-
-  {%- comment -%} ── Remove ── {%- endcomment -%}
-  <button
-    class="cart-item__remove"
-    type="button"
-    data-remove-item
-    data-line-key="{{ item.key }}"
-    aria-label="Remove {{ item.product.title | escape }}"
-  >
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true" focusable="false">
-      <line x1="18" y1="6" x2="6" y2="18"/>
-      <line x1="6" y1="6" x2="18" y2="18"/>
-    </svg>
-  </button>
 
 </div>

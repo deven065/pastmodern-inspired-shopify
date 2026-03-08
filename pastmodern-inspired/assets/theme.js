@@ -90,6 +90,12 @@
 
       trigger.setAttribute('aria-expanded', String(!isOpen));
       if (isOpen) {
+        // If expanded state used max-height: none, snap to px first so CSS can animate
+        if (content.style.maxHeight === 'none' || content.style.maxHeight === '') {
+          content.style.maxHeight = content.scrollHeight + 'px';
+          // Force repaint before animating to 0
+          content.getBoundingClientRect();
+        }
         content.style.maxHeight = '0';
       } else {
         content.style.maxHeight = content.scrollHeight + 'px';

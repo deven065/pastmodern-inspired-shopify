@@ -3,15 +3,15 @@
     "product-main": {
       "type": "product-main",
       "settings": {
-        "show_vendor": true,
-        "show_quantity": true,
-        "show_size_guide": true,
-        "gallery_ratio": "3/4",
-        "description_position": "accordion",
+        "show_breadcrumbs": true,
+        "show_quantity": false,
+        "show_dynamic_checkout": true,
+        "sticky_atc_mobile": true,
         "atc_label": "Add to bag",
         "sold_out_label": "Sold out",
-        "delivery_text": "",
-        "show_share": false
+        "delivery_text": "3–5 business days",
+        "shipping_text": "Complimentary on orders over $200",
+        "return_text": "Complimentary returns within 30 days"
       }
     },
     "product-accordion": {
@@ -70,9 +70,18 @@
       ],
       "settings": {}
     }
+    "related-products": {
+      "type": "related-products",
+      "settings": {
+        "heading": "You May Also Like",
+        "products_to_show": 4,
+        "recommendation_intent": "related"
+      }
+    }
   },
   "order": [
     "product-main",
-    "product-accordion"
+    "product-accordion",
+    "related-products"
   ]
 }
