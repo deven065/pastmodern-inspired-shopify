@@ -27,7 +27,8 @@
   id="header-mobile-menu"
   data-mobile-menu
   aria-label="Mobile navigation"
-  hidden
+  aria-hidden="true"
+  inert
 >
   <div class="header-drawer__inner">
     <div class="header-drawer__header">
@@ -465,6 +466,12 @@
 
   /* ── Mobile: swap nav for hamburger below 900px ───────────── */
   @media (max-width: 56.25rem) {
+    :root { --header-height: 3.75rem; }
+
+    .header__inner {
+      height: 3.75rem;
+    }
+
     .header__hamburger {
       display: flex;
       align-items: center;
@@ -473,7 +480,9 @@
       border: none;
       color: inherit;
       cursor: pointer;
-      padding: var(--space-1);
+      padding: var(--space-2);
+      min-width: 2.75rem;
+      min-height: 2.75rem;
     }
 
     .header__nav {
@@ -492,6 +501,11 @@
     transition: opacity var(--duration-slow) var(--ease-out);
   }
 
+  body.menu-open {
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+
   body.menu-open .header-overlay {
     opacity: 1;
     pointer-events: auto;
@@ -506,13 +520,22 @@
     background-color: var(--color-bg);
     display: flex;
     flex-direction: column;
+    visibility: hidden;
     transform: translateX(-100%);
-    transition: transform var(--duration-measured) var(--ease-brand);
+    transition:
+      transform  var(--duration-measured) var(--ease-brand),
+      visibility 0s linear var(--duration-measured);
     overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
   }
 
-  .header-drawer:not([hidden]) {
+  .header-drawer.is-open {
+    visibility: visible;
     transform: translateX(0);
+    transition:
+      transform  var(--duration-measured) var(--ease-brand),
+      visibility 0s linear 0s;
   }
 
   .header-drawer__inner {
@@ -635,6 +658,38 @@
     border-color: transparent;
     font-size: var(--text-sm);
   }
+
+  /* ── iOS safe-area insets (notch, Dynamic Island, home bar) ── */
+  .header {
+    padding-block-start: env(safe-area-inset-top, 0px);
+  }
+
+  .header-drawer__inner {
+    padding-block-start: max(var(--space-5), env(safe-area-inset-top, 0px));
+    padding-block-end:   max(var(--space-5), env(safe-area-inset-bottom, 0px));
+    padding-inline-start: max(var(--space-7), env(safe-area-inset-left, 0px));
+    padding-inline-end:   max(var(--space-7), env(safe-area-inset-right, 0px));
+  }
+
+  /* ── 44px minimum touch targets + tap-highlight reset ───────  */
+  .header__icon-btn,
+  .header-drawer__close {
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
+  .header__hamburger {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
+  .header-drawer__link,
+  .header-drawer__summary {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
 {% endstylesheet %}
 
 {% javascript %}
@@ -657,8 +712,9 @@
     if (!drawer) return;
 
     function openMenu() {
-      drawer.removeAttribute('hidden');
+      drawer.classList.add('is-open');
       drawer.removeAttribute('aria-hidden');
+      drawer.removeAttribute('inert');
       document.body.classList.add('menu-open');
       hamburgers.forEach(function (b) {
         b.setAttribute('aria-expanded', 'true');
@@ -667,8 +723,9 @@
     }
 
     function closeMenu() {
-      drawer.setAttribute('hidden', '');
+      drawer.classList.remove('is-open');
       drawer.setAttribute('aria-hidden', 'true');
+      drawer.setAttribute('inert', '');
       document.body.classList.remove('menu-open');
       hamburgers.forEach(function (b) {
         b.setAttribute('aria-expanded', 'false');
