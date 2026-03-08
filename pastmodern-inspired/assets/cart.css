@@ -36,7 +36,7 @@ body.cart-open { overflow: hidden; }
   display: flex;
   flex-direction: column;
   transform: translateX(105%);
-  transition: transform var(--duration-slow) var(--ease-out);
+  transition: transform var(--duration-measured) var(--ease-brand);
   overflow: hidden;
   will-change: transform;
 }
@@ -105,7 +105,7 @@ body.cart-open { overflow: hidden; }
   border: none;
   cursor: pointer;
   color: var(--color-text-muted);
-  transition: color var(--duration-fast) var(--ease-default);
+  transition: color var(--duration-measured) var(--ease-brand);
 }
 
 .cart-drawer__close:hover   { color: var(--color-text); }
@@ -177,13 +177,13 @@ body.cart-open { overflow: hidden; }
   margin-block-start: var(--space-2);
   font-size: var(--text-xs);
   font-style: normal;
-  letter-spacing: var(--tracking-widest);
+  letter-spacing: var(--tracking-brand);
   text-transform: uppercase;
   color: var(--color-text);
   text-decoration: underline;
   text-decoration-color: var(--color-border);
   text-underline-offset: 3px;
-  transition: text-decoration-color var(--duration-fast) var(--ease-default);
+  transition: text-decoration-color var(--duration-measured) var(--ease-brand);
 }
 
 .cart-drawer__empty-cta:hover {
@@ -355,20 +355,20 @@ body.cart-open { overflow: hidden; }
   font-family: var(--font-body);
   font-size: var(--text-xs);
   font-style: normal;
-  letter-spacing: var(--tracking-widest);
+  letter-spacing: var(--tracking-brand, 0.18em);
   text-transform: uppercase;
   color: var(--color-text-muted);
-  text-decoration: underline;
-  text-decoration-color: transparent;
+  opacity: 0.55;
+  text-decoration: none;
   text-underline-offset: 2px;
   transition:
-    color                 var(--duration-fast) var(--ease-default),
-    text-decoration-color var(--duration-fast) var(--ease-default);
+    color                 var(--duration-measured) var(--ease-brand),
+    opacity               var(--duration-measured) var(--ease-brand);
 }
 
 .cart-item__remove:hover {
   color: var(--color-text);
-  text-decoration-color: var(--color-border);
+  opacity: 1;
 }
 
 .cart-item__remove:focus-visible {
@@ -399,7 +399,7 @@ body.cart-open { overflow: hidden; }
   font-family: var(--font-body);
   font-size: var(--text-xs);
   font-style: normal;
-  letter-spacing: var(--tracking-widest);
+  letter-spacing: var(--tracking-brand);
   text-transform: uppercase;
   color: var(--color-text-muted);
   margin: 0;
@@ -424,7 +424,7 @@ body.cart-open { overflow: hidden; }
 
 /* Checkout CTA — inherits btn btn-primary btn-full from base */
 .cart-drawer__checkout {
-  letter-spacing: var(--tracking-widest) !important;
+  letter-spacing: var(--tracking-brand) !important;
   font-size: var(--text-xs) !important;
 }
 
@@ -440,15 +440,15 @@ body.cart-open { overflow: hidden; }
   font-family: var(--font-body);
   font-size: var(--text-xs);
   font-style: normal;
-  letter-spacing: var(--tracking-widest);
+  letter-spacing: var(--tracking-brand);
   text-transform: uppercase;
   color: var(--color-text-muted);
   text-decoration: underline;
   text-decoration-color: transparent;
   text-underline-offset: 3px;
   transition:
-    color                 var(--duration-fast) var(--ease-default),
-    text-decoration-color var(--duration-fast) var(--ease-default);
+    color                 var(--duration-measured) var(--ease-brand),
+    text-decoration-color var(--duration-measured) var(--ease-brand);
 }
 
 .cart-drawer__continue:hover {

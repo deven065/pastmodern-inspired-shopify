@@ -50,6 +50,55 @@
   {%- endif -%}
 </product-recommendations>
 
+{% stylesheet %}
+  .shopify-section:has(.related-products) {
+    padding-block-start: var(--space-12);
+    padding-block-end: var(--space-32);
+    border-block-start: 1px solid var(--color-border);
+  }
+
+  .related-products__header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    align-items: center;
+    text-align: center;
+    margin-block-end: var(--space-16);
+  }
+
+  .related-products__title {
+    font-family: var(--font-heading);
+    font-weight: var(--font-heading-weight);
+    font-style: italic;
+    font-size: clamp(var(--text-2xl), 3.5vw, var(--text-3xl));
+    line-height: var(--leading-tight);
+    letter-spacing: var(--tracking-tight);
+    margin: 0;
+  }
+
+  .related-products__grid {
+    display: grid;
+    grid-template-columns: repeat(var(--rp-cols, 4), 1fr);
+    gap: clamp(var(--space-3), 2vw, var(--space-6));
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  @media (max-width: 56rem) {
+    .related-products__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 36rem) {
+    .related-products__grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-3);
+    }
+  }
+{% endstylesheet %}
+
 {% schema %}
 {
   "name": "Related products",

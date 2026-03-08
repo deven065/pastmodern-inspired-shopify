@@ -119,10 +119,11 @@
   .testimonial__mark {
     font-family: var(--font-heading);
     font-style: italic;
-    font-size: 5rem;
-    line-height: 0.75;
-    color: var(--color-border);
-    margin: 0 0 var(--space-3);
+    font-size: clamp(4rem, 6vw, 7rem);
+    line-height: 0.65;
+    color: var(--color-accent);
+    opacity: 0.3;
+    margin: 0 0 var(--space-4);
     user-select: none;
     pointer-events: none;
   }
@@ -131,7 +132,7 @@
   .testimonial__text {
     font-family: var(--font-heading);
     font-style: italic;
-    font-size: clamp(var(--text-md), 1.5vw, var(--text-lg));
+    font-size: clamp(var(--text-lg), 1.8vw, var(--text-xl));
     line-height: var(--leading-snug);
     letter-spacing: var(--tracking-tight);
     color: var(--color-text);
@@ -163,7 +164,7 @@
   .testimonial__author {
     font-style: normal;
     font-size: var(--text-xs);
-    letter-spacing: var(--tracking-widest);
+    letter-spacing: var(--tracking-brand, 0.18em);
     text-transform: uppercase;
     color: var(--color-text);
   }

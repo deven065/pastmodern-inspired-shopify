@@ -98,7 +98,7 @@
   .product-gallery__thumb { width: 3.25rem; }
 }
 
-.product-gallery__thumb:hover { opacity: 0.78; }
+.product-gallery__thumb:hover { opacity: 0.72; }
 
 .product-gallery__thumb.is-active {
   border-color: var(--color-text);
@@ -305,7 +305,7 @@
   font-family: var(--font-body);
   font-size: var(--text-xs);
   font-style: normal;
-  letter-spacing: var(--tracking-widest);
+  letter-spacing: var(--tracking-brand);
   text-transform: uppercase;
   color: var(--color-text-muted);
 }
@@ -345,12 +345,12 @@
   align-items: center;
   justify-content: center;
   min-width: 3rem;
-  height: 2.875rem;
+  height: 3rem;
   padding-inline: var(--space-4);
   font-family: var(--font-body);
   font-size: var(--text-xs);
   font-style: normal;
-  letter-spacing: var(--tracking-wide);
+  letter-spacing: var(--tracking-brand);
   text-transform: uppercase;
   color: var(--color-text);
   background-color: transparent;
@@ -359,9 +359,9 @@
   cursor: pointer;
   overflow: hidden;
   transition:
-    border-color     var(--duration-fast) var(--ease-default),
-    background-color var(--duration-fast) var(--ease-default),
-    color            var(--duration-fast) var(--ease-default);
+    border-color     var(--duration-measured) var(--ease-brand),
+    background-color var(--duration-measured) var(--ease-brand),
+    color            var(--duration-measured) var(--ease-brand);
 }
 
 .variant-pill:hover:not([aria-pressed="true"]):not(.variant-pill--oos) {
@@ -477,6 +477,7 @@
   padding-inline: var(--space-1);
   color: var(--color-text);
   background: transparent;
+  appearance: textfield;
   -moz-appearance: textfield;
 }
 
@@ -485,11 +486,11 @@
 
 .product-atc {
   flex: 1;
-  height: 3.5rem;
+  height: 3.75rem;
   font-family: var(--font-body);
   font-size: var(--text-xs);
   font-style: normal;
-  letter-spacing: var(--tracking-widest);
+  letter-spacing: var(--tracking-brand);
   text-transform: uppercase;
   background-color: var(--color-text);
   color: var(--color-bg);
@@ -497,14 +498,14 @@
   border-radius: 0;
   cursor: pointer;
   transition:
-    background-color var(--duration-base) var(--ease-default),
-    border-color     var(--duration-base) var(--ease-default),
-    opacity          var(--duration-fast) var(--ease-default);
+    background-color var(--duration-measured) var(--ease-brand),
+    border-color     var(--duration-measured) var(--ease-brand),
+    opacity          var(--duration-fast)     var(--ease-default);
 }
 
 .product-atc:hover:not(:disabled) {
-  background-color: color-mix(in srgb, var(--color-text) 80%, transparent);
-  border-color: color-mix(in srgb, var(--color-text) 80%, transparent);
+  background-color: color-mix(in srgb, var(--color-text) 85%, transparent);
+  border-color: color-mix(in srgb, var(--color-text) 85%, transparent);
 }
 
 .product-atc:disabled,
@@ -540,9 +541,9 @@
   border-radius: 0 !important;
   font-size: var(--text-xs) !important;
   font-style: normal !important;
-  letter-spacing: var(--tracking-widest) !important;
+  letter-spacing: var(--tracking-brand) !important;
   text-transform: uppercase !important;
-  min-height: 3.5rem !important;
+  min-height: 3.75rem !important;
 }
 
 .shopify-payment-button__button--unbranded {
@@ -614,14 +615,14 @@
     inset-inline: 0;
     bottom: 0;
     z-index: 200;
-    background-color: color-mix(in srgb, var(--color-bg) 94%, transparent);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
+    background-color: color-mix(in srgb, var(--color-bg) 96%, transparent);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     border-top: 1px solid var(--color-border);
     padding: var(--space-4) var(--page-margin);
     padding-bottom: max(var(--space-4), env(safe-area-inset-bottom));
     transform: translateY(110%);
-    transition: transform var(--duration-base) var(--ease-out);
+    transition: transform var(--duration-measured) var(--ease-brand);
     will-change: transform;
   }
 
@@ -662,14 +663,14 @@
   font-family: var(--font-body);
   font-size: var(--text-xs);
   font-style: normal;
-  letter-spacing: var(--tracking-widest);
+  letter-spacing: var(--tracking-brand);
   text-transform: uppercase;
   background-color: var(--color-text);
   color: var(--color-bg);
   border: 1px solid var(--color-text);
   border-radius: 0;
   padding: var(--space-3) var(--space-8);
-  min-height: 2.875rem;
+  min-height: 3rem;
   white-space: nowrap;
   cursor: pointer;
   transition: opacity var(--duration-fast) var(--ease-default);

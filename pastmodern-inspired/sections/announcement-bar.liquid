@@ -47,7 +47,7 @@
 
   .announcement-bar__text {
     font-size: var(--text-xs);
-    letter-spacing: var(--tracking-wide);
+    letter-spacing: var(--tracking-brand, 0.18em);
     text-align: center;
     text-decoration: none;
     color: inherit;
@@ -72,8 +72,8 @@
     cursor: pointer;
     padding: var(--space-1);
     flex-shrink: 0;
-    opacity: 0.7;
-    transition: opacity var(--duration-fast) var(--ease-default);
+    opacity: 0.6;
+    transition: opacity var(--duration-measured) var(--ease-brand);
   }
 
   .announcement-bar__close:hover {

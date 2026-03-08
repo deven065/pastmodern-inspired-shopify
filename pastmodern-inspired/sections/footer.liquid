@@ -217,7 +217,7 @@
   .footer__brand-text {
     font-size: var(--text-sm);
     line-height: var(--leading-relaxed, 1.65);
-    max-width: 26ch;
+    max-width: 28ch;
     margin: 0;
   }
 
@@ -235,7 +235,7 @@
     align-items: center;
     justify-content: center;
     color: var(--color-text-muted);
-    transition: color var(--duration-fast) var(--ease-default);
+    transition: color var(--duration-measured) var(--ease-brand);
   }
 
   .footer__social-link:hover        { color: var(--color-text); }
@@ -275,7 +275,7 @@
     font-size: var(--text-xs);
     color: var(--color-text-muted);
     text-decoration: none;
-    transition: color var(--duration-fast) var(--ease-default);
+    transition: color var(--duration-measured) var(--ease-brand);
   }
 
   .footer__nav-link:hover        { color: var(--color-text); }
@@ -305,7 +305,7 @@
 
   /* ── Lower bar ── */
   .footer__lower {
-    padding-block-start: var(--space-12);
+    padding-block-start: var(--space-16);
     border-block-start: 1px solid var(--color-border);
     display: flex;
     flex-wrap: wrap;
@@ -331,7 +331,7 @@
     font-size: var(--text-xs);
     color: var(--color-text-muted);
     text-decoration: none;
-    transition: color var(--duration-fast) var(--ease-default);
+    transition: color var(--duration-measured) var(--ease-brand);
   }
 
   .footer__policy-link:hover { color: var(--color-text); }
@@ -363,7 +363,7 @@
   .footer__newsletter-label {
     font-family: var(--font-body);
     font-size: var(--text-xs);
-    letter-spacing: var(--tracking-widest);
+    letter-spacing: var(--tracking-brand);
     text-transform: uppercase;
     color: var(--color-text-muted);
     margin: 0;
@@ -373,11 +373,11 @@
     display: flex;
     align-items: center;
     border-block-end: 1px solid var(--color-border);
-    transition: border-color var(--duration-fast) var(--ease-default);
+    transition: border-color var(--duration-measured) var(--ease-brand);
   }
 
   .footer__newsletter-field:focus-within {
-    border-block-end-color: var(--color-text);
+    border-block-end-color: var(--color-accent);
   }
 
   .footer__newsletter-field input {

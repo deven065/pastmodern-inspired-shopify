@@ -264,8 +264,8 @@
   .product-card__img--primary {
     z-index: 1;
     transition:
-      opacity   var(--duration-slow) var(--ease-default),
-      transform var(--duration-slow) var(--ease-out);
+      opacity   500ms var(--ease-brand, var(--ease-default)),
+      transform 500ms var(--ease-brand, var(--ease-out));
   }
 
   .product-card:hover .product-card__img--primary {
@@ -281,10 +281,10 @@
   .product-card__img--hover {
     z-index: 2;
     opacity: 0;
-    transform: scale(1.06);
+    transform: scale(1.04);
     transition:
-      opacity   var(--duration-slow) var(--ease-default),
-      transform 600ms               var(--ease-out);
+      opacity   500ms               var(--ease-brand, var(--ease-default)),
+      transform var(--duration-measured) var(--ease-brand, var(--ease-out));
   }
 
   .product-card:has(.product-card__img--hover):hover .product-card__img--hover {
@@ -342,12 +342,12 @@
     color: var(--color-bg);
   }
 
-  /* Sale — left, outlined, no aggression */
+  /* Sale — left, emerald accent, minimal */
   .product-card__badge--sale {
     left: var(--space-4);
     background-color: transparent;
-    color: var(--color-text);
-    outline: 1px solid color-mix(in srgb, var(--color-text) 28%, transparent);
+    color: var(--color-accent);
+    outline: 1px solid color-mix(in srgb, var(--color-accent) 35%, transparent);
     outline-offset: -1px;
   }
 
@@ -382,26 +382,26 @@
   .product-card__quick-add-btn {
     display: block;
     width: 100%;
-    background-color: color-mix(in srgb, var(--color-bg) 86%, transparent);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background-color: color-mix(in srgb, var(--color-bg) 90%, transparent);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     color: var(--color-text);
     border: none;
-    border-top: 1px solid color-mix(in srgb, var(--color-border) 45%, transparent);
+    border-top: 1px solid color-mix(in srgb, var(--color-border) 35%, transparent);
     font-family: var(--font-body);
     font-size: 0.5625rem;
     font-style: normal;
     font-weight: 400;
-    letter-spacing: 0.18em;
+    letter-spacing: var(--tracking-brand, 0.18em);
     text-transform: uppercase;
     text-align: center;
     text-decoration: none;
-    padding-block: 0.95rem;
+    padding-block: 1rem;
     cursor: pointer;
     white-space: nowrap;
     transition:
-      background-color var(--duration-base) var(--ease-default),
-      color            var(--duration-base) var(--ease-default);
+      background-color var(--duration-measured) var(--ease-brand),
+      color            var(--duration-measured) var(--ease-brand);
   }
 
   .product-card__quick-add-btn:not([disabled]):not([aria-disabled="true"]):hover {
@@ -419,7 +419,7 @@
   .product-card__info {
     display: flex;
     flex-direction: column;
-    gap: var(--space-1);
+    gap: 0;
     padding-block: var(--space-5) var(--space-3);
   }
 
@@ -442,18 +442,18 @@
 
   .product-card__title {
     font-family: var(--font-heading);
-    font-size: var(--text-sm);
-    font-style: normal;
+    font-size: var(--text-base);
+    font-style: italic;
     font-weight: var(--font-heading-weight);
     line-height: var(--leading-snug);
-    letter-spacing: 0.01em;
+    letter-spacing: 0.005em;
     margin: 0;
     /* Progressive reveal underline from left */
     background-image: linear-gradient(currentColor, currentColor);
     background-size: 0% 1px;
     background-repeat: no-repeat;
     background-position: left bottom 1px;
-    transition: background-size var(--duration-slow) var(--ease-out);
+    transition: background-size var(--duration-measured, 600ms) var(--ease-brand, var(--ease-out));
   }
 
   .product-card__title-link:hover .product-card__title {
@@ -469,7 +469,7 @@
     row-gap: var(--space-1);
     font-size: var(--text-xs);
     letter-spacing: var(--tracking-wide);
-    margin-block-start: var(--space-3);
+    margin-block-start: var(--space-4);
     color: var(--color-text-muted);
   }
 
@@ -484,7 +484,7 @@
   }
 
   .product-card__price-row .price--sale {
-    color: var(--color-text);
+    color: var(--color-accent);
   }
 
   .product-card__price-row .price--sold-out {
@@ -508,7 +508,7 @@
     letter-spacing: 0.12em;
     text-transform: uppercase;
     padding: 2px var(--space-2);
-    outline: 1px solid color-mix(in srgb, var(--color-border) 60%, transparent);
+    outline: 1px solid color-mix(in srgb, var(--color-border) 80%, transparent);
     outline-offset: -1px;
     line-height: 1.8;
     color: var(--color-text-muted);

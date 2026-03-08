@@ -53,7 +53,7 @@ img {
 
 /* ── Section heading group ─────────────────────────────────── */
 .section-header {
-  margin-block-end: var(--space-24);
+  margin-block-end: var(--space-20);
 }
 
 .section-header--centered {
@@ -125,10 +125,15 @@ img {
   border-block-start: 1px solid var(--color-border);
   font-size: var(--text-xs);
   font-weight: 400;
-  letter-spacing: var(--tracking-widest);
+  letter-spacing: var(--tracking-brand);
   text-transform: uppercase;
   text-align: left;
   cursor: pointer;
+  transition: color var(--duration-fast) var(--ease-default);
+}
+
+[data-accordion-trigger]:hover {
+  color: var(--color-text-muted);
 }
 
 [data-accordion-trigger]::after {
@@ -137,7 +142,7 @@ img {
   font-style: normal;
   line-height: 1;
   flex-shrink: 0;
-  transition: transform var(--duration-fast) var(--ease-default);
+  transition: transform var(--duration-measured) var(--ease-brand);
 }
 
 [data-accordion-trigger][aria-expanded="true"]::after {
@@ -176,12 +181,14 @@ img {
   display: inline-block;
   padding: var(--space-1) var(--space-4);
   font-size: var(--text-xs);
-  letter-spacing: var(--tracking-widest);
+  letter-spacing: var(--tracking-brand);
   text-transform: uppercase;
   border: 1px solid var(--color-border);
   text-decoration: none;
-  transition: background-color var(--duration-fast) var(--ease-default),
-              color var(--duration-fast) var(--ease-default);
+  transition:
+    background-color var(--duration-measured) var(--ease-brand),
+    color            var(--duration-measured) var(--ease-brand),
+    border-color     var(--duration-measured) var(--ease-brand);
 }
 
 .tag-list__item a:hover,
@@ -264,6 +271,10 @@ img {
   background-color: var(--color-text);
   color: var(--color-bg);
   border-color: var(--color-text);
+  transition:
+    background-color var(--duration-measured) var(--ease-brand),
+    color            var(--duration-measured) var(--ease-brand),
+    border-color     var(--duration-measured) var(--ease-brand);
 }
 
 /* ── Animations ────────────────────────────────────────────── */
@@ -280,7 +291,7 @@ img {
 /* ── Scroll reveal ──────────────────────────────────────────── */
 .reveal {
   opacity: 0;
-  transform: translateY(var(--space-5));
+  transform: translateY(var(--space-3));
   transition:
     opacity   0.75s var(--ease-brand, var(--ease-out)),
     transform 0.75s var(--ease-brand, var(--ease-out));

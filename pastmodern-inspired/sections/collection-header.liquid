@@ -144,10 +144,10 @@
 
   /* ── Identity block ─────────────────────────────────────── */
   .collection-header__identity {
-    padding-block: var(--space-12) var(--space-10);
+    padding-block: var(--space-16) var(--space-12);
     display: flex;
     flex-direction: column;
-    gap: var(--space-3);
+    gap: var(--space-4);
   }
 
   .collection-header[data-align="center"] .collection-header__identity {
@@ -181,19 +181,19 @@
     font-family: var(--font-heading);
     font-weight: var(--font-heading-weight);
     font-style: italic;
-    font-size: clamp(var(--text-2xl), 3.5vw, var(--text-4xl));
+    font-size: clamp(var(--text-3xl), 4.5vw, var(--text-4xl));
     line-height: var(--leading-tight);
-    letter-spacing: -0.025em;
+    letter-spacing: -0.03em;
     margin: 0;
   }
 
   /* ── Description ────────────────────────────────────────── */
   .collection-header__description {
-    font-size: var(--text-sm);
+    font-size: var(--text-base);
     color: var(--color-text-muted);
     line-height: var(--leading-relaxed);
     max-width: 52ch;
-    margin-block-start: var(--space-1);
+    margin-block-start: var(--space-2);
   }
 
   .collection-header[data-align="center"] .collection-header__description { max-width: 46ch; }
@@ -237,8 +237,8 @@
   .tag-pill:hover { color: var(--color-text); }
 
   .tag-pill--active {
-    color: var(--color-text);
-    border-block-end-color: var(--color-text);
+    color: var(--color-accent);
+    border-block-end-color: var(--color-accent);
   }
 
   /* ── Toolbar ────────────────────────────────────────────── */
@@ -256,7 +256,7 @@
 
   .collection-header__count {
     font-size: var(--text-xs);
-    letter-spacing: var(--tracking-widest);
+    letter-spacing: var(--tracking-brand, 0.18em);
     text-transform: uppercase;
     color: var(--color-text-muted);
     margin: 0;

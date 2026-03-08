@@ -323,7 +323,7 @@
   }
 
   .header__icon-btn:hover {
-    opacity: 0.6;
+    opacity: 0.5;
   }
 
   .header__icon-btn--muted {
@@ -367,7 +367,7 @@
 
   .header__nav-link {
     font-size: var(--text-xs);
-    letter-spacing: var(--tracking-widest);
+    letter-spacing: var(--tracking-brand);
     text-transform: uppercase;
     text-decoration: none;
     color: inherit;
@@ -392,7 +392,7 @@
     right: 50%;
     height: 1px;
     background: currentColor;
-    opacity: 0.4;
+    opacity: 0.6;
     transition:
       left  var(--duration-measured, 600ms) var(--ease-brand, var(--ease-out)),
       right var(--duration-measured, 600ms) var(--ease-brand, var(--ease-out));
@@ -418,10 +418,15 @@
     top: calc(100% + var(--space-2));
     left: 50%;
     transform: translateX(-50%);
-    min-width: 11rem;
-    background-color: var(--color-bg);
+    min-width: 12rem;
+    background-color: color-mix(in srgb, var(--color-bg) 96%, transparent);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     border: none;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.07), 0 2px 8px rgba(0, 0, 0, 0.04);
+    border-top: 1px solid var(--color-border);
+    box-shadow:
+      0 24px 64px color-mix(in srgb, var(--color-text) 10%, transparent),
+      0 4px 16px  color-mix(in srgb, var(--color-text) 5%, transparent);
     list-style: none;
     margin: 0;
     padding: var(--space-5) 0;
@@ -429,8 +434,8 @@
     pointer-events: none;
     translate: 0 var(--space-2);
     transition:
-      opacity var(--duration-base) var(--ease-out),
-      translate var(--duration-base) var(--ease-out);
+      opacity  var(--duration-measured) var(--ease-brand),
+      translate var(--duration-measured) var(--ease-brand);
   }
 
   .header__nav-item--has-dropdown:hover .header__dropdown,
@@ -445,7 +450,7 @@
     display: block;
     padding: var(--space-4) var(--space-7);
     font-size: var(--text-xs);
-    letter-spacing: var(--tracking-widest);
+    letter-spacing: var(--tracking-brand);
     text-transform: uppercase;
     text-decoration: none;
     color: inherit;
@@ -502,7 +507,7 @@
     display: flex;
     flex-direction: column;
     transform: translateX(-100%);
-    transition: transform var(--duration-slow) var(--ease-out);
+    transition: transform var(--duration-measured) var(--ease-brand);
     overflow-y: auto;
   }
 
@@ -564,7 +569,7 @@
     padding-block: var(--space-5);
     border-block-end: 1px solid var(--color-border);
     font-size: var(--text-xs);
-    letter-spacing: var(--tracking-widest);
+    letter-spacing: var(--tracking-brand);
     text-transform: uppercase;
     text-decoration: none;
     color: inherit;
@@ -598,7 +603,7 @@
     padding-block: var(--space-5);
     border-block-end: 1px solid var(--color-border);
     font-size: var(--text-xs);
-    letter-spacing: var(--tracking-widest);
+    letter-spacing: var(--tracking-brand);
     text-transform: uppercase;
     cursor: pointer;
     color: inherit;
