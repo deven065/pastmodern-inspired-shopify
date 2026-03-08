@@ -1,0 +1,23 @@
+{
+  "sections": {
+    "contact": {
+      "type": "contact",
+      "settings": {
+        "eyebrow": "Contact",
+        "heading": "Get in touch",
+        "subheading": "We\u2019d love to hear from you.",
+        "intro_text": "<p>Whether you have a question about a piece, need styling advice, or simply want to connect \u2014 our team is here.</p>",
+        "email_display": "hello@sululuxe.com",
+        "show_divider": true,
+        "note": "We typically respond within one business day.",
+        "show_phone_field": false,
+        "show_subject_field": true,
+        "textarea_rows": 6,
+        "submit_label": "Send message",
+        "success_heading": "Thank you.",
+        "success_body": "Your message has been received. We will be in touch shortly."
+      }
+    }
+  },
+  "order": ["contact"]
+}

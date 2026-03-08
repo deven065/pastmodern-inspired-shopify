@@ -1,0 +1,524 @@
+{%- liquid
+  assign heading    = section.settings.heading    | default: 'Get in touch'
+  assign subheading = section.settings.subheading | default: 'We'd love to hear from you.'
+  assign eyebrow    = section.settings.eyebrow    | default: 'Contact'
+  assign intro_text = section.settings.intro_text
+  assign email_addr = section.settings.email_display
+  assign phone_addr = section.settings.phone_display
+  assign location   = section.settings.location_display
+  assign show_map   = section.settings.show_map_link
+-%}
+
+<section
+  id="contact-{{ section.id }}"
+  class="contact-section section-spacing reveal"
+  data-section-id="{{ section.id }}"
+>
+  <div class="container">
+    {%- if eyebrow != blank or heading != blank -%}
+      <header class="contact-header section-header">
+        {%- if eyebrow != blank -%}
+          <p class="eyebrow">{{ eyebrow }}</p>
+        {%- endif -%}
+        {%- if heading != blank -%}
+          <h1 class="contact-heading">{{ heading }}</h1>
+        {%- endif -%}
+        {%- if subheading != blank -%}
+          <p class="contact-subheading">{{ subheading }}</p>
+        {%- endif -%}
+      </header>
+    {%- endif -%}
+
+    <div class="contact-grid">
+
+      {%- comment -%} ─── Left column: brand info ─── {%- endcomment -%}
+      <div class="contact-info">
+
+        {%- if intro_text != blank -%}
+          <div class="contact-intro rte">{{ intro_text }}</div>
+        {%- endif -%}
+
+        <ul class="contact-details">
+          {%- if email_addr != blank -%}
+            <li class="contact-detail-item">
+              <span class="contact-detail-label eyebrow">Email</span>
+              <a href="mailto:{{ email_addr }}" class="contact-detail-value">{{ email_addr }}</a>
+            </li>
+          {%- endif -%}
+
+          {%- if phone_addr != blank -%}
+            <li class="contact-detail-item">
+              <span class="contact-detail-label eyebrow">Phone</span>
+              <a href="tel:{{ phone_addr | remove: ' ' | remove: '-' }}" class="contact-detail-value">{{ phone_addr }}</a>
+            </li>
+          {%- endif -%}
+
+          {%- if location != blank -%}
+            <li class="contact-detail-item">
+              <span class="contact-detail-label eyebrow">Studio</span>
+              {%- if show_map and section.settings.map_url != blank -%}
+                <a href="{{ section.settings.map_url }}" target="_blank" rel="noopener noreferrer" class="contact-detail-value">{{ location }}</a>
+              {%- else -%}
+                <span class="contact-detail-value">{{ location }}</span>
+              {%- endif -%}
+            </li>
+          {%- endif -%}
+        </ul>
+
+        {%- if section.settings.show_divider -%}
+          <hr class="contact-divider">
+        {%- endif -%}
+
+        {%- if section.settings.note != blank -%}
+          <p class="contact-note">{{ section.settings.note }}</p>
+        {%- endif -%}
+
+      </div>
+
+      {%- comment -%} ─── Right column: contact form ─── {%- endcomment -%}
+      <div class="contact-form-wrap">
+
+        {%- form 'contact', id: 'ContactForm' -%}
+
+          {%- if form.posted_successfully? -%}
+            <div class="form-success" role="alert">
+              <p class="form-success__heading">{{ section.settings.success_heading | default: 'Thank you.' }}</p>
+              <p class="form-success__body">{{ section.settings.success_body | default: 'Your message has been received. We will be in touch shortly.' }}</p>
+            </div>
+          {%- endif -%}
+
+          {%- if form.errors -%}
+            <div class="form-errors" role="alert">
+              <p>{{ form.errors | default_errors }}</p>
+            </div>
+          {%- endif -%}
+
+          <div class="form-row form-row--two">
+            <div class="form-field">
+              <label class="form-label" for="ContactForm-name">
+                Name <span aria-label="required">*</span>
+              </label>
+              <input
+                type="text"
+                id="ContactForm-name"
+                name="contact[name]"
+                class="form-input"
+                value="{{ form.name }}"
+                autocomplete="name"
+                required
+                aria-required="true"
+              >
+            </div>
+
+            <div class="form-field">
+              <label class="form-label" for="ContactForm-email">
+                Email <span aria-label="required">*</span>
+              </label>
+              <input
+                type="email"
+                id="ContactForm-email"
+                name="contact[email]"
+                class="form-input"
+                value="{{ form.email }}"
+                autocomplete="email"
+                required
+                aria-required="true"
+                autocorrect="off"
+                autocapitalize="off"
+              >
+            </div>
+          </div>
+
+          {%- if section.settings.show_phone_field -%}
+            <div class="form-field">
+              <label class="form-label" for="ContactForm-phone">Phone</label>
+              <input
+                type="tel"
+                id="ContactForm-phone"
+                name="contact[phone]"
+                class="form-input"
+                value="{{ form.phone }}"
+                autocomplete="tel"
+              >
+            </div>
+          {%- endif -%}
+
+          {%- if section.settings.show_subject_field -%}
+            <div class="form-field">
+              <label class="form-label" for="ContactForm-subject">Subject</label>
+              <input
+                type="text"
+                id="ContactForm-subject"
+                name="contact[subject]"
+                class="form-input"
+                value="{{ form.subject }}"
+              >
+            </div>
+          {%- endif -%}
+
+          <div class="form-field">
+            <label class="form-label" for="ContactForm-body">
+              Message <span aria-label="required">*</span>
+            </label>
+            <textarea
+              id="ContactForm-body"
+              name="contact[body]"
+              class="form-input form-textarea"
+              rows="{{ section.settings.textarea_rows | default: 6 }}"
+              required
+              aria-required="true"
+            >{{ form.body }}</textarea>
+          </div>
+
+          <button type="submit" class="btn btn--primary contact-submit">
+            {{ section.settings.submit_label | default: 'Send message' }}
+          </button>
+
+        {%- endform -%}
+      </div>
+
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+/* ─── Contact layout ─────────────────────────────────────────────────────── */
+.contact-section {
+  padding-block: var(--space-20) var(--space-24);
+}
+
+.contact-header {
+  text-align: center;
+  max-width: 48ch;
+  margin-inline: auto;
+  margin-block-end: var(--space-16);
+}
+
+.contact-heading {
+  font-family: var(--font-heading);
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 400;
+  line-height: 1.1;
+  color: var(--color-text);
+  margin-block: var(--space-3) var(--space-4);
+}
+
+.contact-subheading {
+  font-size: 1.0625rem;
+  color: var(--color-text);
+  opacity: 0.65;
+  max-width: 38ch;
+  margin-inline: auto;
+  line-height: 1.65;
+}
+
+/* ─── Two-column grid ────────────────────────────────────────────────────── */
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: clamp(3rem, 8vw, 7rem);
+  align-items: start;
+  max-width: 1100px;
+  margin-inline: auto;
+}
+
+@media (max-width: 768px) {
+  .contact-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-12);
+  }
+}
+
+/* ─── Left column ────────────────────────────────────────────────────────── */
+.contact-info {
+  padding-block-start: var(--space-2);
+}
+
+.contact-intro {
+  font-size: 1.0625rem;
+  line-height: 1.75;
+  color: var(--color-text);
+  opacity: 0.8;
+  margin-block-end: var(--space-10);
+  max-width: 32ch;
+}
+
+.contact-details {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-7);
+}
+
+.contact-detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.contact-detail-label {
+  display: block;
+}
+
+.contact-detail-value {
+  font-size: 1rem;
+  color: var(--color-text);
+  text-decoration: none;
+  transition: color var(--duration-fast, 250ms) var(--ease-brand);
+}
+
+a.contact-detail-value:hover {
+  color: var(--color-accent);
+}
+
+.contact-divider {
+  border: none;
+  border-top: 1px solid currentColor;
+  opacity: 0.12;
+  margin-block: var(--space-10);
+}
+
+.contact-note {
+  font-size: 0.875rem;
+  line-height: 1.7;
+  color: var(--color-text);
+  opacity: 0.55;
+  max-width: 30ch;
+}
+
+/* ─── Right column — form ────────────────────────────────────────────────── */
+.contact-form-wrap {
+  /* inherits global form-input styles from base.css */
+}
+
+.form-row--two {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-5);
+}
+
+@media (max-width: 520px) {
+  .form-row--two {
+    grid-template-columns: 1fr;
+  }
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-block-end: var(--space-5);
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 10rem;
+}
+
+.contact-submit {
+  margin-block-start: var(--space-3);
+  width: 100%;
+}
+
+/* ─── Success state ──────────────────────────────────────────────────────── */
+.form-success {
+  background: color-mix(in srgb, var(--color-accent) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-accent) 24%, transparent);
+  border-radius: var(--radius-sm, 2px);
+  padding: var(--space-8) var(--space-7);
+  margin-block-end: var(--space-8);
+}
+
+.form-success__heading {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: var(--color-accent);
+  margin-block: 0 var(--space-2);
+}
+
+.form-success__body {
+  font-size: 0.9375rem;
+  color: var(--color-text);
+  opacity: 0.75;
+  margin: 0;
+  line-height: 1.65;
+}
+
+/* ─── Error state ────────────────────────────────────────────────────────── */
+.form-errors {
+  background: color-mix(in srgb, #b91c1c 8%, transparent);
+  border: 1px solid color-mix(in srgb, #b91c1c 24%, transparent);
+  border-radius: var(--radius-sm, 2px);
+  padding: var(--space-5) var(--space-6);
+  margin-block-end: var(--space-6);
+  font-size: 0.9375rem;
+  color: #991b1b;
+}
+
+/* ─── Scroll reveal ──────────────────────────────────────────────────────── */
+.contact-section.reveal {
+  opacity: 0;
+  transform: translateY(var(--space-3));
+  transition:
+    opacity var(--duration-measured) var(--ease-brand),
+    transform var(--duration-measured) var(--ease-brand);
+}
+.contact-section.reveal.is-revealed {
+  opacity: 1;
+  transform: none;
+}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Contact",
+  "tag": "section",
+  "class": "section-contact",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section header"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow label",
+      "default": "Contact"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Get in touch"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "We\u2019d love to hear from you."
+    },
+    {
+      "type": "header",
+      "content": "Brand info column"
+    },
+    {
+      "type": "richtext",
+      "id": "intro_text",
+      "label": "Intro copy",
+      "default": "<p>Whether you have a question about a piece, need styling advice, or simply want to connect \u2014 our team is here.</p>"
+    },
+    {
+      "type": "text",
+      "id": "email_display",
+      "label": "Email address",
+      "default": "hello@sululuxe.com"
+    },
+    {
+      "type": "text",
+      "id": "phone_display",
+      "label": "Phone (display)",
+      "info": "Leave blank to hide."
+    },
+    {
+      "type": "text",
+      "id": "location_display",
+      "label": "Studio location",
+      "info": "Short address shown as text or linked."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_map_link",
+      "label": "Make location a link",
+      "default": false
+    },
+    {
+      "type": "url",
+      "id": "map_url",
+      "label": "Map URL",
+      "info": "Google Maps or Apple Maps link."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_divider",
+      "label": "Show divider below contact details",
+      "default": true
+    },
+    {
+      "type": "textarea",
+      "id": "note",
+      "label": "Footer note (optional)",
+      "info": "E.g. response time, studio hours.",
+      "default": "We typically respond within one business day."
+    },
+    {
+      "type": "header",
+      "content": "Form settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_phone_field",
+      "label": "Show phone field",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_subject_field",
+      "label": "Show subject field",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "textarea_rows",
+      "label": "Message textarea rows",
+      "min": 4,
+      "max": 12,
+      "step": 1,
+      "default": 6
+    },
+    {
+      "type": "text",
+      "id": "submit_label",
+      "label": "Submit button label",
+      "default": "Send message"
+    },
+    {
+      "type": "header",
+      "content": "Success message"
+    },
+    {
+      "type": "text",
+      "id": "success_heading",
+      "label": "Success heading",
+      "default": "Thank you."
+    },
+    {
+      "type": "textarea",
+      "id": "success_body",
+      "label": "Success body",
+      "default": "Your message has been received. We will be in touch shortly."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Contact",
+      "settings": {
+        "eyebrow": "Contact",
+        "heading": "Get in touch",
+        "subheading": "We\u2019d love to hear from you.",
+        "intro_text": "<p>Whether you have a question about a piece, need styling advice, or simply want to connect \u2014 our team is here.</p>",
+        "email_display": "hello@sululuxe.com",
+        "show_divider": true,
+        "note": "We typically respond within one business day.",
+        "show_subject_field": true,
+        "textarea_rows": 6,
+        "submit_label": "Send message",
+        "success_heading": "Thank you.",
+        "success_body": "Your message has been received. We will be in touch shortly."
+      }
+    }
+  ]
+}
+{% endschema %}
