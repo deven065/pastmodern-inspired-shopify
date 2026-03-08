@@ -59,7 +59,7 @@
   {%- else -%}
     <ul class="featured-collection__grid" role="list">
       {%- for product in fc_collection.products limit: fc_limit -%}
-        <li class="featured-collection__item">
+        <li class="featured-collection__item reveal">
           {%- render 'product-card',
             product:          product,
             image_ratio:      fc_ratio,
@@ -73,14 +73,6 @@
     </ul>
   {%- endif -%}
 
-  {%- comment -%} ── CTA ── {%- endcomment -%}
-  {%- if fc_cta_label != blank and fc_collection != blank -%}
-    <div class="featured-collection__cta">
-      <a href="{{ fc_cta_url | default: fc_collection.url }}" class="btn btn-secondary">
-        {{ fc_cta_label }}
-      </a>
-    </div>
-  {%- endif -%}
 </div>
 
 {% stylesheet %}
@@ -158,13 +150,6 @@
     color: var(--color-text-muted);
     font-size: var(--text-sm);
     padding-block: var(--space-8);
-  }
-
-  /* ── CTA ───────────────────────────────────────────────────── */
-  .featured-collection__cta {
-    display: flex;
-    justify-content: center;
-    padding-block-start: var(--space-4);
   }
 
   /* ── Mobile ────────────────────────────────────────────────── */

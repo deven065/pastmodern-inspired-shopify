@@ -232,7 +232,11 @@
   }
 
   .header.is-sticky {
-    box-shadow: 0 1px 0 var(--color-border);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    background-color: color-mix(in srgb, var(--header-bg, var(--color-bg)) 88%, transparent);
+    box-shadow: 0 1px 0 color-mix(in srgb, var(--color-border) 40%, transparent);
+    border-block-end-color: transparent;
   }
 
   /* Strip Shopify's default section padding */
@@ -359,13 +363,30 @@
     align-items: center;
     gap: var(--space-1);
     padding-block: var(--space-2);
+    padding-block-end: calc(var(--space-2) + 5px);
     white-space: nowrap;
-    transition: opacity var(--duration-fast) var(--ease-default);
+    position: relative;
   }
 
-  .header__nav-link:hover,
-  .header__nav-link[aria-current="page"] {
+  /* Center-outward underline — the luxury editorial nav signature */
+  .header__nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    right: 50%;
+    height: 1px;
+    background: currentColor;
     opacity: 0.6;
+    transition:
+      left  var(--duration-slow) var(--ease-out),
+      right var(--duration-slow) var(--ease-out);
+  }
+
+  .header__nav-link:hover::after,
+  .header__nav-link[aria-current="page"]::after {
+    left: 0;
+    right: 0;
   }
 
   .header__nav-link .chevron {

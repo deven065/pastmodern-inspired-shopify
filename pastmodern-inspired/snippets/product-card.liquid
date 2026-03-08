@@ -342,16 +342,16 @@
 
   /* Clean off-white bar — inverts to charcoal on hover */
   .product-card__quick-add-btn {
-    background-color: var(--color-bg);
+    background-color: color-mix(in srgb, var(--color-bg) 96%, transparent);
     color: var(--color-text);
     border-color: transparent;
-    border-top: 1px solid var(--color-border);
+    border-top: 1px solid color-mix(in srgb, var(--color-border) 60%, transparent);
     font-size: var(--text-xs);
     letter-spacing: var(--tracking-widest);
-    padding-block: var(--space-5);
+    padding-block: var(--space-4);
     transition:
-      background-color var(--duration-fast) var(--ease-default),
-      color            var(--duration-fast) var(--ease-default);
+      background-color var(--duration-base) var(--ease-default),
+      color            var(--duration-base) var(--ease-default);
   }
 
   .product-card__quick-add-btn:hover:not([disabled]):not([aria-disabled="true"]) {
@@ -363,8 +363,8 @@
   .product-card__info {
     display: flex;
     flex-direction: column;
-    gap: var(--space-2);
-    padding-block: var(--space-5) var(--space-4);
+    gap: var(--space-1);
+    padding-block: var(--space-4) var(--space-2);
   }
 
   /* ── Vendor ─────────────────────────────────────────────── */
@@ -387,12 +387,12 @@
   }
 
   .product-card__title {
-    font-family: var(--font-body);
+    font-family: var(--font-heading);
     font-size: var(--text-sm);
     font-style: normal;
-    font-weight: 400;
+    font-weight: var(--font-heading-weight);
     line-height: var(--leading-snug);
-    letter-spacing: var(--tracking-normal);
+    letter-spacing: 0.01em;
     margin: 0;
     transition: opacity var(--duration-fast) var(--ease-default);
   }
@@ -410,6 +410,8 @@
     row-gap: var(--space-1);
     font-size: var(--text-xs);
     letter-spacing: var(--tracking-wide);
+    margin-block-start: var(--space-2);
+    color: var(--color-text-muted);
   }
 
   .product-card__price {
