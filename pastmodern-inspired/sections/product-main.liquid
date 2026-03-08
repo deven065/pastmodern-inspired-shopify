@@ -108,21 +108,24 @@
       <div class="product-gallery__main-wrap">
         {%- assign first_media = product.selected_media | default: product.featured_media -%}
         {%- if first_media != blank -%}
-          {{
-            first_media
-            | image_url: width: 1400
-            | image_tag:
-                width: first_media.preview_image.width,
-                height: first_media.preview_image.height,
-                sizes: '(max-width: 59.999rem) 100vw, 55vw',
-                widths: '600, 900, 1200, 1400',
-                loading: 'eager',
-                fetchpriority: 'high',
-                class: 'product-gallery__main-img',
-                alt: pdp_img_alt,
-                itemprop: 'image',
-                data: { 'gallery-main': '' }
-          }}
+          <img
+            src="{{ first_media | image_url: width: 1400 }}"
+            srcset="
+              {{ first_media | image_url: width: 600 }} 600w,
+              {{ first_media | image_url: width: 900 }} 900w,
+              {{ first_media | image_url: width: 1200 }} 1200w,
+              {{ first_media | image_url: width: 1400 }} 1400w
+            "
+            sizes="(max-width: 59.999rem) 100vw, 55vw"
+            width="{{ first_media.preview_image.width }}"
+            height="{{ first_media.preview_image.height }}"
+            loading="eager"
+            fetchpriority="high"
+            class="product-gallery__main-img"
+            alt="{{ pdp_img_alt }}"
+            itemprop="image"
+            data-gallery-main
+          >
         {%- else -%}
           <div class="product-gallery__no-image">
             {{ 'product-apparel-2' | placeholder_svg_tag }}
