@@ -187,6 +187,19 @@
       {%- endif -%}
     </div>
 
+    {%- comment -%} Star rating (native Shopify metafields — compatible with Judge.me / Okendo / Yotpo) {%- endcomment -%}
+    {%- assign pc_rating = product.metafields.reviews.rating.value -%}
+    {%- assign pc_count  = product.metafields.reviews.rating_count.value -%}
+    {%- if pc_rating != blank and pc_count != blank and pc_count > 0 -%}
+      <div class="product-card__rating" aria-label="{{ pc_rating | round: 1 }} out of 5 stars">
+        <svg class="product-card__rating-star" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" focusable="false" width="10" height="10">
+          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 0 0 .95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 0 0-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 0 0-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 0 0-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 0 0 .951-.69l1.07-3.292z"/>
+        </svg>
+        <span class="product-card__rating-value">{{ pc_rating | round: 1 }}</span>
+        <span class="product-card__rating-count">({{ pc_count }})</span>
+      </div>
+    {%- endif -%}
+
     {%- comment -%} Size pills {%- endcomment -%}
     {%- if do_sizes and size_option_index != nil -%}
       {%- assign size_option = product.options_with_values[size_option_index] -%}
@@ -530,6 +543,31 @@
       background-color: var(--color-text);
       color: var(--color-bg);
     }
+  }
+
+  /* ── Rating ─────────────────────────────────────────────── */
+  .product-card__rating {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-block-start: var(--space-3);
+  }
+
+  .product-card__rating-star {
+    color: var(--color-accent);
+    flex-shrink: 0;
+  }
+
+  .product-card__rating-value {
+    font-size: var(--text-xs);
+    letter-spacing: var(--tracking-wide);
+    color: var(--color-text);
+  }
+
+  .product-card__rating-count {
+    font-size: var(--text-xs);
+    letter-spacing: var(--tracking-wide);
+    color: var(--color-text-muted);
   }
 
   /* ── Mobile ─────────────────────────────────────────────── */
