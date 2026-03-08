@@ -11,30 +11,30 @@
   {{ settings.type_heading_font | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }}
 
   :root {
-    /* ── Typography ──────────────────────────────────────── */
-    --font-body:          {{ settings.type_body_font.family }}, {{ settings.type_body_font.fallback_families }};
-    --font-body-weight:   {{ settings.type_body_font.weight }};
-    --font-body-style:    {{ settings.type_body_font.style }};
+    /* ── Typography ─────────────────────────────────────────── */
+    --font-body:         {{ settings.type_body_font.family }}, {{ settings.type_body_font.fallback_families }};
+    --font-body-weight:  {{ settings.type_body_font.weight }};
+    --font-body-style:   {{ settings.type_body_font.style }};
 
-    --font-heading:         {{ settings.type_heading_font.family }}, {{ settings.type_heading_font.fallback_families }};
-    --font-heading-weight:  {{ settings.type_heading_font.weight }};
-    --font-heading-style:   {{ settings.type_heading_font.style }};
+    --font-heading:        {{ settings.type_heading_font.family }}, {{ settings.type_heading_font.fallback_families }};
+    --font-heading-weight: {{ settings.type_heading_font.weight }};
+    --font-heading-style:  {{ settings.type_heading_font.style }};
 
-    /* ── Colors ──────────────────────────────────────────── */
-    --color-bg:           {{ settings.color_background }};
-    --color-bg-subtle:    {{ settings.color_background | color_darken: 3 }};
-    --color-text:         {{ settings.color_text }};
-    --color-text-muted:   {{ settings.color_text | color_modify: 'alpha', 0.45 }};
-    --color-accent:       {{ settings.color_accent }};
-    --color-border:       {{ settings.color_text | color_modify: 'alpha', 0.12 }};
-    --color-overlay:      {{ settings.color_text | color_modify: 'alpha', 0.5 }};
+    /* ── Colors ─────────────────────────────────────────────── */
+    --color-bg:          {{ settings.color_background }};
+    --color-bg-subtle:   {{ settings.color_background | color_darken: 4 }};
+    --color-text:        {{ settings.color_text }};
+    --color-text-muted:  {{ settings.color_text | color_modify: 'alpha', 0.45 }};
+    --color-accent:      {{ settings.color_accent }};
+    --color-border:      {{ settings.color_text | color_modify: 'alpha', 0.12 }};
+    --color-overlay:     {{ settings.color_text | color_modify: 'alpha', 0.5 }};
 
-    /* ── Layout ──────────────────────────────────────────── */
-    --page-width:   {{ settings.page_width }};
-    --page-margin:  {{ settings.page_margin }}px;
+    /* ── Layout ─────────────────────────────────────────────── */
+    --page-width:    {{ settings.page_width }};
+    --page-margin:   {{ settings.page_margin }}px;
     --header-height: 4rem;
 
-    /* ── Shape ───────────────────────────────────────────── */
+    /* ── Shape ──────────────────────────────────────────────── */
     --radius-input: {{ settings.input_radius }}px;
   }
 {% endstyle %}

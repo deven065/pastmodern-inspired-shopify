@@ -1,0 +1,159 @@
+{%- if section.settings.enable and section.settings.message != blank -%}
+  <div
+    class="announcement-bar{% if section.settings.dismissible %} announcement-bar--dismissible{% endif %}"
+    role="region"
+    aria-label="Announcement"
+    data-announcement-bar
+  >
+    <div class="announcement-bar__inner">
+      {%- if section.settings.link != blank -%}
+        <a href="{{ section.settings.link }}" class="announcement-bar__text">
+          {{- section.settings.message -}}
+        </a>
+      {%- else -%}
+        <p class="announcement-bar__text">{{- section.settings.message -}}</p>
+      {%- endif -%}
+
+      {%- if section.settings.dismissible -%}
+        <button
+          class="announcement-bar__close"
+          aria-label="Dismiss announcement"
+          data-announcement-close
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" width="14" height="14">
+            <path d="M18 6 6 18M6 6l12 12"/>
+          </svg>
+        </button>
+      {%- endif -%}
+    </div>
+  </div>
+{%- endif -%}
+
+{% stylesheet %}
+  .announcement-bar {
+    background-color: var(--ann-bg, var(--color-text));
+    color: var(--ann-text, var(--color-bg));
+  }
+
+  .announcement-bar__inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-4);
+    padding-block: var(--space-3);
+    padding-inline: var(--space-6);
+  }
+
+  .announcement-bar__text {
+    font-size: var(--text-xs);
+    letter-spacing: var(--tracking-wide);
+    text-align: center;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  a.announcement-bar__text:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  p.announcement-bar__text {
+    margin: 0;
+  }
+
+  .announcement-bar__close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    padding: var(--space-1);
+    flex-shrink: 0;
+    opacity: 0.7;
+    transition: opacity var(--duration-fast) var(--ease-default);
+  }
+
+  .announcement-bar__close:hover {
+    opacity: 1;
+  }
+
+  .announcement-bar[hidden] {
+    display: none;
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  (function () {
+    const bar   = document.querySelector('[data-announcement-bar]');
+    const close = document.querySelector('[data-announcement-close]');
+    if (!bar || !close) return;
+
+    const KEY = 'ann-dismissed-{{ section.id }}';
+    if (sessionStorage.getItem(KEY)) {
+      bar.hidden = true;
+      return;
+    }
+
+    close.addEventListener('click', function () {
+      bar.hidden = true;
+      sessionStorage.setItem(KEY, '1');
+    });
+  })();
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Announcement bar",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "enable",
+      "label": "Show announcement bar",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "message",
+      "label": "Message",
+      "default": "Complimentary shipping on orders over $250"
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "Link (optional)"
+    },
+    {
+      "type": "checkbox",
+      "id": "dismissible",
+      "label": "Allow visitors to dismiss",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background",
+      "default": "#1A1A1A"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#F5F4F0"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Announcement bar"
+    }
+  ],
+  "disabled_on": {
+    "groups": ["footer-group"]
+  }
+}
+{% endschema %}

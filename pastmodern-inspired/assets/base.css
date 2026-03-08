@@ -69,14 +69,12 @@ html {
   text-size-adjust: 100%;
 }
 
+/* font-family / background-color / color are set in critical.css for the initial paint */
 body {
-  font-family: var(--font-body);
   font-weight: var(--font-body-weight);
-  font-style: var(--font-body-style, normal);
+  font-style: var(--font-body-style);
   font-size: var(--text-base);
   line-height: var(--leading-normal);
-  background-color: var(--color-bg);
-  color: var(--color-text);
 }
 
 /* Headings */

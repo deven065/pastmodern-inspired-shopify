@@ -42,8 +42,9 @@
       {
         "type": "color",
         "id": "color_accent",
-        "default": "#1A1A1A",
-        "label": "Accent"
+        "default": "#8B7355",
+        "label": "Accent",
+        "info": "Used for sale prices, highlights, and hover states."
       }
     ]
   },
@@ -80,12 +81,7 @@
         "unit": "px",
         "label": "Input corner radius",
         "default": 0
-      }
-    ]
-  },
-  {
-    "name": "Cart",
-    "settings": [
+      },
       {
         "type": "checkbox",
         "id": "enable_cart_drawer",
