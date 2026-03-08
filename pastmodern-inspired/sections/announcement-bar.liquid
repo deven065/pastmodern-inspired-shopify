@@ -4,6 +4,7 @@
     role="region"
     aria-label="Announcement"
     data-announcement-bar
+    data-section-id="{{ section.id }}"
   >
     <div class="announcement-bar__inner">
       {%- if section.settings.link != blank -%}
@@ -84,13 +85,13 @@
   }
 {% endstylesheet %}
 
-{% javascript %}
+<script>
   (function () {
-    const bar   = document.querySelector('[data-announcement-bar]');
-    const close = document.querySelector('[data-announcement-close]');
+    var bar   = document.querySelector('[data-announcement-bar]');
+    var close = document.querySelector('[data-announcement-close]');
     if (!bar || !close) return;
 
-    const KEY = 'ann-dismissed-{{ section.id }}';
+    var KEY = 'ann-dismissed-' + bar.dataset.sectionId;
     if (sessionStorage.getItem(KEY)) {
       bar.hidden = true;
       return;
@@ -101,7 +102,7 @@
       sessionStorage.setItem(KEY, '1');
     });
   })();
-{% endjavascript %}
+</script>
 
 {% schema %}
 {

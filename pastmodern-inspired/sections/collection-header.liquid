@@ -1,10 +1,11 @@
 {%- liquid
   assign current_sort  = collection.sort_by | default: collection.default_sort_by
   assign current_tag   = current_tags | first
-  assign base_url      = '/collections/' | append: collection.handle
+  assign base_url      = collection.url
 
   if current_tag
-    assign form_url = base_url | append: '/' | append: (current_tag | handle)
+    assign tag_handle = current_tag | handleize
+    assign form_url = base_url | append: '/' | append: tag_handle
   else
     assign form_url = base_url
   endif

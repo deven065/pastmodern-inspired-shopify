@@ -7,7 +7,7 @@
 
 <div class="cart-item" data-key="{{ item.key }}">
 
-  {{- comment -}} ── Image ── {{- endcomment -}}
+  {%- comment -%} ── Image ── {%- endcomment -%}
   <a href="{{ item.url }}" class="cart-item__image-link" tabindex="-1" aria-hidden="true">
     {%- if item.image -%}
       {{- item.image | image_url: width: 160 | image_tag:
@@ -22,7 +22,7 @@
     {%- endif -%}
   </a>
 
-  {{- comment -}} ── Details ── {{- endcomment -}}
+  {%- comment -%} ── Details ── {%- endcomment -%}
   <div class="cart-item__details">
     <a href="{{ item.url }}" class="cart-item__title">{{ item.product.title | escape }}</a>
 
@@ -58,7 +58,7 @@
     </div>
   </div>
 
-  {{- comment -}} ── Remove ── {{- endcomment -}}
+  {%- comment -%} ── Remove ── {%- endcomment -%}
   <button
     class="cart-item__remove"
     type="button"

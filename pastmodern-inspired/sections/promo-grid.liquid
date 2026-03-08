@@ -46,6 +46,7 @@
               {%- if card_image != blank -%}
                 {{
                   card_image
+                  | image_url: width: 1200
                   | image_tag:
                       sizes: '(max-width: 48rem) 100vw, (max-width: 90rem) 50vw, 45vw',
                       widths: '400, 600, 800, 1000, 1200',

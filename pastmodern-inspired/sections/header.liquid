@@ -149,7 +149,7 @@
     <div class="header__logo">
       <a href="{{ routes.root_url }}" aria-label="{{ shop.name }} — home">
         {%- if logo_image != blank -%}
-          {{ logo_image | image_tag:
+          {{ logo_image | image_url: width: logo_width | image_tag:
               width: logo_width,
               height: 'auto',
               alt: shop.name,

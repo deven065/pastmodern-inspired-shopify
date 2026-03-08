@@ -11,10 +11,6 @@
   assign fc_cta_label   = section.settings.cta_label
   assign fc_cta_url     = section.settings.cta_url
 
-  if fc_collection != blank
-    assign fc_products = fc_collection.products | limit: fc_limit
-  endif
-
   # Responsive sizes hint based on desktop columns
   case fc_cols_desk
     when 2
@@ -52,14 +48,13 @@
     <p class="featured-collection__empty">This collection has no products.</p>
   {%- else -%}
     <ul class="featured-collection__grid" role="list">
-      {%- for product in fc_products -%}
+      {%- for product in fc_collection.products limit: fc_limit -%}
         <li class="featured-collection__item">
           {%- render 'product-card',
             product:        product,
             image_ratio:    fc_ratio,
             sizes:          img_sizes,
             show_quick_add: fc_quick_add,
-            show_hover_image: fc_hover,
             lazy:           true
           -%}
         </li>

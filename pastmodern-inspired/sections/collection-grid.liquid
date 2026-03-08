@@ -92,7 +92,7 @@
       <div class="collection-grid__empty">
         <p>No products found.</p>
         {%- if current_tags.size > 0 -%}
-          <a class="btn btn-ghost" href="/collections/{{ collection.handle }}">View all products</a>
+          <a class="btn btn-ghost" href="{{ collection.url }}">View all products</a>
         {%- endif -%}
       </div>
 
