@@ -3,7 +3,7 @@
     "name": "theme_info",
     "theme_name": "Pastmodern",
     "theme_version": "1.0.0",
-    "theme_author": "Pastmodern",
+    "theme_author": "Pastmodern Studio",
     "theme_documentation_url": "https://help.shopify.com/manual/online-store/themes",
     "theme_support_url": "https://support.shopify.com/"
   },
@@ -14,13 +14,46 @@
         "type": "font_picker",
         "id": "type_body_font",
         "default": "work_sans_n4",
-        "label": "Body font"
+        "label": "Body font",
+        "info": "Clean readable sans-serif. Work Sans recommended."
       },
       {
         "type": "font_picker",
         "id": "type_heading_font",
         "default": "cormorant_n4",
-        "label": "Heading font"
+        "label": "Display / heading font",
+        "info": "Refined serif for editorial headlines. Cormorant recommended."
+      },
+      {
+        "type": "range",
+        "id": "heading_scale",
+        "label": "Heading size scale",
+        "min": 0.75,
+        "max": 1.25,
+        "step": 0.05,
+        "default": 1.0,
+        "info": "Scales all display headings (h1, h2, h3) proportionally."
+      },
+      {
+        "type": "select",
+        "id": "body_font_size",
+        "label": "Body text size",
+        "options": [
+          {
+            "value": "0.8125rem",
+            "label": "Small \u2014 13px"
+          },
+          {
+            "value": "0.9375rem",
+            "label": "Medium \u2014 15px"
+          },
+          {
+            "value": "1rem",
+            "label": "Standard \u2014 16px"
+          }
+        ],
+        "default": "0.9375rem",
+        "info": "Base size for body copy and UI text."
       }
     ]
   },
@@ -31,20 +64,22 @@
         "type": "color",
         "id": "color_background",
         "default": "#F5F4F0",
-        "label": "Background"
+        "label": "Background",
+        "info": "Warm ivory creates a premium editorial feel."
       },
       {
         "type": "color",
         "id": "color_text",
-        "default": "#1A1A1A",
-        "label": "Text"
+        "default": "#262420",
+        "label": "Text",
+        "info": "Muted warm charcoal \u2014 softer than pure black on ivory."
       },
       {
         "type": "color",
         "id": "color_accent",
         "default": "#8B7355",
         "label": "Accent",
-        "info": "Used for sale prices, highlights, and hover states."
+        "info": "Used sparingly: sale prices, active states, focused highlights."
       }
     ]
   },
@@ -54,11 +89,20 @@
       {
         "type": "select",
         "id": "page_width",
-        "label": "Page width",
+        "label": "Maximum content width",
         "options": [
-          { "value": "80rem", "label": "Narrow (1280px)" },
-          { "value": "90rem", "label": "Standard (1440px)" },
-          { "value": "105rem", "label": "Wide (1680px)" }
+          {
+            "value": "80rem",
+            "label": "Narrow \u2014 1280px"
+          },
+          {
+            "value": "90rem",
+            "label": "Standard \u2014 1440px"
+          },
+          {
+            "value": "105rem",
+            "label": "Wide \u2014 1680px"
+          }
         ],
         "default": "90rem"
       },
@@ -70,16 +114,49 @@
         "step": 4,
         "unit": "px",
         "label": "Page margin",
-        "default": 24
+        "default": 24,
+        "info": "Minimum space between content and the viewport edge."
+      },
+      {
+        "type": "range",
+        "id": "logo_max_width",
+        "min": 60,
+        "max": 280,
+        "step": 10,
+        "unit": "px",
+        "label": "Logo width",
+        "default": 140,
+        "info": "Maximum display width for the header logo image."
+      },
+      {
+        "type": "select",
+        "id": "section_spacing",
+        "label": "Section spacing",
+        "options": [
+          {
+            "value": "compact",
+            "label": "Compact"
+          },
+          {
+            "value": "comfortable",
+            "label": "Comfortable"
+          },
+          {
+            "value": "generous",
+            "label": "Generous"
+          }
+        ],
+        "default": "generous",
+        "info": "Vertical breathing room between page sections."
       },
       {
         "type": "range",
         "id": "input_radius",
         "min": 0,
-        "max": 12,
+        "max": 8,
         "step": 1,
         "unit": "px",
-        "label": "Input corner radius",
+        "label": "Input border radius",
         "default": 0
       },
       {
@@ -87,6 +164,60 @@
         "id": "enable_cart_drawer",
         "label": "Enable cart drawer",
         "default": true
+      }
+    ]
+  },
+  {
+    "name": "Header",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "header_sticky",
+        "label": "Sticky header",
+        "default": true,
+        "info": "Header remains fixed to the top while scrolling."
+      },
+      {
+        "type": "select",
+        "id": "header_logo_position",
+        "label": "Logo alignment",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          },
+          {
+            "value": "center",
+            "label": "Center"
+          }
+        ],
+        "default": "center"
+      }
+    ]
+  },
+  {
+    "name": "Buttons",
+    "settings": [
+      {
+        "type": "select",
+        "id": "button_style",
+        "label": "Button corner style",
+        "options": [
+          {
+            "value": "sharp",
+            "label": "Sharp \u2014 0px (luxury)"
+          },
+          {
+            "value": "soft",
+            "label": "Soft \u2014 2px"
+          },
+          {
+            "value": "rounded",
+            "label": "Rounded \u2014 6px"
+          }
+        ],
+        "default": "sharp",
+        "info": "Applies to all primary, secondary, and ghost buttons."
       }
     ]
   }

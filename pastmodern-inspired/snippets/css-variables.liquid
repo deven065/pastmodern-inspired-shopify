@@ -26,8 +26,8 @@
     --color-text:        {{ settings.color_text }};
     --color-text-muted:  {{ settings.color_text | color_modify: 'alpha', 0.50 }};
     --color-accent:      {{ settings.color_accent }};
-    --color-border:      {{ settings.color_text | color_modify: 'alpha', 0.09 }};
-    --color-overlay:     {{ settings.color_text | color_modify: 'alpha', 0.5 }};
+    --color-border:      {{ settings.color_text | color_modify: 'alpha', 0.11 }};
+    --color-overlay:     {{ settings.color_text | color_modify: 'alpha', 0.48 }};
 
     /* ── Layout ─────────────────────────────────────────────────── */
     --page-width:    {{ settings.page_width }};
@@ -36,5 +36,25 @@
 
     /* ── Shape ──────────────────────────────────────────────── */
     --radius-input: {{ settings.input_radius }}px;
-  }
+    /* ── Merchant scales ─────────────────────────────────── */
+    --heading-scale:  {{ settings.heading_scale | default: 1.0 }};
+    --base-font-size: {{ settings.body_font_size | default: '0.9375rem' }};
+    --logo-max-width: {{ settings.logo_max_width | default: 140 }}px;
+    {%- if settings.button_style == 'soft' -%}
+      --btn-radius: 2px;
+    {%- elsif settings.button_style == 'rounded' -%}
+      --btn-radius: 6px;
+    {%- else -%}
+      --btn-radius: 0px;
+    {%- endif -%}
+    --header-position: {% if settings.header_sticky == false %}relative{% else %}sticky{% endif %};
+
+    /* ── Section vertical rhythm ─────────────────────────── */
+    {%- if settings.section_spacing == 'compact' -%}
+      --section-spacing: clamp(2.5rem, 5vw, 4.5rem);
+    {%- elsif settings.section_spacing == 'comfortable' -%}
+      --section-spacing: clamp(3.5rem, 7vw, 7rem);
+    {%- else -%}
+      --section-spacing: clamp(5rem, 10vw, 10rem);
+    {%- endif -%}  }
 {% endstyle %}
