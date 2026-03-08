@@ -1,0 +1,439 @@
+{%- liquid
+  assign desktop_image  = section.settings.desktop_image
+  assign mobile_image   = section.settings.mobile_image | default: desktop_image
+  assign align          = section.settings.text_align
+  assign overlay        = section.settings.overlay_opacity | divided_by: 100.0
+  assign min_height_desk = section.settings.min_height_desktop
+  assign min_height_mob  = section.settings.min_height_mobile
+  assign text_color      = section.settings.text_color
+  assign eyebrow         = section.settings.eyebrow
+  assign heading         = section.settings.heading
+  assign subtext         = section.settings.subtext
+  assign cta1_label      = section.settings.cta1_label
+  assign cta1_url        = section.settings.cta1_url
+  assign cta2_label      = section.settings.cta2_label
+  assign cta2_url        = section.settings.cta2_url
+-%}
+
+<div
+  class="hero"
+  data-text-align="{{ align }}"
+  style="
+    --hero-min-h-desk: {{ min_height_desk }}px;
+    --hero-min-h-mob:  {{ min_height_mob }}px;
+    --hero-overlay:    {{ overlay }};
+    --hero-text:       {{ text_color }};
+  "
+>
+  {%- comment -%} ── Background images ── {%- endcomment -%}
+  <div class="hero__media" aria-hidden="true">
+    {%- if desktop_image != blank -%}
+      {{
+        desktop_image
+        | image_tag:
+            loading: 'eager',
+            fetchpriority: 'high',
+            sizes: '100vw',
+            widths: '600, 900, 1200, 1600, 2000, 2400',
+            class: 'hero__img hero__img--desktop',
+            alt: desktop_image.alt | default: heading
+      }}
+    {%- else -%}
+      <div class="hero__placeholder hero__img--desktop">
+        {{ 'lifestyle-1' | placeholder_svg_tag: 'hero__placeholder-svg' }}
+      </div>
+    {%- endif -%}
+
+    {%- if section.settings.mobile_image != blank -%}
+      {{
+        mobile_image
+        | image_tag:
+            loading: 'eager',
+            fetchpriority: 'high',
+            sizes: '100vw',
+            widths: '400, 600, 800, 1000',
+            class: 'hero__img hero__img--mobile',
+            alt: mobile_image.alt | default: heading
+      }}
+    {%- else -%}
+      {%- comment -%} Falls back to desktop image on mobile via CSS {%- endcomment -%}
+    {%- endif -%}
+
+    <div class="hero__overlay"></div>
+  </div>
+
+  {%- comment -%} ── Content ── {%- endcomment -%}
+  <div class="hero__content">
+    {%- if eyebrow != blank -%}
+      <p class="hero__eyebrow eyebrow">{{ eyebrow }}</p>
+    {%- endif -%}
+
+    {%- if heading != blank -%}
+      <h1 class="hero__heading">{{ heading }}</h1>
+    {%- endif -%}
+
+    {%- if subtext != blank -%}
+      <p class="hero__subtext">{{ subtext }}</p>
+    {%- endif -%}
+
+    {%- if cta1_label != blank or cta2_label != blank -%}
+      <div class="hero__actions">
+        {%- if cta1_label != blank -%}
+          <a href="{{ cta1_url | default: '#' }}" class="btn hero__btn hero__btn--primary">
+            {{- cta1_label -}}
+          </a>
+        {%- endif -%}
+        {%- if cta2_label != blank -%}
+          <a href="{{ cta2_url | default: '#' }}" class="btn hero__btn hero__btn--secondary">
+            {{- cta2_label -}}
+          </a>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% stylesheet %}
+  /* ── Reset section grid for full-bleed ─────────────────────
+     The .shopify-section wrapper uses a CSS grid that constrains
+     children to the page-width column by default. The hero must
+     span the full viewport so we override that here.           */
+  .shopify-section:has(.hero) {
+    padding-block: 0;
+  }
+
+  /* ── Shell ─────────────────────────────────────────────────── */
+  .hero {
+    position: relative;
+    display: flex;
+    align-items: flex-end; /* content sits at the bottom by default */
+    min-height: var(--hero-min-h-desk, 90vh);
+    overflow: hidden;
+    color: var(--hero-text, #f5f4f0);
+
+    /* Override section grid — span full viewport */
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+
+  /* ── Background media ──────────────────────────────────────── */
+  .hero__media {
+    position: absolute;
+    inset: 0;
+  }
+
+  .hero__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  /* Desktop image shown by default; mobile image hidden */
+  .hero__img--mobile {
+    display: none;
+  }
+
+  .hero__placeholder {
+    width: 100%;
+    height: 100%;
+    background-color: var(--color-bg-subtle);
+  }
+
+  .hero__placeholder-svg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Overlay */
+  .hero__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to top,
+      rgba(0, 0, 0, calc(var(--hero-overlay, 0.4) * 1.4)) 0%,
+      rgba(0, 0, 0, var(--hero-overlay, 0.4))              50%,
+      rgba(0, 0, 0, calc(var(--hero-overlay, 0.4) * 0.3)) 100%
+    );
+  }
+
+  /* ── Content ──────────────────────────────────────────────── */
+  .hero__content {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: var(--page-width);
+    margin-inline: auto;
+    padding-inline: var(--page-margin);
+    padding-block: clamp(3rem, 8vw, 7rem);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  /* Alignment variants */
+  .hero[data-text-align="left"] .hero__content  { align-items: flex-start; text-align: left; }
+  .hero[data-text-align="center"] .hero__content { align-items: center; text-align: center; }
+  .hero[data-text-align="right"] .hero__content  { align-items: flex-end; text-align: right; }
+
+  /* ── Text elements ────────────────────────────────────────── */
+  .hero__eyebrow {
+    color: inherit;
+    opacity: 0.8;
+    margin: 0;
+  }
+
+  .hero__heading {
+    font-family: var(--font-heading);
+    font-weight: var(--font-heading-weight);
+    font-style: italic;
+    font-size: clamp(var(--text-3xl), 6vw, var(--text-5xl));
+    line-height: var(--leading-tight);
+    letter-spacing: var(--tracking-tight);
+    color: inherit;
+    margin: 0;
+    max-width: 16ch;
+  }
+
+  .hero[data-text-align="center"] .hero__heading {
+    max-width: 22ch;
+  }
+
+  .hero__subtext {
+    font-size: var(--text-md);
+    line-height: var(--leading-normal);
+    color: inherit;
+    opacity: 0.85;
+    max-width: 42ch;
+    margin: 0;
+  }
+
+  /* ── CTAs ─────────────────────────────────────────────────── */
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    margin-block-start: var(--space-3);
+  }
+
+  .hero[data-text-align="center"] .hero__actions { justify-content: center; }
+  .hero[data-text-align="right"]  .hero__actions { justify-content: flex-end; }
+
+  .hero__btn {
+    min-width: 10rem;
+  }
+
+  /* Primary: solid white on dark bg */
+  .hero__btn--primary {
+    background-color: var(--hero-text, #f5f4f0);
+    color: var(--color-text);
+    border-color: var(--hero-text, #f5f4f0);
+  }
+
+  .hero__btn--primary:hover {
+    background-color: transparent;
+    color: var(--hero-text, #f5f4f0);
+    border-color: var(--hero-text, #f5f4f0);
+  }
+
+  /* Secondary: outlined */
+  .hero__btn--secondary {
+    background-color: transparent;
+    color: var(--hero-text, #f5f4f0);
+    border-color: var(--hero-text, #f5f4f0);
+    opacity: 0.9;
+  }
+
+  .hero__btn--secondary:hover {
+    background-color: var(--hero-text, #f5f4f0);
+    color: var(--color-text);
+    opacity: 1;
+  }
+
+  /* ── Mobile ───────────────────────────────────────────────── */
+  @media (max-width: 48rem) {
+    .hero {
+      min-height: var(--hero-min-h-mob, 85vh);
+      align-items: flex-end;
+    }
+
+    /* Swap to mobile image when provided */
+    .hero__img--desktop {
+      display: none;
+    }
+
+    .hero__img--mobile {
+      display: block;
+    }
+
+    /* Fallback: show desktop image when no mobile image */
+    .hero:not(:has(.hero__img--mobile)) .hero__img--desktop {
+      display: block;
+    }
+
+    .hero__heading {
+      font-size: clamp(var(--text-2xl), 9vw, var(--text-3xl));
+    }
+
+    .hero__subtext {
+      font-size: var(--text-base);
+    }
+
+    .hero__actions {
+      flex-direction: column;
+      width: 100%;
+    }
+
+    .hero__btn {
+      width: 100%;
+      text-align: center;
+    }
+
+    .hero[data-text-align="center"] .hero__content,
+    .hero[data-text-align="right"]  .hero__content {
+      align-items: flex-start;
+      text-align: left;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Editorial hero",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Media"
+    },
+    {
+      "type": "image_picker",
+      "id": "desktop_image",
+      "label": "Desktop image",
+      "info": "Recommended: 2400 × 1400px or wider"
+    },
+    {
+      "type": "image_picker",
+      "id": "mobile_image",
+      "label": "Mobile image",
+      "info": "Recommended: 900 × 1200px portrait. Falls back to desktop image if blank."
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "label": "Overlay darkness",
+      "default": 35
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow text",
+      "placeholder": "New collection"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Dressed for\nevery moment"
+    },
+    {
+      "type": "text",
+      "id": "subtext",
+      "label": "Subtext",
+      "placeholder": "Discover the new season"
+    },
+    {
+      "type": "text",
+      "id": "cta1_label",
+      "label": "Primary button label",
+      "default": "Shop now"
+    },
+    {
+      "type": "url",
+      "id": "cta1_url",
+      "label": "Primary button link"
+    },
+    {
+      "type": "text",
+      "id": "cta2_label",
+      "label": "Secondary button label"
+    },
+    {
+      "type": "url",
+      "id": "cta2_url",
+      "label": "Secondary button link"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "text_align",
+      "label": "Text alignment",
+      "options": [
+        { "value": "left",   "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right",  "label": "Right" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "range",
+      "id": "min_height_desktop",
+      "min": 400,
+      "max": 1000,
+      "step": 20,
+      "unit": "px",
+      "label": "Minimum height — desktop",
+      "default": 780
+    },
+    {
+      "type": "range",
+      "id": "min_height_mobile",
+      "min": 400,
+      "max": 900,
+      "step": 20,
+      "unit": "px",
+      "label": "Minimum height — mobile",
+      "default": 620
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text and button color",
+      "default": "#F5F4F0"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Editorial hero",
+      "settings": {
+        "heading":          "Dressed for\nevery moment",
+        "eyebrow":          "New arrivals",
+        "cta1_label":       "Shop now",
+        "text_align":       "left",
+        "overlay_opacity":  35,
+        "min_height_desktop": 780,
+        "min_height_mobile":  620,
+        "text_color":       "#F5F4F0"
+      }
+    }
+  ],
+  "disabled_on": {
+    "groups": ["header", "footer", "aside"]
+  }
+}
+{% endschema %}
