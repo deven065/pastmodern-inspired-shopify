@@ -3,13 +3,15 @@
     "hero": {
       "type": "hero-editorial",
       "settings": {
-        "eyebrow": "New Season",
+        "eyebrow": "Spring–Summer 2026",
         "heading": "The Art of Dressing",
         "subtext": "Elevated essentials and occasion wear for the considered wardrobe.",
         "cta1_label": "Shop New Arrivals",
         "cta1_url": "/collections/new-arrivals",
         "cta2_label": "Explore Collections",
         "cta2_url": "/collections",
+        "season_label": "SS '26",
+        "show_scroll_indicator": true,
         "min_height_desktop": 880,
         "min_height_mobile": 600,
         "overlay_opacity": 40,
@@ -30,7 +32,6 @@
           "type": "card",
           "settings": {
             "heading": "New Arrivals",
-            "cta_label": "Discover",
             "cta_url": "/collections/new-arrivals"
           }
         },
@@ -38,7 +39,6 @@
           "type": "card",
           "settings": {
             "heading": "Bridal",
-            "cta_label": "Discover",
             "cta_url": "/collections/bridal"
           }
         },
@@ -46,7 +46,6 @@
           "type": "card",
           "settings": {
             "heading": "Couture",
-            "cta_label": "Discover",
             "cta_url": "/collections/couture"
           }
         },
@@ -54,7 +53,6 @@
           "type": "card",
           "settings": {
             "heading": "Dresses",
-            "cta_label": "Discover",
             "cta_url": "/collections/dresses"
           }
         }
@@ -125,12 +123,13 @@
       "type": "newsletter",
       "settings": {
         "eyebrow": "Stay connected",
-        "heading": "Exclusive access",
+        "heading": "Stay in the world of Sulu Luxe",
         "subtext": "New arrivals, private events, and stories from our ateliers — delivered to your inbox.",
         "button_label": "Subscribe",
         "input_placeholder": "Your email address",
+        "layout": "split",
         "bg_style": "dark",
-        "text_align": "center"
+        "text_align": "left"
       }
     }
   },

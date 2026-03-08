@@ -13,7 +13,365 @@
   assign cta1_url        = section.settings.cta1_url
   assign cta2_label      = section.settings.cta2_label
   assign cta2_url        = section.settings.cta2_url
+  assign season_label    = section.settings.season_label
+  assign show_scroll     = section.settings.show_scroll_indicator
 -%}
+
+<div
+  class="hero"
+  data-text-align="{{ align }}"
+  style="
+    --hero-min-h-desk: {{ min_height_desk }}px;
+    --hero-min-h-mob:  {{ min_height_mob }}px;
+    --hero-overlay:    {{ overlay }};
+    --hero-text:       {{ text_color }};
+  "
+>
+  {%- comment -%} ── Background images ── {%- endcomment -%}
+  <div class="hero__media" aria-hidden="true">
+    {%- if desktop_image != blank -%}
+      {{
+        desktop_image
+        | image_url: width: 2400
+        | image_tag:
+            loading: 'eager',
+            fetchpriority: 'high',
+            sizes: '100vw',
+            widths: '600, 900, 1200, 1600, 2000, 2400',
+            class: 'hero__img hero__img--desktop',
+            alt: desktop_image.alt | default: heading
+      }}
+    {%- else -%}
+      <div class="hero__placeholder hero__img--desktop">
+        {{ 'lifestyle-1' | placeholder_svg_tag: 'hero__placeholder-svg' }}
+      </div>
+    {%- endif -%}
+
+    {%- if section.settings.mobile_image != blank -%}
+      {{
+        mobile_image
+        | image_url: width: 1000
+        | image_tag:
+            loading: 'eager',
+            fetchpriority: 'high',
+            sizes: '100vw',
+            widths: '400, 600, 800, 1000',
+            class: 'hero__img hero__img--mobile',
+            alt: mobile_image.alt | default: heading
+      }}
+    {%- endif -%}
+
+    <div class="hero__overlay"></div>
+  </div>
+
+  {%- comment -%} ── Season indicator (top right) ── {%- endcomment -%}
+  {%- if season_label != blank -%}
+    <p class="hero__season" aria-hidden="true">{{ season_label | escape }}</p>
+  {%- endif -%}
+
+  {%- comment -%} ── Content ── {%- endcomment -%}
+  <div class="hero__content">
+    {%- if eyebrow != blank -%}
+      <p class="hero__eyebrow eyebrow">{{ eyebrow }}</p>
+    {%- endif -%}
+
+    {%- if heading != blank -%}
+      <h1 class="hero__heading">{{ heading | newline_to_br }}</h1>
+    {%- endif -%}
+
+    {%- if subtext != blank -%}
+      <p class="hero__subtext">{{ subtext }}</p>
+    {%- endif -%}
+
+    {%- if cta1_label != blank or cta2_label != blank -%}
+      <div class="hero__actions">
+        {%- if cta1_label != blank -%}
+          <a href="{{ cta1_url | default: '#' }}" class="btn hero__btn hero__btn--primary">
+            {{- cta1_label -}}
+          </a>
+        {%- endif -%}
+        {%- if cta2_label != blank -%}
+          <a href="{{ cta2_url | default: '#' }}" class="btn hero__btn hero__btn--secondary">
+            {{- cta2_label -}}
+          </a>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+  </div>
+
+  {%- comment -%} ── Scroll indicator ── {%- endcomment -%}
+  {%- if show_scroll -%}
+    <div class="hero__scroll" aria-hidden="true">
+      <span class="hero__scroll-label">Scroll</span>
+      <span class="hero__scroll-line"></span>
+    </div>
+  {%- endif -%}
+
+</div>
+
+{% stylesheet %}
+  .shopify-section:has(.hero) {
+    padding-block: 0;
+  }
+
+  .hero {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    min-height: var(--hero-min-h-desk, 95dvh);
+    overflow: hidden;
+    color: var(--hero-text, #f5f4f0);
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+
+  /* ── Background ── */
+  .hero__media {
+    position: absolute;
+    inset: 0;
+  }
+
+  .hero__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .hero__img--mobile { display: none; }
+
+  .hero__placeholder {
+    width: 100%;
+    height: 100%;
+    background-color: var(--color-bg-subtle);
+  }
+
+  .hero__placeholder-svg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Directional gradient: heavier at bottom + left edge for left-aligned text */
+  .hero__overlay {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(
+        to top,
+        rgba(0, 0, 0, calc(var(--hero-overlay, 0.4) * 1.55)) 0%,
+        rgba(0, 0, 0, var(--hero-overlay, 0.4))               40%,
+        transparent                                            70%
+      ),
+      linear-gradient(
+        to right,
+        rgba(0, 0, 0, calc(var(--hero-overlay, 0.4) * 0.65)) 0%,
+        transparent                                           55%
+      );
+  }
+
+  .hero[data-text-align="center"] .hero__overlay {
+    background: linear-gradient(
+      to top,
+      rgba(0, 0, 0, calc(var(--hero-overlay, 0.4) * 1.4)) 0%,
+      rgba(0, 0, 0, var(--hero-overlay, 0.4))              50%,
+      rgba(0, 0, 0, calc(var(--hero-overlay, 0.4) * 0.25)) 100%
+    );
+  }
+
+  /* ── Season indicator ── */
+  .hero__season {
+    position: absolute;
+    top: var(--space-8);
+    right: var(--page-margin);
+    z-index: 1;
+    font-size: var(--text-xs);
+    letter-spacing: var(--tracking-widest);
+    text-transform: uppercase;
+    color: var(--hero-text, #f5f4f0);
+    opacity: 0.55;
+    margin: 0;
+  }
+
+  /* ── Content ── */
+  .hero__content {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: var(--page-width);
+    margin-inline: auto;
+    padding-inline: var(--page-margin);
+    padding-block: clamp(5rem, 8vw, 10rem);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .hero[data-text-align="left"]   .hero__content { align-items: flex-start; text-align: left; }
+  .hero[data-text-align="center"] .hero__content { align-items: center;     text-align: center; }
+  .hero[data-text-align="right"]  .hero__content { align-items: flex-end;   text-align: right; }
+
+  /* ── Eyebrow with leading rule (left-aligned only) ── */
+  .hero__eyebrow {
+    color: inherit;
+    opacity: 0.75;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .hero[data-text-align="left"] .hero__eyebrow::before {
+    content: '';
+    display: block;
+    width: 2.5rem;
+    height: 1px;
+    background: currentColor;
+    opacity: 0.55;
+    flex-shrink: 0;
+  }
+
+  /* ── Heading ── */
+  .hero__heading {
+    font-family: var(--font-heading);
+    font-weight: var(--font-heading-weight);
+    font-style: italic;
+    font-size: clamp(var(--text-3xl), 8vw, var(--text-5xl));
+    line-height: 1.0;
+    letter-spacing: -0.03em;
+    color: inherit;
+    margin: 0;
+    max-width: 15ch;
+  }
+
+  .hero[data-text-align="center"] .hero__heading { max-width: 20ch; }
+
+  /* ── Subtext ── */
+  .hero__subtext {
+    font-size: var(--text-sm);
+    line-height: var(--leading-relaxed);
+    color: inherit;
+    opacity: 0.72;
+    max-width: 36ch;
+    margin: 0;
+    letter-spacing: var(--tracking-wide);
+  }
+
+  /* ── CTAs ── */
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    margin-block-start: var(--space-4);
+  }
+
+  .hero[data-text-align="center"] .hero__actions { justify-content: center; }
+  .hero[data-text-align="right"]  .hero__actions { justify-content: flex-end; }
+
+  .hero__btn { min-width: 10rem; }
+
+  .hero__btn--primary {
+    background-color: var(--hero-text, #f5f4f0);
+    color: var(--color-text);
+    border-color: var(--hero-text, #f5f4f0);
+  }
+
+  .hero__btn--primary:hover {
+    background-color: transparent;
+    color: var(--hero-text, #f5f4f0);
+    border-color: var(--hero-text, #f5f4f0);
+  }
+
+  .hero__btn--secondary {
+    background-color: transparent;
+    color: var(--hero-text, #f5f4f0);
+    border-color: rgba(255, 255, 255, 0.45);
+  }
+
+  .hero__btn--secondary:hover {
+    background-color: var(--hero-text, #f5f4f0);
+    color: var(--color-text);
+    border-color: var(--hero-text, #f5f4f0);
+  }
+
+  /* ── Scroll indicator ── */
+  .hero__scroll {
+    position: absolute;
+    bottom: var(--space-10);
+    right: var(--page-margin);
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-3);
+    color: var(--hero-text, #f5f4f0);
+    opacity: 0.45;
+  }
+
+  .hero__scroll-label {
+    font-size: 0.625rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    writing-mode: vertical-rl;
+  }
+
+  .hero__scroll-line {
+    display: block;
+    width: 1px;
+    height: 3rem;
+    background: currentColor;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero__scroll-line::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--hero-text, white);
+    animation: scroll-pulse 2.2s ease-in-out 0.5s infinite;
+    transform: translateY(-100%);
+  }
+
+  @keyframes scroll-pulse {
+    0%   { transform: translateY(-100%); }
+    60%  { transform: translateY(100%); }
+    100% { transform: translateY(100%); }
+  }
+
+  /* ── Mobile ── */
+  @media (max-width: 48rem) {
+    .hero {
+      min-height: var(--hero-min-h-mob, 85dvh);
+      align-items: flex-end;
+    }
+
+    .hero__img--desktop { display: none; }
+    .hero__img--mobile  { display: block; }
+    .hero:not(:has(.hero__img--mobile)) .hero__img--desktop { display: block; }
+
+    .hero__heading {
+      font-size: clamp(var(--text-2xl), 10vw, var(--text-3xl));
+      max-width: 100%;
+    }
+
+    .hero__season  { display: none; }
+    .hero__scroll  { display: none; }
+
+    .hero__actions {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .hero__btn { min-width: 14rem; }
+
+    .hero[data-text-align="center"] .hero__content,
+    .hero[data-text-align="right"]  .hero__content {
+      align-items: flex-start;
+      text-align: left;
+    }
+  }
+{% endstylesheet %}
 
 <div
   class="hero"
@@ -371,6 +729,23 @@
       "type": "url",
       "id": "cta2_url",
       "label": "Secondary button link"
+    },
+    {
+      "type": "header",
+      "content": "Editorial details"
+    },
+    {
+      "type": "text",
+      "id": "season_label",
+      "label": "Season / collection label",
+      "placeholder": "SS '26",
+      "info": "Appears top-right of the hero. Leave blank to hide."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_scroll_indicator",
+      "label": "Show scroll indicator",
+      "default": true
     },
     {
       "type": "header",

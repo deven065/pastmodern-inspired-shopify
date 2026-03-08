@@ -32,11 +32,21 @@
   {%- comment -%} ── Section header ── {%- endcomment -%}
   {%- if fc_eyebrow != blank or fc_heading != blank -%}
     <div class="featured-collection__header">
-      {%- if fc_eyebrow != blank -%}
-        <p class="eyebrow">{{ fc_eyebrow }}</p>
-      {%- endif -%}
-      {%- if fc_heading != blank -%}
-        <h2 class="featured-collection__heading">{{ fc_heading }}</h2>
+      <div class="featured-collection__header-text">
+        {%- if fc_eyebrow != blank -%}
+          <p class="eyebrow">{{ fc_eyebrow }}</p>
+        {%- endif -%}
+        {%- if fc_heading != blank -%}
+          <h2 class="featured-collection__heading">{{ fc_heading }}</h2>
+        {%- endif -%}
+      </div>
+      {%- if fc_cta_label != blank and fc_collection != blank -%}
+        <a href="{{ fc_cta_url | default: fc_collection.url }}" class="featured-collection__header-cta">
+          {{ fc_cta_label }}
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" aria-hidden="true" focusable="false">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </a>
       {%- endif -%}
     </div>
   {%- endif -%}
@@ -81,11 +91,42 @@
     gap: var(--space-10);
   }
 
-  /* ── Header ────────────────────────────────────────────────── */
+  /* ── Header ─────────────────────────────────────────────── */
   .featured-collection__header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: var(--space-4);
+    padding-block-start: var(--space-8);
+    padding-block-end: var(--space-2);
+    border-block-start: 2px solid var(--color-text);
+  }
+
+  .featured-collection__header-text {
     display: flex;
     flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .featured-collection__header-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--text-xs);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    text-decoration: none;
+    color: inherit;
+    white-space: nowrap;
+    padding-block-end: var(--space-1);
+    transition:
+      gap       var(--duration-base) var(--ease-out),
+      opacity   var(--duration-fast) var(--ease-default);
+  }
+
+  .featured-collection__header-cta:hover {
     gap: var(--space-3);
+    opacity: 0.6;
   }
 
   .featured-collection__heading {

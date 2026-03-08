@@ -396,8 +396,30 @@
     }
   }
 
-  /* ─────────────────────────────────────────────────────────────
-     Initialise
+  /* ─────────────────────────────────────────────────────────────     Scroll-reveal
+  ───────────────────────────────────────────────────────────────── */
+  class ScrollReveal {
+    constructor() {
+      if (!('IntersectionObserver' in window)) {
+        // Fallback: immediately reveal all elements
+        document.querySelectorAll('.reveal').forEach(el => el.classList.add('is-revealed'));
+        return;
+      }
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-revealed');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.1, rootMargin: '0px 0px -5% 0px' });
+
+      document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    }
+  }
+
+  /* ─────────────────────────────────────────────────────────────────     Initialise
   ───────────────────────────────────────────────────────────── */
   document.addEventListener('DOMContentLoaded', () => {
     // Sticky header
@@ -409,6 +431,9 @@
 
     // Accordions
     document.querySelectorAll('[data-accordion]').forEach((el) => new Accordion(el));
+
+    // Scroll reveal
+    new ScrollReveal();
 
     // Product gallery
     document.querySelectorAll('[data-product-gallery]').forEach((el) => new ProductGallery(el));

@@ -25,28 +25,21 @@
         {%- assign quote_text   = block.settings.text -%}
         {%- assign quote_author = block.settings.author -%}
         {%- assign quote_loc    = block.settings.location -%}
-        {%- assign show_stars   = block.settings.show_stars -%}
         <li class="testimonial" {{ block.shopify_attributes }}>
-          {%- if show_stars -%}
-            <p class="testimonial__stars" aria-label="5 out of 5 stars" role="img">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="12" height="12"><path d="M12 2l2.9 6.3L22 9.5l-5 5 1.2 7L12 18l-6.2 3.5L7 14.5 2 9.5l7.1-1.2z"/></svg>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="12" height="12"><path d="M12 2l2.9 6.3L22 9.5l-5 5 1.2 7L12 18l-6.2 3.5L7 14.5 2 9.5l7.1-1.2z"/></svg>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="12" height="12"><path d="M12 2l2.9 6.3L22 9.5l-5 5 1.2 7L12 18l-6.2 3.5L7 14.5 2 9.5l7.1-1.2z"/></svg>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="12" height="12"><path d="M12 2l2.9 6.3L22 9.5l-5 5 1.2 7L12 18l-6.2 3.5L7 14.5 2 9.5l7.1-1.2z"/></svg>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="12" height="12"><path d="M12 2l2.9 6.3L22 9.5l-5 5 1.2 7L12 18l-6.2 3.5L7 14.5 2 9.5l7.1-1.2z"/></svg>
-            </p>
-          {%- endif -%}
-
           <blockquote class="testimonial__quote">
+            <p class="testimonial__mark" aria-hidden="true">“</p>
             {%- if quote_text != blank -%}
               <p class="testimonial__text">{{ quote_text | escape }}</p>
             {%- endif -%}
             {%- if quote_author != blank -%}
-              <footer class="testimonial__attribution">
-                <cite class="testimonial__author">{{ quote_author | escape }}</cite>
-                {%- if quote_loc != blank -%}
-                  <span class="testimonial__location">{{ quote_loc | escape }}</span>
-                {%- endif -%}
+              <footer class="testimonial__footer">
+                <span class="testimonial__rule" aria-hidden="true"></span>
+                <div class="testimonial__attribution">
+                  <cite class="testimonial__author">{{ quote_author | escape }}</cite>
+                  {%- if quote_loc != blank -%}
+                    <span class="testimonial__location">{{ quote_loc | escape }}</span>
+                  {%- endif -%}
+                </div>
               </footer>
             {%- endif -%}
           </blockquote>
@@ -58,20 +51,20 @@
 </div>
 
 {% stylesheet %}
-  /* ── Wrapper ───────────────────────────────────────────────── */
+  /* ── Wrapper ────────────────────────────────────────────── */
   .testimonials {
     display: flex;
     flex-direction: column;
-    gap: var(--space-12);
-    text-align: center;
+    gap: var(--space-14);
   }
 
-  /* ── Header ────────────────────────────────────────────────── */
+  /* ── Header ─────────────────────────────────────────────── */
   .testimonials__header {
     display: flex;
     flex-direction: column;
     gap: var(--space-3);
     align-items: center;
+    text-align: center;
   }
 
   .testimonials__heading {
@@ -84,55 +77,83 @@
     margin: 0;
   }
 
-  /* ── Grid ──────────────────────────────────────────────────── */
+  /* ── Grid ───────────────────────────────────────────────── */
   .testimonials__grid {
     display: grid;
     grid-template-columns: repeat(var(--t-cols, 3), 1fr);
-    gap: var(--space-1) var(--space-10);
     list-style: none;
     margin: 0;
     padding: 0;
     align-items: start;
   }
 
-  /* ── Individual card ───────────────────────────────────────── */
+  /* ── Individual testimonial ──────────────────────────────── */
   .testimonial {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-5);
-    padding-block: var(--space-8);
+    padding-block: var(--space-10);
     border-block-start: 1px solid var(--color-border);
   }
 
-  /* ── Stars ─────────────────────────────────────────────────── */
-  .testimonial__stars {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--space-1);
-    margin: 0;
-    color: var(--color-text);
+  /* Column dividers */
+  .testimonial + .testimonial {
+    border-inline-start: 1px solid var(--color-border);
+    padding-inline-start: var(--space-8);
   }
 
-  /* ── Blockquote ────────────────────────────────────────────── */
+  .testimonial:first-child {
+    padding-inline-start: 0;
+  }
+
+  .testimonials__grid .testimonial:not(:first-child) {
+    padding-inline-start: var(--space-8);
+  }
+
+  /* ── Blockquote ──────────────────────────────────────────── */
   .testimonial__quote {
     display: flex;
     flex-direction: column;
-    gap: var(--space-6);
+    gap: var(--space-5);
     margin: 0;
   }
 
+  /* ── Large decorative opening quote mark ─────────────────── */
+  .testimonial__mark {
+    font-family: var(--font-heading);
+    font-style: italic;
+    font-size: 5rem;
+    line-height: 0.75;
+    color: var(--color-border);
+    margin: 0 0 var(--space-3);
+    user-select: none;
+    pointer-events: none;
+  }
+
+  /* ── Quote text ──────────────────────────────────────────── */
   .testimonial__text {
     font-family: var(--font-heading);
     font-style: italic;
-    font-size: clamp(var(--text-xl), 2.5vw, var(--text-2xl));
+    font-size: clamp(var(--text-md), 1.5vw, var(--text-lg));
     line-height: var(--leading-snug);
     letter-spacing: var(--tracking-tight);
     color: var(--color-text);
     margin: 0;
   }
 
-  /* ── Attribution ───────────────────────────────────────────── */
+  /* ── Attribution ─────────────────────────────────────────── */
+  .testimonial__footer {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    margin-block-start: var(--space-4);
+  }
+
+  .testimonial__rule {
+    display: block;
+    width: 1.75rem;
+    height: 1px;
+    background-color: var(--color-border);
+    flex-shrink: 0;
+  }
+
   .testimonial__attribution {
     display: flex;
     flex-direction: column;
@@ -148,17 +169,25 @@
   }
 
   .testimonial__location {
+    display: block;
     font-size: var(--text-xs);
     letter-spacing: var(--tracking-wide);
     color: var(--color-text-muted);
-    opacity: 0.6;
   }
 
-  /* ── Mobile: single column ─────────────────────────────────── */
-  @media (max-width: 48rem) {
+  /* ── Mobile: single column ───────────────────────────────── */
+  @media (max-width: 62rem) {
     .testimonials__grid {
       grid-template-columns: 1fr;
-      gap: 0;
+    }
+
+    .testimonial + .testimonial {
+      border-inline-start: none;
+      padding-inline-start: 0;
+    }
+
+    .testimonials__grid .testimonial:not(:first-child) {
+      padding-inline-start: 0;
     }
   }
 {% endstylesheet %}
@@ -213,12 +242,6 @@
           "id": "location",
           "label": "Location",
           "placeholder": "London"
-        },
-        {
-          "type": "checkbox",
-          "id": "show_stars",
-          "label": "Show star rating",
-          "default": true
         }
       ]
     }
@@ -235,28 +258,25 @@
         {
           "type": "quote",
           "settings": {
-            "text":       "The quality exceeded every expectation. The fabric is extraordinary and the cut is simply perfect.",
-            "author":     "Amelia R.",
-            "location":   "London",
-            "show_stars": true
+            "text":     "The quality exceeded every expectation. The fabric is extraordinary and the cut is simply perfect.",
+            "author":   "Amelia R.",
+            "location": "London"
           }
         },
         {
           "type": "quote",
           "settings": {
-            "text":       "I wore this to a gallery opening and received compliments all evening. Effortlessly elegant.",
-            "author":     "Isabelle C.",
-            "location":   "Paris",
-            "show_stars": true
+            "text":     "I wore this to a gallery opening and received compliments all evening. Effortlessly elegant.",
+            "author":   "Isabelle C.",
+            "location": "Paris"
           }
         },
         {
           "type": "quote",
           "settings": {
-            "text":       "Beautifully packaged, thoughtfully made. This is what conscious luxury looks like.",
-            "author":     "Sophia M.",
-            "location":   "New York",
-            "show_stars": true
+            "text":     "Beautifully packaged, thoughtfully made. This is what conscious luxury looks like.",
+            "author":   "Sophia M.",
+            "location": "New York"
           }
         }
       ]

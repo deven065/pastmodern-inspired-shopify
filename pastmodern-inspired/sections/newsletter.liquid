@@ -4,10 +4,11 @@
   assign nl_subtext  = section.settings.subtext
   assign nl_bg       = section.settings.bg_style
   assign nl_align    = section.settings.text_align | default: 'center'
+  assign nl_layout   = section.settings.layout | default: 'centered'
 -%}
 
 <div
-  class="newsletter newsletter--{{ nl_bg }}"
+  class="newsletter newsletter--{{ nl_bg }} newsletter--{{ nl_layout }}"
   data-text-align="{{ nl_align }}"
 >
 
@@ -219,6 +220,36 @@
     margin: 0 auto;
   }
 
+  /* ── Split layout ──────────────────────────────────────── */
+  .newsletter--split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: var(--space-16);
+    text-align: left;
+  }
+
+  .newsletter--split .newsletter__copy {
+    max-width: none;
+  }
+
+  .newsletter--split .newsletter__heading {
+    font-size: clamp(var(--text-2xl), 4vw, var(--text-4xl));
+  }
+
+  .newsletter--split .newsletter__form {
+    max-width: none;
+  }
+
+  @media (max-width: 62rem) {
+    .newsletter--split {
+      grid-template-columns: 1fr;
+      text-align: center;
+    }
+
+    .newsletter--split .newsletter__copy { max-width: 42ch; margin-inline: auto; }
+  }
+
   /* ── Mobile ── */
   @media (max-width: 40rem) {
     .newsletter__field-row {
@@ -294,6 +325,16 @@
     {
       "type": "header",
       "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "Layout",
+      "options": [
+        { "value": "centered", "label": "Centered (stacked)" },
+        { "value": "split",    "label": "Split (heading left, form right)" }
+      ],
+      "default": "centered"
     },
     {
       "type": "select",
