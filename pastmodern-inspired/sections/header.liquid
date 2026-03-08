@@ -6,11 +6,16 @@
   assign show_account = section.settings.show_account
 -%}
 
-{%- comment -%} ── Colour overrides ── {%- endcomment -%}
+{%- comment -%} ── Colour / behaviour overrides ── {%- endcomment -%}
 <style>
   #shopify-section-{{ section.id }} {
-    --header-bg:     {{ section.settings.header_bg }};
-    --header-text:   {{ section.settings.header_text }};
+    --header-bg:       {{ section.settings.header_bg }};
+    --header-text:     {{ section.settings.header_text }};
+    --header-position: {%- if section.settings.sticky_header %}sticky{% else %}relative{% endif -%};
+    --header-height:   {{ section.settings.header_height_desktop | default: 72 }}px;
+  }
+  @media (max-width: 56.25rem) {
+    #shopify-section-{{ section.id }} { --header-height: 3.75rem; }
   }
 </style>
 
@@ -241,17 +246,17 @@
     background-color: var(--header-bg, var(--color-bg));
     color: var(--header-text, var(--color-text));
     border-block-end: 1px solid var(--color-border);
-    position: sticky;
+    position: var(--header-position, sticky);
     top: 0;
     z-index: 100;
     transition: box-shadow var(--duration-base) var(--ease-default);
   }
 
   .header.is-sticky {
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
-    background-color: color-mix(in srgb, var(--header-bg, var(--color-bg)) 92%, transparent);
-    box-shadow: 0 1px 0 color-mix(in srgb, var(--color-border) 50%, transparent);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    background-color: color-mix(in srgb, var(--header-bg, var(--color-bg)) 88%, transparent);
+    box-shadow: 0 1px 0 color-mix(in srgb, var(--color-border) 40%, transparent);
     border-block-end-color: transparent;
   }
 
@@ -264,7 +269,7 @@
     display: grid;
     grid-template-columns: 1fr auto 1fr;
     align-items: center;
-    height: var(--header-height, 5.5rem);
+    height: var(--header-height, 4.5rem);
     padding-inline: var(--page-margin);
     max-width: var(--page-width);
     margin-inline: auto;
@@ -291,9 +296,10 @@
 
   .header__logo-text {
     font-family: var(--font-heading);
-    font-size: var(--text-xl);
+    font-size: var(--text-2xl);
     font-style: italic;
     letter-spacing: var(--tracking-tight);
+    line-height: 1;
     white-space: nowrap;
   }
 
@@ -302,7 +308,7 @@
   .header__end {
     display: flex;
     align-items: center;
-    gap: var(--space-3);
+    gap: var(--space-2);
   }
 
   .header__end {
@@ -318,13 +324,13 @@
     border: none;
     color: inherit;
     cursor: pointer;
-    padding: var(--space-1);
+    padding: 6px;
     text-decoration: none;
     transition: opacity var(--duration-fast) var(--ease-default);
   }
 
   .header__icon-btn:hover {
-    opacity: 0.5;
+    opacity: 0.45;
   }
 
   .header__icon-btn--muted {
@@ -356,10 +362,15 @@
   .header__nav-list {
     display: flex;
     align-items: center;
-    gap: var(--space-10);
+    gap: var(--space-7);
     list-style: none;
     margin: 0;
     padding: 0;
+  }
+
+  /* Slightly tighter spacing on mid-size laptops */
+  @media (max-width: 75rem) {
+    .header__nav-list { gap: var(--space-5); }
   }
 
   .header__nav-item {
@@ -368,7 +379,7 @@
 
   .header__nav-link {
     font-size: var(--text-xs);
-    letter-spacing: var(--tracking-brand);
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     text-decoration: none;
     color: inherit;
@@ -379,7 +390,7 @@
     align-items: center;
     gap: var(--space-1);
     padding-block: var(--space-2);
-    padding-block-end: calc(var(--space-2) + 5px);
+    padding-block-end: calc(var(--space-2) + 4px);
     white-space: nowrap;
     position: relative;
   }
@@ -393,7 +404,7 @@
     right: 50%;
     height: 1px;
     background: currentColor;
-    opacity: 0.6;
+    opacity: 0.4;
     transition:
       left  var(--duration-measured, 600ms) var(--ease-brand, var(--ease-out)),
       right var(--duration-measured, 600ms) var(--ease-brand, var(--ease-out));
@@ -426,11 +437,11 @@
     border: none;
     border-top: 1px solid var(--color-border);
     box-shadow:
-      0 24px 64px color-mix(in srgb, var(--color-text) 10%, transparent),
-      0 4px 16px  color-mix(in srgb, var(--color-text) 5%, transparent);
+      0 16px 40px color-mix(in srgb, var(--color-text) 8%, transparent),
+      0 4px 12px  color-mix(in srgb, var(--color-text) 4%, transparent);
     list-style: none;
     margin: 0;
-    padding: var(--space-5) 0;
+    padding: var(--space-4) 0;
     opacity: 0;
     pointer-events: none;
     translate: 0 var(--space-2);
@@ -466,10 +477,8 @@
 
   /* ── Mobile: swap nav for hamburger below 900px ───────────── */
   @media (max-width: 56.25rem) {
-    :root { --header-height: 3.75rem; }
-
     .header__inner {
-      height: 3.75rem;
+      height: var(--header-height, 3.75rem);
     }
 
     .header__hamburger {
@@ -541,8 +550,8 @@
   .header-drawer__inner {
     display: flex;
     flex-direction: column;
-    gap: var(--space-5);
-    padding: var(--space-5) var(--space-7);
+    gap: var(--space-3);
+    padding: var(--space-6) var(--space-7);
   }
 
   .header-drawer__header {
@@ -589,25 +598,27 @@
 
   .header-drawer__link {
     display: block;
-    padding-block: var(--space-5);
+    padding-block: var(--space-4);
     border-block-end: 1px solid var(--color-border);
     font-size: var(--text-xs);
-    letter-spacing: var(--tracking-brand);
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     text-decoration: none;
     color: inherit;
-    transition: opacity var(--duration-fast) var(--ease-default);
+    transition: color var(--duration-fast) var(--ease-default), opacity var(--duration-fast) var(--ease-default);
   }
 
-  .header-drawer__link:hover,
+  .header-drawer__link:hover { opacity: 0.6; }
   .header-drawer__link[aria-current="page"] {
-    opacity: 0.55;
+    color: var(--color-accent);
+    opacity: 1;
   }
 
   .header-drawer__link--sub {
-    padding-inline-start: var(--space-4);
+    padding-inline-start: var(--space-6);
     font-size: var(--text-xs);
-    opacity: 0.75;
+    letter-spacing: 0.08em;
+    opacity: 0.72;
     border-block-end: none;
   }
 
@@ -623,10 +634,10 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding-block: var(--space-5);
+    padding-block: var(--space-4);
     border-block-end: 1px solid var(--color-border);
     font-size: var(--text-xs);
-    letter-spacing: var(--tracking-brand);
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     cursor: pointer;
     color: inherit;
@@ -694,56 +705,11 @@
 
 {% javascript %}
   (function () {
-    /* ── Sticky shadow ── */
-    var header   = document.querySelector('[data-header]');
-    var sentinel = document.getElementById('header-sentinel');
-
-    if (header && sentinel) {
-      new IntersectionObserver(function (entries) {
-        header.classList.toggle('is-sticky', !entries[0].isIntersecting);
-      }, { rootMargin: '0px' }).observe(sentinel);
-    }
-
-    /* ── Mobile menu ── */
-    var hamburgers = document.querySelectorAll('[data-hamburger]');
-    var drawer     = document.querySelector('[data-mobile-menu]');
-    var overlay    = document.querySelector('[data-mobile-overlay]');
-
-    if (!drawer) return;
-
-    function openMenu() {
-      drawer.classList.add('is-open');
-      drawer.removeAttribute('aria-hidden');
-      drawer.removeAttribute('inert');
-      document.body.classList.add('menu-open');
-      hamburgers.forEach(function (b) {
-        b.setAttribute('aria-expanded', 'true');
-      });
-      drawer.querySelector('a, button')?.focus();
-    }
-
-    function closeMenu() {
-      drawer.classList.remove('is-open');
-      drawer.setAttribute('aria-hidden', 'true');
-      drawer.setAttribute('inert', '');
-      document.body.classList.remove('menu-open');
-      hamburgers.forEach(function (b) {
-        b.setAttribute('aria-expanded', 'false');
-      });
-    }
-
-    hamburgers.forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        drawer.hasAttribute('hidden') ? openMenu() : closeMenu();
-      });
-    });
-
-    overlay?.addEventListener('click', closeMenu);
-    document.querySelector('[data-drawer-close]')?.addEventListener('click', closeMenu);
-
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && !drawer.hasAttribute('hidden')) closeMenu();
-    });
+    /*
+     * NOTE: Sticky header and mobile drawer are handled by theme.js
+     * (StickyHeader + HeaderMenu classes). Only section-specific
+     * interactions that don't exist in theme.js live here.
+     */
 
     /* ── Desktop dropdown buttons ── */
     document.querySelectorAll('.header__nav-link--parent').forEach(function (btn) {
@@ -830,6 +796,27 @@
       "id": "header_text",
       "label": "Text and icons",
       "default": "#F7F3EC"
+    },
+    {
+      "type": "header",
+      "content": "Behavior"
+    },
+    {
+      "type": "checkbox",
+      "id": "sticky_header",
+      "label": "Sticky header",
+      "default": true,
+      "info": "Keep the header pinned to the top while scrolling."
+    },
+    {
+      "type": "range",
+      "id": "header_height_desktop",
+      "label": "Desktop header height",
+      "min": 56,
+      "max": 96,
+      "step": 4,
+      "unit": "px",
+      "default": 72
     }
   ],
   "presets": [

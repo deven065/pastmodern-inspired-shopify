@@ -16,6 +16,44 @@
 
 <footer class="site-footer" role="contentinfo">
 
+  {%- comment -%} ── Newsletter strip — full-width above column grid ── {%- endcomment -%}
+  {%- if section.settings.show_newsletter -%}
+    <div class="footer__newsletter-strip">
+      <div class="footer__newsletter-intro">
+        {%- if section.settings.newsletter_heading != blank -%}
+          <p class="footer__newsletter-heading">{{ section.settings.newsletter_heading }}</p>
+        {%- endif -%}
+        {%- if section.settings.newsletter_sub_text != blank -%}
+          <p class="footer__newsletter-sub">{{ section.settings.newsletter_sub_text }}</p>
+        {%- endif -%}
+      </div>
+      {%- form 'customer', id: 'footer-newsletter-form' -%}
+        <input type="hidden" name="contact[tags]" value="newsletter">
+        {%- if form.posted_successfully? -%}
+          <p class="footer__newsletter-success">Thank you for subscribing.</p>
+        {%- else -%}
+          <div class="footer__newsletter-field">
+            <label class="visually-hidden" for="footer-email">Email address</label>
+            <input
+              type="email"
+              id="footer-email"
+              name="contact[email]"
+              placeholder="Your email address"
+              autocomplete="email"
+              required
+            >
+            <button type="submit" aria-label="Subscribe">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+          </div>
+          {%- if form.errors -%}
+            <p class="footer__newsletter-error">{{ form.errors.translated_fields.first | capitalize }} {{ form.errors.messages.first }}</p>
+          {%- endif -%}
+        {%- endif -%}
+      {%- endform -%}
+    </div>
+  {%- endif -%}
+
   {%- comment -%} ── Upper: brand + nav columns + contact ── {%- endcomment -%}
   <div
     class="footer__upper"
@@ -78,38 +116,6 @@
               {%- endif -%}
             {%- endfor -%}
           </ul>
-        {%- endif -%}
-
-        {%- if section.settings.show_newsletter -%}
-          <div class="footer__newsletter">
-            {%- if section.settings.newsletter_heading != blank -%}
-              <p class="footer__newsletter-label">{{ section.settings.newsletter_heading }}</p>
-            {%- endif -%}
-            {%- form 'customer', id: 'footer-newsletter-form' -%}
-              <input type="hidden" name="contact[tags]" value="newsletter">
-              {%- if form.posted_successfully? -%}
-                <p class="footer__newsletter-success">Thank you for subscribing.</p>
-              {%- else -%}
-                <div class="footer__newsletter-field">
-                  <label class="visually-hidden" for="footer-email">Email address</label>
-                  <input
-                    type="email"
-                    id="footer-email"
-                    name="contact[email]"
-                    placeholder="Your email"
-                    autocomplete="email"
-                    required
-                  >
-                  <button type="submit" aria-label="Subscribe">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                  </button>
-                </div>
-                {%- if form.errors -%}
-                  <p class="footer__newsletter-error">{{ form.errors.translated_fields.first | capitalize }} {{ form.errors.messages.first }}</p>
-                {%- endif -%}
-              {%- endif -%}
-            {%- endform -%}
-          </div>
         {%- endif -%}
       </div>
     {%- endif -%}
@@ -177,10 +183,11 @@
 {% stylesheet %}
   /* ── Site footer shell ── */
   .site-footer {
-    padding-block: var(--space-32) var(--space-16);
+    padding-block: var(--space-16) var(--space-10);
+    padding-inline: var(--page-margin);
     display: flex;
     flex-direction: column;
-    gap: var(--space-20);
+    gap: var(--space-10);
 
     /* ── Deep Emerald base ───────────────────────────────────────── */
     background-color: #214630;
@@ -204,7 +211,7 @@
       minmax(0, 1.4fr)
       repeat(var(--footer-nav-cols, 2), minmax(0, 1fr))
       minmax(0, 1fr);
-    gap: var(--space-14) var(--space-10);
+    gap: var(--space-10) var(--space-8);
     align-items: start;
   }
 
@@ -212,8 +219,8 @@
   .footer__brand {
     display: flex;
     flex-direction: column;
-    gap: var(--space-6);
-    padding-inline-end: var(--space-6);
+    gap: var(--space-5);
+    padding-inline-end: var(--space-8);
     border-inline-end: 1px solid var(--color-border);
   }
 
@@ -231,14 +238,14 @@
   .footer__brand-text {
     font-size: var(--text-sm);
     line-height: var(--leading-relaxed, 1.65);
-    max-width: 28ch;
+    max-width: 30ch;
     margin: 0;
   }
 
   /* ── Social icons ── */
   .footer__social {
     display: flex;
-    gap: var(--space-4);
+    gap: var(--space-3);
     list-style: none;
     margin: 0;
     padding: 0;
@@ -263,7 +270,7 @@
   .footer__nav-col {
     display: flex;
     flex-direction: column;
-    gap: var(--space-5);
+    gap: var(--space-4);
   }
 
   .footer__col-heading {
@@ -279,14 +286,14 @@
   .footer__nav-list {
     display: flex;
     flex-direction: column;
-    gap: var(--space-4);
+    gap: var(--space-3);
     list-style: none;
     margin: 0;
     padding: 0;
   }
 
   .footer__nav-link {
-    font-size: var(--text-xs);
+    font-size: var(--text-sm);
     color: var(--color-text-muted);
     text-decoration: none;
     transition: color var(--duration-measured) var(--ease-brand);
@@ -319,12 +326,12 @@
 
   /* ── Lower bar ── */
   .footer__lower {
-    padding-block-start: var(--space-16);
+    padding-block-start: var(--space-6);
     border-block-start: 1px solid var(--color-border);
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: var(--space-4) var(--space-8);
+    gap: var(--space-3) var(--space-6);
   }
 
   .footer__copyright { font-size: var(--text-xs); margin: 0; }
@@ -367,20 +374,45 @@
     opacity: 0.7;
   }
 
-  /* ── Newsletter (footer) ── */
-  .footer__newsletter {
+  /* ── Newsletter strip (full-width above columns) ── */
+  .footer__newsletter-strip {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: var(--space-6) var(--space-12);
+    padding-block-end: var(--space-10);
+    border-block-end: 1px solid var(--color-border);
+  }
+
+  .footer__newsletter-intro {
     display: flex;
     flex-direction: column;
     gap: var(--space-3);
   }
 
-  .footer__newsletter-label {
-    font-family: var(--font-body);
-    font-size: var(--text-xs);
-    letter-spacing: var(--tracking-brand);
-    text-transform: uppercase;
+  .footer__newsletter-heading {
+    font-family: var(--font-heading);
+    font-style: italic;
+    font-size: clamp(var(--text-xl), 2.5vw, var(--text-2xl));
+    letter-spacing: var(--tracking-tight);
+    line-height: var(--leading-tight);
+    color: var(--color-text);
+    margin: 0;
+  }
+
+  .footer__newsletter-sub {
+    font-size: var(--text-sm);
     color: var(--color-text-muted);
     margin: 0;
+    max-width: 42ch;
+    line-height: var(--leading-relaxed);
+  }
+
+  /* ── Newsletter form fields ── */
+  .footer__newsletter {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
   }
 
   .footer__newsletter-field {
@@ -398,10 +430,10 @@
     flex: 1;
     background: none;
     border: none;
-    padding: var(--space-2) 0;
+    padding: var(--space-3) 0;
     font-family: var(--font-body);
-    font-size: var(--text-xs);
-    letter-spacing: var(--tracking-wide);
+    font-size: var(--text-sm);
+    letter-spacing: 0.02em;
     color: var(--color-text);
     min-width: 0;
   }
@@ -456,13 +488,19 @@
       padding-block-end: var(--space-6);
       border-block-end: 1px solid var(--color-border);
     }
+
+    .footer__newsletter-strip {
+      grid-template-columns: 1fr;
+      gap: var(--space-5);
+    }
   }
 
   @media (max-width: 40rem) {
-    .footer__upper  { grid-template-columns: 1fr; gap: var(--space-8); }
-    .site-footer    { gap: var(--space-8); padding-block: var(--space-14) var(--space-8); }
+    .footer__upper  { grid-template-columns: 1fr; gap: var(--space-6); }
+    .site-footer    { gap: var(--space-6); padding-block: var(--space-10) var(--space-6); }
     .footer__brand  { border-block-end: none; padding-block-end: 0; }
     .footer__payment-icons { margin-left: 0; }
+    .footer__newsletter-strip { padding-block-end: var(--space-6); gap: var(--space-4); }
   }
 {% endstylesheet %}
 
@@ -555,8 +593,14 @@
     {
       "type": "text",
       "id": "newsletter_heading",
-      "label": "Newsletter label",
-      "default": "Stay in the loop"
+      "label": "Newsletter heading",
+      "default": "Stay in the Loop"
+    },
+    {
+      "type": "text",
+      "id": "newsletter_sub_text",
+      "label": "Newsletter subtext",
+      "placeholder": "Thoughtful pieces, rare finds, and exclusive access."
     },
     {
       "type": "header",
