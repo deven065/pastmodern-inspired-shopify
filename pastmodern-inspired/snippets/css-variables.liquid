@@ -1,18 +1,40 @@
 {% style %}
-  {% # Loads all font variantions with display: swap %}
-  {{ settings.type_primary_font | font_face: font_display: 'swap' }}
-  {{ settings.type_primary_font | font_modify: 'weight', 'bold' | font_face: font_display: 'swap' }}
-  {{ settings.type_primary_font | font_modify: 'weight', 'bold' | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }}
-  {{ settings.type_primary_font | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }}
+  {%- comment -%}Body font — load all four variants{%- endcomment -%}
+  {{ settings.type_body_font | font_face: font_display: 'swap' }}
+  {{ settings.type_body_font | font_modify: 'weight', 'bold' | font_face: font_display: 'swap' }}
+  {{ settings.type_body_font | font_modify: 'weight', 'bold' | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }}
+  {{ settings.type_body_font | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }}
+
+  {%- comment -%}Heading font — load regular, bold, italic{%- endcomment -%}
+  {{ settings.type_heading_font | font_face: font_display: 'swap' }}
+  {{ settings.type_heading_font | font_modify: 'weight', 'bold' | font_face: font_display: 'swap' }}
+  {{ settings.type_heading_font | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }}
 
   :root {
-    --font-primary--family: {{ settings.type_primary_font.family }}, {{ settings.type_primary_font.fallback_families }};
-    --font-primary--style: {{ settings.type_primary_font.style }};
-    --font-primary--weight: {{ settings.type_primary_font.weight }};
-    --page-width: {{ settings.max_page_width }};
-    --page-margin: {{ settings.min_page_margin }}px;
-    --color-background: {{ settings.background_color }};
-    --color-foreground: {{ settings.foreground_color }};
-    --style-border-radius-inputs: {{ settings.input_corner_radius }}px;
+    /* ── Typography ──────────────────────────────────────── */
+    --font-body:          {{ settings.type_body_font.family }}, {{ settings.type_body_font.fallback_families }};
+    --font-body-weight:   {{ settings.type_body_font.weight }};
+    --font-body-style:    {{ settings.type_body_font.style }};
+
+    --font-heading:         {{ settings.type_heading_font.family }}, {{ settings.type_heading_font.fallback_families }};
+    --font-heading-weight:  {{ settings.type_heading_font.weight }};
+    --font-heading-style:   {{ settings.type_heading_font.style }};
+
+    /* ── Colors ──────────────────────────────────────────── */
+    --color-bg:           {{ settings.color_background }};
+    --color-bg-subtle:    {{ settings.color_background | color_darken: 3 }};
+    --color-text:         {{ settings.color_text }};
+    --color-text-muted:   {{ settings.color_text | color_modify: 'alpha', 0.45 }};
+    --color-accent:       {{ settings.color_accent }};
+    --color-border:       {{ settings.color_text | color_modify: 'alpha', 0.12 }};
+    --color-overlay:      {{ settings.color_text | color_modify: 'alpha', 0.5 }};
+
+    /* ── Layout ──────────────────────────────────────────── */
+    --page-width:   {{ settings.page_width }};
+    --page-margin:  {{ settings.page_margin }}px;
+    --header-height: 4rem;
+
+    /* ── Shape ───────────────────────────────────────────── */
+    --radius-input: {{ settings.input_radius }}px;
   }
 {% endstyle %}

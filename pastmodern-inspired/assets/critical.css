@@ -31,17 +31,17 @@ input,
 textarea,
 select {
   font: inherit;
-  border-radius: var(--style-border-radius-inputs);
+  border-radius: var(--radius-input);
 }
 
 select {
-  background-color: var(--color-background);
+  background-color: var(--color-bg);
   color: currentcolor;
 }
 
 dialog {
-  background-color: var(--color-background);
-  color: var(--color-foreground);
+  background-color: var(--color-bg);
+  color: var(--color-text);
 }
 
 p {
@@ -73,9 +73,9 @@ p:empty {
 
 /** Theme styles below */
 body {
-  font-family: var(--font-primary--family);
-  background-color: var(--color-background);
-  color: var(--color-foreground);
+  font-family: var(--font-body);
+  background-color: var(--color-bg);
+  color: var(--color-text);
 }
 
 /** Section layout utilities */
