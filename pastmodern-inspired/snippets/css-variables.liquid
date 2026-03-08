@@ -53,10 +53,10 @@
 
     /* ── Section vertical rhythm ─────────────────────────── */
     {%- if settings.section_spacing == 'compact' -%}
-      --section-spacing: clamp(2.5rem, 5vw, 4.5rem);
+      --section-spacing: clamp(1.75rem, 3.5vw, 3rem);
     {%- elsif settings.section_spacing == 'comfortable' -%}
-      --section-spacing: clamp(3.5rem, 7vw, 7rem);
+      --section-spacing: clamp(2.75rem, 5.5vw, 5rem);
     {%- else -%}
-      --section-spacing: clamp(5rem, 10vw, 10rem);
+      --section-spacing: clamp(4rem, 8vw, 8rem);
     {%- endif -%}  }
 {% endstyle %}

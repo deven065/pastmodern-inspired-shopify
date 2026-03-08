@@ -8,7 +8,10 @@
     },
     "header": {
       "type": "header",
-      "settings": {}
+      "settings": {
+        "header_bg": "#2C5546",
+        "header_text": "#F5F4F0"
+      }
     }
   },
   "order": [

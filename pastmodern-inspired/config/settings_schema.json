@@ -146,7 +146,7 @@
             "label": "Generous"
           }
         ],
-        "default": "generous",
+        "default": "compact",
         "info": "Vertical breathing room between page sections."
       },
       {
