@@ -76,9 +76,8 @@ img {
 
 /* ── Eyebrow label ─────────────────────────────────────────── */
 /*
- * Sulu Luxe brand signature: ultra-spaced uppercase label in accent
- * that introduces section titles. Used globally; section-specific
- * overrides (e.g. .hero__eyebrow) take precedence where needed.
+ * Sand Taupe — warm, understated prestige label.
+ * Emerald is reserved for buttons and interaction states only.
  */
 .eyebrow {
   font-family: var(--font-body);
@@ -87,7 +86,7 @@ img {
   font-weight: 400;
   letter-spacing: var(--tracking-brand, 0.18em);
   text-transform: uppercase;
-  color: var(--color-accent);
+  color: var(--color-sand);
   margin: 0;
   display: block;
 }
@@ -156,8 +155,9 @@ img {
   color: var(--color-text-muted);
 }
 
+/* Warm gold-toned sale price — more expensive than green */
 .price--sale {
-  color: var(--color-accent);
+  color: var(--color-gold);
 }
 
 /* ── Responsive images ─────────────────────────────────────── */
@@ -193,9 +193,13 @@ img {
 
 .tag-list__item a:hover,
 .tag-list__item--active a {
-  background-color: var(--color-text);
+  background-color: var(--color-accent);
   color: var(--color-bg);
-  border-color: var(--color-text);
+  border-color: var(--color-accent);
+  transition:
+    background-color var(--duration-measured) var(--ease-brand),
+    color            var(--duration-measured) var(--ease-brand),
+    border-color     var(--duration-measured) var(--ease-brand);
 }
 
 /* ── Quantity input ────────────────────────────────────────── */
@@ -268,9 +272,9 @@ img {
 
 .pagination a:hover,
 .pagination .current {
-  background-color: var(--color-text);
+  background-color: var(--color-accent);
   color: var(--color-bg);
-  border-color: var(--color-text);
+  border-color: var(--color-accent);
   transition:
     background-color var(--duration-measured) var(--ease-brand),
     color            var(--duration-measured) var(--ease-brand),

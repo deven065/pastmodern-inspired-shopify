@@ -9,6 +9,9 @@
  */
 {
   "current": {
-    "section_spacing": "compact"
+    "section_spacing": "compact",
+    "color_background": "#F7F3EC",
+    "color_text": "#1E1D1A",
+    "color_accent": "#214630"
   }
 }

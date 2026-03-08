@@ -342,12 +342,12 @@
     color: var(--color-bg);
   }
 
-  /* Sale — left, emerald accent, minimal */
+  /* Sale — left, gold-tinted minimal stamp */
   .product-card__badge--sale {
     left: var(--space-4);
     background-color: transparent;
-    color: var(--color-accent);
-    outline: 1px solid color-mix(in srgb, var(--color-accent) 35%, transparent);
+    color: var(--color-gold);
+    outline: 1px solid color-mix(in srgb, var(--color-gold) 45%, transparent);
     outline-offset: -1px;
   }
 
@@ -405,7 +405,7 @@
   }
 
   .product-card__quick-add-btn:not([disabled]):not([aria-disabled="true"]):hover {
-    background-color: var(--color-text);
+    background-color: var(--color-accent);
     color: var(--color-bg);
   }
 
@@ -477,6 +477,26 @@
     color: var(--color-text-muted);
   }
 
+  /* ── Rating star ─────────────────────────────────────────── */
+  .product-card__rating-star {
+    color: var(--color-gold);
+    flex-shrink: 0;
+  }
+
+  .product-card__rating-value {
+    font-size: var(--text-xs);
+    font-style: normal;
+    letter-spacing: var(--tracking-wide);
+    color: var(--color-text);
+  }
+
+  .product-card__rating-count {
+    font-size: var(--text-xs);
+    font-style: normal;
+    letter-spacing: var(--tracking-wide);
+    color: var(--color-text-muted);
+  }
+
   /* Scoped overrides — keep global theme.css definitions, refine here */
   .product-card__price-row .price--compare {
     opacity: 0.5;
@@ -484,7 +504,7 @@
   }
 
   .product-card__price-row .price--sale {
-    color: var(--color-accent);
+    color: var(--color-gold);
   }
 
   .product-card__price-row .price--sold-out {

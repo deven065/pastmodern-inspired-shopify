@@ -63,23 +63,23 @@
       {
         "type": "color",
         "id": "color_background",
-        "default": "#F5F4F0",
+        "default": "#F7F3EC",
         "label": "Background",
-        "info": "Warm ivory — the Sulu Luxe canvas."
+        "info": "Ivory Mist — the Sulu Luxe canvas."
       },
       {
         "type": "color",
         "id": "color_text",
-        "default": "#1E1D1B",
+        "default": "#1E1D1A",
         "label": "Text",
-        "info": "Warm near-black — depth without harshness against ivory."
+        "info": "Charcoal Ink — soft warm-black, elegant against ivory."
       },
       {
         "type": "color",
         "id": "color_accent",
-        "default": "#2C5546",
+        "default": "#214630",
         "label": "Accent",
-        "info": "Sulu Luxe emerald — appears sparingly on sale prices, active states, eyebrow labels, and focus rings."
+        "info": "Deep Emerald — used on buttons, selected states, footer. Heritage Green (#2B5F41) is the hover state."
       }
     ]
   },

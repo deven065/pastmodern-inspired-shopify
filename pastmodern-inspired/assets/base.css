@@ -223,29 +223,30 @@ select {
   pointer-events: none;
 }
 
-/* Filled — dark bg, light text */
+/* Filled — Deep Emerald bg, Ivory Mist text */
 .btn-primary {
-  background-color: var(--color-text);
+  background-color: var(--color-accent);
   color: var(--color-bg);
-  border-color: var(--color-text);
+  border-color: var(--color-accent);
 }
 
 .btn-primary:hover {
-  background-color: color-mix(in srgb, var(--color-text) 80%, transparent);
-  border-color:     color-mix(in srgb, var(--color-text) 80%, transparent);
+  background-color: var(--color-accent-hover);
+  border-color:     var(--color-accent-hover);
   color: var(--color-bg);
 }
 
-/* Outlined — transparent with dark border */
+/* Outlined — transparent with Mist Border, Charcoal Ink text */
 .btn-secondary {
   background-color: transparent;
   color: var(--color-text);
-  border-color: var(--color-text);
+  border-color: var(--color-border);
 }
 
 .btn-secondary:hover {
-  background-color: var(--color-text);
-  color: var(--color-bg);
+  background-color: var(--color-bg-warm);
+  color: var(--color-text);
+  border-color: color-mix(in srgb, var(--color-text) 35%, transparent);
 }
 
 /* Ghost — understated text link with reveal underline */

@@ -20,16 +20,34 @@
     --font-heading-weight: {{ settings.type_heading_font.weight }};
     --font-heading-style:  {{ settings.type_heading_font.style }};
 
-    /* ── Colors ─────────────────────────────────────────────── */
-    --color-bg:          {{ settings.color_background }};
-    --color-bg-subtle:   {{ settings.color_background | color_darken: 3 }};
-    --color-text:        {{ settings.color_text }};
-    --color-text-muted:  {{ settings.color_text | color_modify: 'alpha', 0.50 }};
-    --color-accent:      {{ settings.color_accent }};
-    --color-border:        {{ settings.color_text | color_modify: 'alpha', 0.11 }};
-    --color-overlay:       {{ settings.color_text | color_modify: 'alpha', 0.48 }};
-    --color-accent-subtle: {{ settings.color_accent | color_modify: 'alpha', 0.07 }};
-    --color-accent-dim:    {{ settings.color_accent | color_modify: 'alpha', 0.16 }};
+    /* ── Colors — merchant-controllable ────────────────────── */
+    --color-bg:     {{ settings.color_background }};
+    --color-text:   {{ settings.color_text }};
+    --color-accent: {{ settings.color_accent }};
+
+    /* ── Colors — Sulu Luxe fixed palette ───────────────────── */
+    /* Neutrals */
+    --color-bg-warm:        #EFE7DA;   /* Warm Cream — subtle section variation   */
+    --color-bg-stone:       #DCCFBE;   /* Stone Beige — stronger section contrast */
+    --color-bg-subtle:      #EFE7DA;   /* Alias → Warm Cream (used for image bgs) */
+    --color-border:         #E7DFD2;   /* Mist Border — borders, dividers, inputs */
+    --color-text-muted:     #8A847C;   /* Warm mid-tone — captions, secondary UI  */
+    --color-text-secondary: #4A4944;   /* Soft Graphite — secondary body text     */
+    --color-overlay:        {{ settings.color_text | color_modify: 'alpha', 0.48 }};
+
+    /* Emerald family */
+    --color-accent-hover:   #2B5F41;   /* Heritage Green — hover on primary accent */
+    --color-accent-soft:    #366F4C;   /* Soft Emerald — lighter accent context    */
+    --color-sage:           #7D947F;   /* Muted Sage — subtle green tint           */
+    --color-accent-subtle:  color-mix(in srgb, {{ settings.color_accent }} 8%, transparent);
+    --color-accent-dim:     color-mix(in srgb, {{ settings.color_accent }} 18%, transparent);
+
+    /* Gold family — sparingly as micro-luxury accents */
+    --color-gold:           #D6C08A;   /* Antique Gold — stars, micro accents  */
+    --color-gold-soft:      #C8B27A;   /* Soft Gold — hover/alternate gold     */
+
+    /* Sand */
+    --color-sand:           #B7AA98;   /* Sand Taupe — UI separation, muted elements */
 
     /* ── Layout ─────────────────────────────────────────────────── */
     --page-width:    {{ settings.page_width }};
