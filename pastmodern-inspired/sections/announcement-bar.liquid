@@ -27,7 +27,7 @@
           aria-label="Dismiss announcement"
           data-announcement-close
         >
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" width="14" height="14">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" width="12" height="12">
             <path d="M18 6 6 18M6 6l12 12"/>
           </svg>
         </button>
@@ -47,13 +47,13 @@
     align-items: center;
     justify-content: center;
     gap: var(--space-4);
-    padding-block: var(--space-3);
+    padding-block: 10px;
     padding-inline: var(--space-6);
   }
 
   .announcement-bar__text {
     font-size: var(--text-xs);
-    letter-spacing: var(--tracking-brand, 0.18em);
+    letter-spacing: 0.14em;
     text-align: center;
     text-decoration: none;
     color: inherit;
@@ -78,16 +78,48 @@
     cursor: pointer;
     padding: var(--space-1);
     flex-shrink: 0;
-    opacity: 0.6;
-    transition: opacity var(--duration-measured) var(--ease-brand);
+    opacity: 0.4;
+    transition: opacity var(--duration-base) var(--ease-default);
   }
 
   .announcement-bar__close:hover {
-    opacity: 1;
+    opacity: 0.9;
   }
 
   .announcement-bar[hidden] {
     display: none;
+  }
+
+  /* ── Mobile refinements ── */
+  @media (max-width: 56.25rem) {
+    .announcement-bar__inner {
+      padding-block: 8px;
+      padding-inline: var(--space-4);
+      gap: var(--space-3);
+      /* Relative positioning for absolute-positioned close button */
+      position: relative;
+    }
+
+    /* Centered text regardless of dismiss button presence */
+    .announcement-bar--dismissible .announcement-bar__inner {
+      padding-inline-end: 2.75rem;
+    }
+
+    .announcement-bar__text {
+      letter-spacing: 0.10em;
+    }
+
+    /* Close button anchored to the right, not part of flex flow */
+    .announcement-bar__close {
+      position: absolute;
+      inset-block: 0;
+      inset-inline-end: 0;
+      min-width: 2.75rem;
+      min-height: 100%;
+      margin: 0;
+      padding: 0;
+      opacity: 0.35;
+    }
   }
 {% endstylesheet %}
 
