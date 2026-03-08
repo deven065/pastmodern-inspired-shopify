@@ -17,26 +17,10 @@
     assign show_pickers = false
   endif
 
-  # Find Color and Size option indices for special treatment
-  assign color_option_index = nil
-  assign size_option_index  = nil
-  for option in product.options_with_values
-    assign opt_down = option.name | downcase
-    if opt_down == 'color' or opt_down == 'colour'
-      assign color_option_index = forloop.index0
-    endif
-    if opt_down == 'size'
-      assign size_option_index = forloop.index0
-    endif
-  endfor
-
   # Section settings
   assign show_vendor   = section.settings.show_vendor
   assign show_quantity = section.settings.show_quantity
   assign show_share    = section.settings.show_share
-
-  # Breadcrumb
-  assign show_breadcrumb = section.settings.show_breadcrumb
 -%}
 
 {{- 'product.css' | asset_url | stylesheet_tag -}}
@@ -168,7 +152,20 @@
       >
         {{ current_variant.price | money }}
       </span>
+
+      {%- comment -%} Low-stock signal ── {%- endcomment -%}
+      {%- if current_variant.inventory_management == 'shopify'
+            and current_variant.inventory_policy == 'deny'
+            and current_variant.inventory_quantity > 0
+            and current_variant.inventory_quantity <= 5 -%}
+        <span class="product-purchase__stock-signal">
+          Only {{ current_variant.inventory_quantity }} left
+        </span>
+      {%- endif -%}
+
     </div>
+
+    <hr class="product-divider" aria-hidden="true">
 
     {%- comment -%} Short description ── {%- endcomment -%}
     {%- assign short_desc = mf_short_desc -%}
@@ -185,7 +182,7 @@
     <form
       class="product-form"
       method="post"
-      action="/cart/add"
+      action="{{ routes.cart_add_url }}"
       enctype="multipart/form-data"
       data-product-form
       novalidate
@@ -324,6 +321,22 @@
       <div class="product-form__error" data-form-error hidden role="alert" aria-live="assertive"></div>
 
     </form>
+
+    {%- comment -%} Trust bar ── {%- endcomment -%}
+    <div class="product-trust" aria-label="Purchase assurances">
+      <div class="product-trust__item">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span>Secure checkout</span>
+      </div>
+      <div class="product-trust__item">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M9 14H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5"/><path d="m15 7 5 5-5 5"/><path d="M20 12H9"/></svg>
+        <span>Free returns</span>
+      </div>
+      <div class="product-trust__item">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20A14.5 14.5 0 0 0 12 2"/><path d="M2 12h20"/></svg>
+        <span>Worldwide delivery</span>
+      </div>
+    </div>
 
     {%- comment -%} Delivery note ── {%- endcomment -%}
     {%- assign delivery_note = mf_delivery | default: section.settings.delivery_text -%}

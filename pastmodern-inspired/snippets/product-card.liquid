@@ -6,6 +6,7 @@
   @param {string}  [image_ratio]        - CSS aspect-ratio value, e.g. '3/4' (default '3/4')
   @param {string}  [sizes]              - img sizes attribute (default responsive)
   @param {boolean} [show_quick_add]     - Show quick-add button (default true)
+  @param {boolean} [show_hover_image]   - Show hover/secondary image on mouse-over (default true)
   @param {boolean} [show_sizes]         - Show size pills (default true)
   @param {boolean} [show_vendor]        - Show brand name above title (default false)
   @param {boolean} [lazy]               - Lazy-load image (default true)
@@ -19,6 +20,7 @@
   assign ratio       = image_ratio | default: '3/4'
   assign img_sizes   = sizes | default: '(max-width: 48rem) 50vw, (max-width: 90rem) 33vw, 25vw'
   assign do_quick    = show_quick_add | default: true
+  assign do_hover    = show_hover_image | default: true
   assign do_sizes    = show_sizes | default: true
   assign do_vendor   = show_vendor | default: false
   assign img_loading = lazy | default: true
@@ -105,7 +107,7 @@
       {%- endif -%}
 
       {%- comment -%} Hover image {%- endcomment -%}
-      {%- if hover_img != blank -%}
+      {%- if hover_img != blank and do_hover -%}
         {{
           hover_img
           | image_url: width: 800
