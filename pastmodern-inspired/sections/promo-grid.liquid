@@ -29,6 +29,11 @@
           assign card_subtext = block.settings.subtext
           assign card_label   = block.settings.cta_label
           assign card_url     = block.settings.cta_url | default: '#'
+          if forloop.index <= 2
+            assign card_loading = 'eager'
+          else
+            assign card_loading = 'lazy'
+          endif
         -%}
         <li
           class="promo-card"
