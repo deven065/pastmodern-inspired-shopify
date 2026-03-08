@@ -1,0 +1,453 @@
+{%- liquid
+  assign current_variant = product.selected_or_first_available_variant
+
+  # Metafields
+  assign mf_short_desc  = product.metafields.custom.short_description.value
+  assign mf_delivery    = product.metafields.custom.delivery_timeline.value
+  assign mf_size_guide  = product.metafields.custom.size_guide_url.value
+
+  # Gallery
+  assign media_count  = product.media.size
+  assign first_media  = product.featured_media | default: product.media.first
+  assign gallery_ratio = section.settings.gallery_ratio | default: '3/4'
+
+  # Single-variant check — if only "Default Title" option, hide pickers
+  assign show_pickers = true
+  if product.variants.size == 1 and product.options.first == 'Title'
+    assign show_pickers = false
+  endif
+
+  # Find Color and Size option indices for special treatment
+  assign color_option_index = nil
+  assign size_option_index  = nil
+  for option in product.options_with_values
+    assign opt_down = option.name | downcase
+    if opt_down == 'color' or opt_down == 'colour'
+      assign color_option_index = forloop.index0
+    endif
+    if opt_down == 'size'
+      assign size_option_index = forloop.index0
+    endif
+  endfor
+
+  # Section settings
+  assign show_vendor   = section.settings.show_vendor
+  assign show_quantity = section.settings.show_quantity
+  assign show_share    = section.settings.show_share
+
+  # Breadcrumb
+  assign show_breadcrumb = section.settings.show_breadcrumb
+-%}
+
+{{- 'product.css' | asset_url | stylesheet_tag -}}
+<script src="{{ 'product.js' | asset_url }}" defer></script>
+
+{%- comment -%} Expose product data to JS (used by VariantPicker in theme.js) {%- endcomment -%}
+<script>window.__product = {{ product | json }};</script>
+
+<article
+  class="product-layout"
+  id="product-{{ product.id }}"
+  itemscope
+  itemtype="https://schema.org/Product"
+  data-product-id="{{ product.id }}"
+>
+
+  {%- comment -%} ── Left: image gallery ── {%- endcomment -%}
+  <div
+    class="product-gallery{% if media_count <= 1 %} product-gallery--single{% endif %}"
+    data-product-gallery
+  >
+
+    {%- comment -%} Vertical thumbnail strip — hidden for single-media products {%- endcomment -%}
+    {%- if media_count > 1 -%}
+      <div
+        class="product-gallery__thumbs"
+        role="list"
+        aria-label="Product images"
+      >
+        {%- for media in product.media -%}
+          <button
+            class="product-gallery__thumb{% if forloop.first %} is-active{% endif %}"
+            type="button"
+            role="listitem"
+            data-thumb
+            data-media-id="{{ media.id }}"
+            data-full-src="{{ media | image_url: width: 1200 }}"
+            data-full-srcset="{{ media | image_url: width: 500 }} 500w, {{ media | image_url: width: 800 }} 800w, {{ media | image_url: width: 1200 }} 1200w, {{ media | image_url: width: 1600 }} 1600w"
+            aria-pressed="{{ forloop.first | json }}"
+            aria-label="Image {{ forloop.index }} of {{ media_count }}"
+          >
+            {{
+              media
+              | image_url: width: 160
+              | image_tag:
+                  width: 72,
+                  height: 96,
+                  loading: 'lazy',
+                  alt: media.alt | default: product.title | escape
+            }}
+          </button>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    {%- comment -%} Main image {%- endcomment -%}
+    <div
+      class="product-gallery__main"
+      style="--gallery-ratio: {{ gallery_ratio }};"
+    >
+      {%- if first_media != blank -%}
+        {{
+          first_media
+          | image_url: width: 1400
+          | image_tag:
+              data-gallery-main: '',
+              width: first_media.preview_image.width,
+              height: first_media.preview_image.height,
+              sizes: '(max-width: 62rem) 100vw, 55vw',
+              widths: '400, 700, 900, 1200, 1400',
+              loading: 'eager',
+              fetchpriority: 'high',
+              itemprop: 'image',
+              class: 'product-gallery__img',
+              alt: first_media.alt | default: product.title | escape
+        }}
+      {%- else -%}
+        <div class="product-gallery__placeholder">
+          {{ 'product-apparel-1' | placeholder_svg_tag: 'product-gallery__placeholder-svg' }}
+        </div>
+      {%- endif -%}
+    </div>
+
+  </div>
+
+  {%- comment -%} ── Right: purchase panel ── {%- endcomment -%}
+  <div class="product-purchase">
+
+    {%- comment -%} Vendor ── {%- endcomment -%}
+    {%- if show_vendor and product.vendor != blank -%}
+      <p
+        class="eyebrow product-purchase__vendor"
+        itemprop="brand"
+        itemscope
+        itemtype="https://schema.org/Brand"
+      >
+        <span itemprop="name">{{ product.vendor | escape }}</span>
+      </p>
+    {%- endif -%}
+
+    {%- comment -%} Title ── {%- endcomment -%}
+    <h1 class="product-purchase__title" itemprop="name">
+      {{ product.title | escape }}
+    </h1>
+
+    {%- comment -%} Price ── {%- endcomment -%}
+    <div
+      class="product-purchase__price-row"
+      itemprop="offers"
+      itemscope
+      itemtype="https://schema.org/Offer"
+    >
+      <meta itemprop="priceCurrency" content="{{ cart.currency.iso_code }}">
+      <meta itemprop="availability" content="https://schema.org/{% if current_variant.available %}InStock{% else %}OutOfStock{% endif %}">
+
+      {%- if current_variant.compare_at_price > current_variant.price -%}
+        <s class="price--compare" data-compare-price>
+          {{ current_variant.compare_at_price | money }}
+        </s>
+      {%- else -%}
+        <s class="price--compare" data-compare-price hidden></s>
+      {%- endif -%}
+
+      <span
+        class="product-purchase__price{% if current_variant.compare_at_price > current_variant.price %} price--sale{% endif %}"
+        data-price
+        itemprop="price"
+        content="{{ current_variant.price | divided_by: 100.0 }}"
+      >
+        {{ current_variant.price | money }}
+      </span>
+    </div>
+
+    {%- comment -%} Short description ── {%- endcomment -%}
+    {%- assign short_desc = mf_short_desc -%}
+    {%- if short_desc == blank and section.settings.description_position == 'above' -%}
+      {%- assign short_desc = product.description -%}
+    {%- endif -%}
+    {%- if short_desc != blank -%}
+      <div class="product-purchase__short-desc" itemprop="description">
+        {{ short_desc }}
+      </div>
+    {%- endif -%}
+
+    {%- comment -%} ── Purchase form ── {%- endcomment -%}
+    <form
+      class="product-form"
+      method="post"
+      action="/cart/add"
+      enctype="multipart/form-data"
+      data-product-form
+      novalidate
+    >
+      <input type="hidden" name="id" value="{{ current_variant.id }}">
+
+      {%- comment -%} Variant option pickers ── {%- endcomment -%}
+      {%- if show_pickers -%}
+        <div class="product-options" data-variant-picker>
+
+          {%- for option in product.options_with_values -%}
+            {%- liquid
+              assign opt_down     = option.name | downcase
+              assign opt_index    = forloop.index0
+              assign is_color_opt = false
+              if opt_down == 'color' or opt_down == 'colour'
+                assign is_color_opt = true
+              endif
+              assign is_size_opt = false
+              if opt_down == 'size'
+                assign is_size_opt = true
+              endif
+            -%}
+
+            <div class="product-options__group" data-option-group>
+
+              <div class="product-options__label-row">
+                <span class="product-options__label eyebrow">{{ option.name | escape }}</span>
+                {%- if is_size_opt and mf_size_guide != blank and section.settings.show_size_guide -%}
+                  <a
+                    href="{{ mf_size_guide }}"
+                    class="product-options__guide"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >Size guide</a>
+                {%- endif -%}
+              </div>
+
+              <div class="product-options__values">
+                {%- for value in option.values -%}
+                  {%- liquid
+                    # Is this value selected on the current variant?
+                    assign is_selected = false
+                    if current_variant.options[opt_index] == value
+                      assign is_selected = true
+                    endif
+
+                    # Is any variant with this value available?
+                    assign val_available = false
+                    for variant in product.variants
+                      if variant.options[opt_index] == value and variant.available
+                        assign val_available = true
+                        break
+                      endif
+                    endfor
+                  -%}
+
+                  {%- if is_color_opt -%}
+                    <button
+                      class="opt-swatch{% unless val_available %} opt-swatch--oos{% endunless %}{% if is_selected %} is-selected{% endif %}"
+                      type="button"
+                      data-variant-option="{{ value | escape }}"
+                      aria-pressed="{{ is_selected | json }}"
+                      aria-label="{{ value | escape }}{% unless val_available %} — sold out{% endunless %}"
+                      title="{{ value | escape }}"
+                      style="--swatch-bg: {{ value | downcase | replace: ' ', '' }};"
+                    >
+                      <span class="visually-hidden">{{ value | escape }}</span>
+                    </button>
+
+                  {%- else -%}
+                    <button
+                      class="opt-pill{% unless val_available %} opt-pill--oos{% endunless %}{% if is_selected %} is-selected{% endif %}"
+                      type="button"
+                      data-variant-option="{{ value | escape }}"
+                      aria-pressed="{{ is_selected | json }}"
+                      {%- unless val_available %} aria-label="{{ value | escape }} — sold out"{% endunless %}
+                    >{{ value | escape }}</button>
+
+                  {%- endif -%}
+                {%- endfor -%}
+              </div>
+
+            </div>
+          {%- endfor -%}
+
+        </div>
+      {%- endif -%}
+
+      {%- comment -%} Quantity stepper ── {%- endcomment -%}
+      {%- if show_quantity -%}
+        <div class="product-qty">
+          <span class="product-qty__label eyebrow">Quantity</span>
+          <div class="product-qty__control" data-qty-wrap>
+            <button class="product-qty__step" type="button" data-qty-dec aria-label="Decrease quantity">
+              <svg width="12" height="2" viewBox="0 0 12 2" fill="currentColor" aria-hidden="true"><rect width="12" height="2"/></svg>
+            </button>
+            <input
+              class="product-qty__input"
+              type="number"
+              name="quantity"
+              value="1"
+              min="1"
+              max="{{ current_variant.inventory_quantity | default: 999 }}"
+              data-qty-input
+              aria-label="Quantity"
+            >
+            <button class="product-qty__step" type="button" data-qty-inc aria-label="Increase quantity">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true"><rect x="5" width="2" height="12"/><rect y="5" width="12" height="2"/></svg>
+            </button>
+          </div>
+        </div>
+      {%- else -%}
+        <input type="hidden" name="quantity" value="1">
+      {%- endif -%}
+
+      {%- comment -%} Add to cart ── {%- endcomment -%}
+      <div class="product-atc">
+        <button
+          class="btn btn-primary btn-full product-atc__btn"
+          type="submit"
+          data-atc
+          data-label-add="{{ section.settings.atc_label | default: 'Add to bag' | escape }}"
+          data-label-sold-out="{{ section.settings.sold_out_label | default: 'Sold out' | escape }}"
+          {%- unless current_variant.available %} disabled aria-disabled="true"{% endunless %}
+          aria-live="polite"
+        >
+          {%- if current_variant.available -%}
+            {{ section.settings.atc_label | default: 'Add to bag' }}
+          {%- else -%}
+            {{ section.settings.sold_out_label | default: 'Sold out' }}
+          {%- endif -%}
+        </button>
+      </div>
+
+      <div class="product-form__error" data-form-error hidden role="alert" aria-live="assertive"></div>
+
+    </form>
+
+    {%- comment -%} Delivery note ── {%- endcomment -%}
+    {%- assign delivery_note = mf_delivery | default: section.settings.delivery_text -%}
+    {%- if delivery_note != blank -%}
+      <p class="product-purchase__delivery text-muted">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" style="display:inline-block;vertical-align:-2px;flex-shrink:0;"><path d="M5 12h14m-5-5 5 5-5 5"/></svg>
+        {{ delivery_note | escape }}
+      </p>
+    {%- endif -%}
+
+    {%- comment -%} Social share ── {%- endcomment -%}
+    {%- if show_share -%}
+      <div class="product-purchase__share">
+        <a
+          href="https://twitter.com/intent/tweet?url={{ shop.url }}{{ product.url | url_encode }}&text={{ product.title | url_encode }}"
+          class="btn-ghost product-share__link"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Share on X (Twitter)"
+        >
+          Share
+        </a>
+      </div>
+    {%- endif -%}
+
+  </div>
+
+</article>
+
+
+{% schema %}
+{
+  "name": "Product main",
+  "tag": "section",
+  "class": "shopify-section--product-main",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Gallery"
+    },
+    {
+      "type": "select",
+      "id": "gallery_ratio",
+      "label": "Image ratio",
+      "options": [
+        { "value": "2/3",  "label": "2:3 tall portrait" },
+        { "value": "3/4",  "label": "3:4 portrait" },
+        { "value": "4/5",  "label": "4:5 portrait" },
+        { "value": "1/1",  "label": "1:1 square" }
+      ],
+      "default": "3/4"
+    },
+    {
+      "type": "header",
+      "content": "Product info"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "label": "Show brand name",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "description_position",
+      "label": "Description position",
+      "options": [
+        { "value": "above", "label": "Above the form (from product description)" },
+        { "value": "accordion", "label": "In the accordion section" }
+      ],
+      "default": "accordion",
+      "info": "When 'Above the form' is selected, the full product description appears here. Otherwise, use the Product accordion section below."
+    },
+    {
+      "type": "header",
+      "content": "Purchasing"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_quantity",
+      "label": "Show quantity selector",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_size_guide",
+      "label": "Show size guide link",
+      "info": "Requires product metafield: custom.size_guide_url",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "atc_label",
+      "label": "Add to bag button label",
+      "default": "Add to bag"
+    },
+    {
+      "type": "text",
+      "id": "sold_out_label",
+      "label": "Sold out label",
+      "default": "Sold out"
+    },
+    {
+      "type": "text",
+      "id": "delivery_text",
+      "label": "Delivery text (fallback)",
+      "placeholder": "Free delivery on orders over £200",
+      "info": "Overridden by product metafield: custom.delivery_timeline"
+    },
+    {
+      "type": "header",
+      "content": "Extras"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_share",
+      "label": "Show share link",
+      "default": false
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product main"
+    }
+  ]
+}
+{% endschema %}

@@ -1,20 +1,78 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "sections": {
-    "main": {
-      "type": "product",
+    "product-main": {
+      "type": "product-main",
+      "settings": {
+        "show_vendor": true,
+        "show_quantity": true,
+        "show_size_guide": true,
+        "gallery_ratio": "3/4",
+        "description_position": "accordion",
+        "atc_label": "Add to bag",
+        "sold_out_label": "Sold out",
+        "delivery_text": "",
+        "show_share": false
+      }
+    },
+    "product-accordion": {
+      "type": "product-accordion",
+      "blocks": {
+        "description": {
+          "type": "description",
+          "settings": {
+            "heading": "Description",
+            "open_by_default": true
+          }
+        },
+        "fabric": {
+          "type": "fabric",
+          "settings": {
+            "heading": "Fabric & Materials",
+            "open_by_default": false
+          }
+        },
+        "care": {
+          "type": "care",
+          "settings": {
+            "heading": "Care",
+            "open_by_default": false
+          }
+        },
+        "fit": {
+          "type": "fit",
+          "settings": {
+            "heading": "Fit & Sizing",
+            "open_by_default": false
+          }
+        },
+        "shipping": {
+          "type": "shipping",
+          "settings": {
+            "heading": "Shipping",
+            "open_by_default": false
+          }
+        },
+        "returns": {
+          "type": "returns",
+          "settings": {
+            "heading": "Returns & Exchanges",
+            "open_by_default": false
+          }
+        }
+      },
+      "block_order": [
+        "description",
+        "fabric",
+        "care",
+        "fit",
+        "shipping",
+        "returns"
+      ],
       "settings": {}
     }
   },
   "order": [
-    "main"
+    "product-main",
+    "product-accordion"
   ]
 }

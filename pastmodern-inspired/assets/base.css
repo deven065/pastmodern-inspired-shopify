@@ -18,17 +18,17 @@
   --text-5xl:  5.5rem;     /* 88px */
 
   /* Leading */
-  --leading-tight:    1.1;
-  --leading-snug:     1.25;
+  --leading-tight:    1.05;  /* compressed — large editorial headings */
+  --leading-snug:     1.2;
   --leading-relaxed:  1.65;
   --leading-normal:   1.6;
   --leading-loose:    1.8;
 
   /* Tracking */
-  --tracking-tight:   -0.02em;
+  --tracking-tight:   -0.03em;  /* headline compression */
   --tracking-normal:   0em;
   --tracking-wide:     0.04em;
-  --tracking-widest:   0.12em;
+  --tracking-widest:   0.14em;  /* caps labels, buttons, eyebrows */
 
   /* Spacing (4px base) */
   --space-1:  0.25rem;   /*  4px */
@@ -47,8 +47,8 @@
   --space-36: 9rem;      /* 144px */
   --space-40: 10rem;     /* 160px */
 
-  /* Section vertical rhythm */
-  --section-spacing: clamp(var(--space-16), 8vw, var(--space-32));
+  /* Section vertical rhythm — generous editorial breathing room */
+  --section-spacing: clamp(var(--space-20), 10vw, var(--space-40));
 
   /* Motion */
   --ease-default: cubic-bezier(0.25, 0, 0.1, 1);
@@ -59,10 +59,13 @@
   --duration-slow: 400ms;
 
   /* Shape */
-  --radius-sm:   2px;
-  --radius-base: 4px;
-  --radius-lg:   8px;
+  --radius-sm:   1px;
+  --radius-base: 2px;
+  --radius-lg:   3px;
   --radius-pill: 999px;
+
+  /* Fashion ecommerce */
+  --card-ratio: 3/4;  /* portrait — full-length clothing photography */
 }
 
 /* ── Base element styles ───────────────────────────────────── */
@@ -80,18 +83,28 @@ body {
   line-height: var(--leading-normal);
 }
 
-/* Headings */
-h1, h2, h3, h4, h5, h6 {
+/* Headings — elegant italic serif for display levels */
+h1, h2, h3 {
   font-family: var(--font-heading);
   font-weight: var(--font-heading-weight);
-  font-style: var(--font-heading-style, normal);
+  font-style: italic;
   line-height: var(--leading-tight);
   letter-spacing: var(--tracking-tight);
 }
 
-h1 { font-size: clamp(var(--text-3xl), 5vw, var(--text-4xl)); }
-h2 { font-size: clamp(var(--text-2xl), 4vw, var(--text-3xl)); }
-h3 { font-size: clamp(var(--text-xl),  3vw, var(--text-2xl)); }
+/* Sub-headings stay roman — used for UI labels, product names */
+h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
+  font-style: normal;
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-normal);
+}
+
+/* Fluid display scale — dramatic contrast between levels */
+h1 { font-size: clamp(var(--text-3xl), 6vw, var(--text-5xl)); }
+h2 { font-size: clamp(var(--text-2xl), 4vw, var(--text-4xl)); }
+h3 { font-size: clamp(var(--text-xl),  3vw, var(--text-3xl)); }
 h4 { font-size: var(--text-xl); }
 h5 { font-size: var(--text-lg); }
 h6 { font-size: var(--text-md); }
@@ -105,7 +118,7 @@ a {
 }
 
 a:hover {
-  text-decoration-color: var(--color-text);
+  text-decoration-color: currentcolor;
 }
 
 /* Form elements */
@@ -116,27 +129,30 @@ textarea {
   border: 1px solid var(--color-border);
   background-color: var(--color-bg);
   color: var(--color-text);
-  padding: var(--space-3) var(--space-4);
+  font-size: var(--text-sm);  /* refined small form text */
+  padding: var(--space-3) var(--space-5);
   width: 100%;
-  transition: border-color var(--duration-fast) var(--ease-default),
-              outline-color var(--duration-fast) var(--ease-default);
+  transition:
+    border-color var(--duration-fast) var(--ease-default),
+    outline-color var(--duration-fast) var(--ease-default);
 }
 
 input:focus,
 select:focus,
 textarea:focus {
-  outline: 2px solid var(--color-text);
-  outline-offset: -2px;
+  outline: 1px solid var(--color-text);  /* hairline — not chunky */
+  outline-offset: -1px;
   border-color: var(--color-text);
 }
 
 /* ── Buttons ───────────────────────────────────────────────── */
+/* Square, sparse, uppercase — the luxury fashion standard */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: var(--space-2);
-  padding: var(--space-4) var(--space-10);
+  padding: var(--space-4) var(--space-12);
   font-family: var(--font-body);
   font-size: var(--text-xs);
   font-weight: 400;
@@ -145,12 +161,13 @@ textarea:focus {
   text-decoration: none;
   white-space: nowrap;
   border: 1px solid transparent;
-  border-radius: var(--radius-input);
+  border-radius: 0;  /* no rounding — luxury fashion uses square buttons */
   cursor: pointer;
   transition:
-    background-color var(--duration-fast) var(--ease-default),
-    color            var(--duration-fast) var(--ease-default),
-    border-color     var(--duration-fast) var(--ease-default);
+    background-color var(--duration-base) var(--ease-default),
+    color            var(--duration-base) var(--ease-default),
+    border-color     var(--duration-base) var(--ease-default),
+    opacity          var(--duration-fast) var(--ease-default);
 }
 
 .btn:disabled,
@@ -168,8 +185,8 @@ textarea:focus {
 }
 
 .btn-primary:hover {
-  background-color: var(--color-accent);
-  border-color: var(--color-accent);
+  background-color: color-mix(in srgb, var(--color-text) 80%, transparent);
+  border-color: color-mix(in srgb, var(--color-text) 80%, transparent);
 }
 
 /* Outlined — transparent, dark border */
@@ -184,16 +201,23 @@ textarea:focus {
   color: var(--color-bg);
 }
 
-/* Ghost — no border */
+/* Ghost — inline text link with animated underline */
 .btn-ghost {
   background-color: transparent;
   color: var(--color-text);
   border-color: transparent;
   padding-inline: 0;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 3px;
+  transition:
+    text-decoration-color var(--duration-base) var(--ease-default),
+    opacity               var(--duration-fast) var(--ease-default);
 }
 
 .btn-ghost:hover {
-  opacity: 0.6;
+  text-decoration-color: currentcolor;
+  opacity: 0.85;
 }
 
 /* Full-width variant */
@@ -246,6 +270,7 @@ textarea:focus {
 .eyebrow {
   font-family: var(--font-body);
   font-size: var(--text-xs);
+  font-style: normal;   /* always roman — never italic despite h1-h3 default */
   letter-spacing: var(--tracking-widest);
   text-transform: uppercase;
   color: var(--color-text-muted);

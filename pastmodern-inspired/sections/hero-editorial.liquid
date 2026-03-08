@@ -171,7 +171,7 @@
     padding-block: clamp(5rem, 8vw, 10rem);
     display: flex;
     flex-direction: column;
-    gap: var(--space-7, 1.75rem);
+    gap: var(--space-5, 1.25rem);
   }
 
   /* Alignment variants */
@@ -206,7 +206,7 @@
     font-size: var(--text-base);
     line-height: var(--leading-relaxed);
     color: inherit;
-    opacity: 0.82;
+    opacity: 0.72;
     max-width: 38ch;
     margin: 0;
   }
@@ -284,12 +284,11 @@
 
     .hero__actions {
       flex-direction: column;
-      width: 100%;
+      align-items: flex-start;
     }
 
     .hero__btn {
-      width: 100%;
-      text-align: center;
+      min-width: 12rem;
     }
 
     .hero[data-text-align="center"] .hero__content,

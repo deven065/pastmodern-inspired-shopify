@@ -1,0 +1,44 @@
+{% doc %}
+  Renders a single accordion row.
+  Must be placed inside a parent element that has [data-accordion]
+  so theme.js Accordion class can wire up the events.
+
+  @param {string} id        - Unique string for aria-controls linkage
+  @param {string} heading   - Trigger label text (escaped by caller or here)
+  @param {string} content   - HTML body content rendered inside the panel
+  @param {boolean} [open]   - Whether the panel starts open (default false)
+{% enddoc %}
+
+{%- liquid
+  assign acc_id         = 'acc-' | append: id
+  assign acc_content_id = acc_id | append: '-panel'
+  assign is_open        = open | default: false
+-%}
+
+<button
+  class="accordion-item__trigger"
+  data-accordion-trigger
+  type="button"
+  id="{{ acc_id }}"
+  aria-expanded="{{ is_open | json }}"
+  aria-controls="{{ acc_content_id }}"
+>
+  <span>{{ heading | escape }}</span>
+</button>
+
+<div
+  class="accordion-item__panel"
+  data-accordion-content
+  id="{{ acc_content_id }}"
+  aria-labelledby="{{ acc_id }}"
+  role="region"
+  {%- if is_open %}
+  style="max-height: none;"
+  {%- else %}
+  style="max-height: 0;"
+  {%- endif %}
+>
+  <div class="accordion-item__body">
+    {{ content }}
+  </div>
+</div>
