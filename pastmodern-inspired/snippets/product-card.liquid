@@ -1,0 +1,383 @@
+{% doc %}
+  Renders a product card with image, hover image, title, price, badges,
+  size pills, and an optional quick-add button.
+
+  @param {product} product              - The product object (required)
+  @param {string}  [image_ratio]        - CSS aspect-ratio value, e.g. '3/4' (default '3/4')
+  @param {string}  [sizes]              - img sizes attribute (default responsive)
+  @param {boolean} [show_quick_add]     - Show quick-add button (default true)
+  @param {boolean} [show_sizes]         - Show size pills (default true)
+  @param {boolean} [lazy]               - Lazy-load image (default true)
+
+  @example
+  {% render 'product-card', product: product %}
+  {% render 'product-card', product: product, show_quick_add: false, image_ratio: '1/1' %}
+{% enddoc %}
+
+{%- liquid
+  assign ratio       = image_ratio | default: '3/4'
+  assign img_sizes   = sizes | default: '(max-width: 48rem) 50vw, (max-width: 90rem) 33vw, 25vw'
+  assign do_quick    = show_quick_add | default: true
+  assign do_sizes    = show_sizes | default: true
+  assign img_loading = lazy | default: true
+
+  if img_loading
+    assign loading_val = 'lazy'
+  else
+    assign loading_val = 'eager'
+  endif
+
+  # Primary image
+  assign primary_img = product.featured_media
+
+  # Hover image: prefer metafield custom.hover_image, fall back to second media item
+  assign hover_img = product.metafields.custom.hover_image.value
+  if hover_img == blank and product.media.size > 1
+    assign hover_img = product.media[1]
+  endif
+
+  # Badges: metafield first, then sold-out, then on-sale
+  assign badge_text  = product.metafields.custom.badge_text.value
+  assign is_sold_out = true
+  for variant in product.variants
+    if variant.available
+      assign is_sold_out = false
+      break
+    endif
+  endfor
+  assign is_on_sale = false
+  if product.compare_at_price > product.price
+    assign is_on_sale = true
+  endif
+
+  # Size option — find option titled 'Size', 'size', or 'SIZE'
+  assign size_option_index = nil
+  for option in product.options_with_values
+    assign option_down = option.name | downcase
+    if option_down == 'size'
+      assign size_option_index = forloop.index0
+    endif
+  endfor
+
+  # Quick-add: only show for products with one option (or size only)
+  # Use the first available variant for single-variant products
+  assign quick_add_available = false
+  assign quick_add_variant   = nil
+  if product.variants.size == 1
+    assign quick_add_available = true
+    assign quick_add_variant   = product.variants.first
+  endif
+-%}
+
+<div class="product-card" data-product-card>
+  {%- comment -%} ── Media ── {%- endcomment -%}
+  <div class="product-card__media" style="--card-ratio: {{ ratio }};">
+    <a href="{{ product.url }}" class="product-card__media-link" aria-label="{{ product.title | escape }}" tabindex="-1">
+
+      {%- comment -%} Primary image {%- endcomment -%}
+      {%- if primary_img != blank -%}
+        {{
+          primary_img
+          | image_url: width: 800
+          | image_tag:
+              width: primary_img.preview_image.width,
+              height: primary_img.preview_image.height,
+              sizes: img_sizes,
+              widths: '300, 450, 600, 800, 1000',
+              loading: loading_val,
+              fetchpriority: 'auto',
+              class: 'product-card__img product-card__img--primary',
+              alt: primary_img.alt | default: product.title | escape
+        }}
+      {%- else -%}
+        <div class="product-card__no-image">
+          {{ 'product-apparel-2' | placeholder_svg_tag: 'product-card__placeholder-svg' }}
+        </div>
+      {%- endif -%}
+
+      {%- comment -%} Hover image {%- endcomment -%}
+      {%- if hover_img != blank -%}
+        {{
+          hover_img
+          | image_url: width: 800
+          | image_tag:
+              width: hover_img.preview_image.width,
+              height: hover_img.preview_image.height,
+              sizes: img_sizes,
+              widths: '300, 450, 600, 800, 1000',
+              loading: 'lazy',
+              class: 'product-card__img product-card__img--hover',
+              alt: hover_img.alt | default: product.title | escape
+        }}
+      {%- endif -%}
+
+    </a>
+
+    {%- comment -%} Badges {%- endcomment -%}
+    {%- if badge_text != blank -%}
+      <span class="product-card__badge product-card__badge--custom" aria-label="{{ badge_text | escape }}">
+        {{ badge_text }}
+      </span>
+    {%- elsif is_sold_out -%}
+      <span class="product-card__badge product-card__badge--sold-out">Sold out</span>
+    {%- elsif is_on_sale -%}
+      <span class="product-card__badge product-card__badge--sale">Sale</span>
+    {%- endif -%}
+
+    {%- comment -%} Quick add (single-variant products only) {%- endcomment -%}
+    {%- if do_quick and quick_add_available and quick_add_variant.available -%}
+      <div class="product-card__quick-add">
+        <button
+          class="btn btn-primary btn-full product-card__quick-add-btn"
+          data-quick-add
+          data-variant-id="{{ quick_add_variant.id }}"
+          aria-label="Quick add {{ product.title | escape }}"
+        >
+          Add to bag
+        </button>
+      </div>
+    {%- endif -%}
+  </div>
+
+  {%- comment -%} ── Info ── {%- endcomment -%}
+  <div class="product-card__info">
+    <a href="{{ product.url }}" class="product-card__title-link">
+      <p class="product-card__title">{{ product.title }}</p>
+    </a>
+
+    {%- comment -%} Price {%- endcomment -%}
+    <div class="product-card__price-row" aria-label="Price">
+      {%- if is_on_sale -%}
+        <s class="price--compare">{{ product.compare_at_price | money }}</s>
+        <span class="price--sale">{{ product.price | money }}</span>
+      {%- elsif is_sold_out -%}
+        <span class="price--sold-out">{{ product.price | money }}</span>
+      {%- elsif product.price_varies -%}
+        <span class="product-card__price">From {{ product.price_min | money }}</span>
+      {%- else -%}
+        <span class="product-card__price">{{ product.price | money }}</span>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} Size pills {%- endcomment -%}
+    {%- if do_sizes and size_option_index != nil -%}
+      {%- assign size_option = product.options_with_values[size_option_index] -%}
+      {%- if size_option.values.size > 0 -%}
+        <ul class="product-card__sizes" role="list" aria-label="Available sizes">
+          {%- for size_val in size_option.values -%}
+            {%- comment -%} Check if any variant with this size is available {%- endcomment -%}
+            {%- assign size_available = false -%}
+            {%- for variant in product.variants -%}
+              {%- if variant.options[size_option_index] == size_val and variant.available -%}
+                {%- assign size_available = true -%}
+                {%- break -%}
+              {%- endif -%}
+            {%- endfor -%}
+            <li class="product-card__size-pill{% unless size_available %} product-card__size-pill--oos{% endunless %}">
+              {{ size_val }}
+            </li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+    {%- endif -%}
+  </div>
+</div>
+
+{% stylesheet %}
+  /* ── Card shell ────────────────────────────────────────────── */
+  .product-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  /* ── Media box ─────────────────────────────────────────────── */
+  .product-card__media {
+    position: relative;
+    aspect-ratio: var(--card-ratio, 3/4);
+    overflow: hidden;
+    background-color: var(--color-bg-subtle);
+  }
+
+  .product-card__media-link {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Images */
+  .product-card__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+  }
+
+  .product-card__img--primary {
+    z-index: 1;
+    transition: opacity var(--duration-base) var(--ease-default);
+  }
+
+  .product-card__img--hover {
+    z-index: 2;
+    opacity: 0;
+    transition: opacity var(--duration-base) var(--ease-default);
+  }
+
+  .product-card:hover .product-card__img--hover {
+    opacity: 1;
+  }
+
+  .product-card__no-image {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-bg-subtle);
+  }
+
+  .product-card__placeholder-svg {
+    width: 60%;
+    height: 60%;
+    opacity: 0.25;
+  }
+
+  /* ── Badges ────────────────────────────────────────────────── */
+  .product-card__badge {
+    position: absolute;
+    top: var(--space-3);
+    left: var(--space-3);
+    z-index: 3;
+    padding: var(--space-1) var(--space-3);
+    font-size: var(--text-xs);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    line-height: 1.4;
+    pointer-events: none;
+  }
+
+  .product-card__badge--custom,
+  .product-card__badge--sale {
+    background-color: var(--color-text);
+    color: var(--color-bg);
+  }
+
+  .product-card__badge--sold-out {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+  }
+
+  /* ── Quick add ─────────────────────────────────────────────── */
+  .product-card__quick-add {
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    z-index: 4;
+    transform: translateY(100%);
+    opacity: 0;
+    transition:
+      transform var(--duration-base) var(--ease-out),
+      opacity   var(--duration-base) var(--ease-out);
+  }
+
+  .product-card:hover .product-card__quick-add {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  .product-card__quick-add-btn {
+    border-radius: 0;
+    font-size: var(--text-xs);
+    padding-block: var(--space-4);
+  }
+
+  /* ── Info ──────────────────────────────────────────────────── */
+  .product-card__info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding-block-end: var(--space-2);
+  }
+
+  .product-card__title-link {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .product-card__title {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-style: normal;
+    line-height: var(--leading-snug);
+    margin: 0;
+    transition: opacity var(--duration-fast) var(--ease-default);
+  }
+
+  .product-card__title-link:hover .product-card__title {
+    opacity: 0.6;
+  }
+
+  /* ── Price row ─────────────────────────────────────────────── */
+  .product-card__price-row {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    font-size: var(--text-sm);
+  }
+
+  .product-card__price {
+    color: var(--color-text-muted);
+  }
+
+  .price--sold-out {
+    color: var(--color-text-muted);
+  }
+
+  /* ── Size pills ────────────────────────────────────────────── */
+  .product-card__sizes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    margin-block-start: var(--space-1);
+  }
+
+  .product-card__size-pill {
+    font-size: 0.625rem; /* 10px */
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    padding: 2px var(--space-2);
+    border: 1px solid var(--color-border);
+    line-height: 1.6;
+    color: var(--color-text-muted);
+  }
+
+  .product-card__size-pill--oos {
+    opacity: 0.35;
+    text-decoration: line-through;
+  }
+
+  /* ── Touch: always show quick-add on touch devices ─────────── */
+  @media (hover: none) {
+    .product-card__quick-add {
+      position: static;
+      transform: none;
+      opacity: 1;
+      padding-block-start: var(--space-2);
+    }
+
+    .product-card__quick-add-btn {
+      background-color: transparent;
+      color: var(--color-text);
+      border-color: var(--color-border);
+    }
+  }
+{% endstylesheet %}

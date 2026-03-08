@@ -87,39 +87,6 @@ img {
   box-shadow: 0 1px 0 var(--color-border);
 }
 
-/* ── Cart drawer ───────────────────────────────────────────── */
-[data-cart-drawer] {
-  position: fixed;
-  inset-block: 0;
-  inset-inline-end: 0;
-  z-index: 200;
-  width: min(100vw, 26rem);
-  background-color: var(--color-bg);
-  transform: translateX(100%);
-  transition: transform var(--duration-slow) var(--ease-out);
-  display: flex;
-  flex-direction: column;
-}
-
-[data-cart-drawer][open] {
-  transform: translateX(0);
-}
-
-[data-cart-overlay] {
-  position: fixed;
-  inset: 0;
-  z-index: 199;
-  background-color: var(--color-overlay);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity var(--duration-slow) var(--ease-out);
-}
-
-body.cart-open [data-cart-overlay] {
-  opacity: 1;
-  pointer-events: auto;
-}
-
 /* ── Accordion ─────────────────────────────────────────────── */
 [data-accordion-content] {
   max-height: 0;

@@ -1,0 +1,274 @@
+{%- liquid
+  assign cg_per_page  = section.settings.products_per_page
+  assign cg_ratio     = section.settings.image_ratio
+  assign cg_quick_add = section.settings.show_quick_add
+  assign cg_sizes_ui  = section.settings.show_sizes
+
+  # Sizes hint for <img> srcset selection based on desktop column count
+  case section.settings.columns_desktop
+    when '2'
+      assign img_sizes = '(max-width: 48rem) calc(50vw - 1.5rem), calc(48vw - 4rem)'
+    when '3'
+      assign img_sizes = '(max-width: 48rem) calc(50vw - 1.5rem), calc(32vw - 3rem)'
+    else
+      assign img_sizes = '(max-width: 48rem) calc(50vw - 1.5rem), calc(24vw - 2.5rem)'
+  endcase
+-%}
+
+{%- paginate collection.products by cg_per_page -%}
+
+  <div
+    class="collection-grid"
+    style="
+      --cg-cols:     {{ section.settings.columns_desktop }};
+      --cg-cols-mob: {{ section.settings.columns_mobile }};
+    "
+  >
+
+    {%- if paginate.items > 0 -%}
+
+      {%- comment -%} ── Product grid ── {%- endcomment -%}
+      <ul class="collection-grid__list" role="list">
+        {%- for product in collection.products -%}
+          <li class="collection-grid__item">
+            {%- render 'product-card',
+              product:        product,
+              image_ratio:    cg_ratio,
+              sizes:          img_sizes,
+              show_quick_add: cg_quick_add,
+              show_sizes:     cg_sizes_ui,
+              lazy:           true
+            -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+
+      {%- comment -%} ── Pagination ── {%- endcomment -%}
+      {%- if paginate.pages > 1 -%}
+        <nav class="cg-pagination" aria-label="Collection pages">
+          <ul class="cg-pagination__list" role="list">
+
+            {%- if paginate.previous -%}
+              <li class="cg-pagination__item">
+                <a class="cg-pagination__link" href="{{ paginate.previous.url }}">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+                  <span class="visually-hidden">Previous</span>
+                </a>
+              </li>
+            {%- endif -%}
+
+            {%- for part in paginate.parts -%}
+              {%- if part.is_link -%}
+                <li class="cg-pagination__item">
+                  <a class="cg-pagination__link" href="{{ part.url }}">{{ part.title }}</a>
+                </li>
+              {%- elsif part.title == paginate.current_page -%}
+                <li class="cg-pagination__item" aria-current="page">
+                  <span class="cg-pagination__link cg-pagination__link--current">{{ part.title }}</span>
+                </li>
+              {%- else -%}
+                <li class="cg-pagination__item">
+                  <span class="cg-pagination__link cg-pagination__link--ellipsis">{{ part.title }}</span>
+                </li>
+              {%- endif -%}
+            {%- endfor -%}
+
+            {%- if paginate.next -%}
+              <li class="cg-pagination__item">
+                <a class="cg-pagination__link" href="{{ paginate.next.url }}">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+                  <span class="visually-hidden">Next</span>
+                </a>
+              </li>
+            {%- endif -%}
+
+          </ul>
+        </nav>
+      {%- endif -%}
+
+    {%- else -%}
+
+      {%- comment -%} ── Empty state ── {%- endcomment -%}
+      <div class="collection-grid__empty">
+        <p>No products found.</p>
+        {%- if current_tags.size > 0 -%}
+          <a class="btn btn-ghost" href="/collections/{{ collection.handle }}">View all products</a>
+        {%- endif -%}
+      </div>
+
+    {%- endif -%}
+
+  </div>
+
+{%- endpaginate -%}
+
+{% stylesheet %}
+  /* ── Section wrapper ── */
+  .collection-grid {
+    padding-block-start: var(--space-10);
+    padding-block-end: var(--space-16);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-14);
+  }
+
+  /* ── Product list ── */
+  .collection-grid__list {
+    display: grid;
+    grid-template-columns: repeat(var(--cg-cols, 4), 1fr);
+    gap: var(--space-10) var(--space-6);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .collection-grid__item {
+    min-width: 0; /* prevent grid blowout */
+  }
+
+  /* ── Empty state ── */
+  .collection-grid__empty {
+    padding-block: var(--space-20);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-5);
+    text-align: center;
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+  }
+
+  /* ── Pagination ── */
+  .cg-pagination {
+    display: flex;
+    justify-content: center;
+  }
+
+  .cg-pagination__list {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    flex-wrap: wrap;
+  }
+
+  .cg-pagination__link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.5rem;
+    height: 2.5rem;
+    padding-inline: var(--space-2);
+    font-size: var(--text-xs);
+    letter-spacing: var(--tracking-wide);
+    text-decoration: none;
+    color: var(--color-text);
+    border: 1px solid transparent;
+    border-radius: var(--radius-input);
+    transition: border-color 0.18s ease, background-color 0.18s ease;
+  }
+
+  .cg-pagination__link:is(a):hover {
+    border-color: var(--color-border);
+    background-color: var(--color-bg-subtle);
+  }
+
+  .cg-pagination__link--current {
+    background-color: var(--color-text);
+    color: var(--color-bg);
+    border-color: var(--color-text);
+  }
+
+  .cg-pagination__link--ellipsis {
+    color: var(--color-text-muted);
+    cursor: default;
+    pointer-events: none;
+  }
+
+  /* ── Mobile ── */
+  @media (max-width: 48rem) {
+    .collection-grid__list {
+      grid-template-columns: repeat(var(--cg-cols-mob, 2), 1fr);
+      gap: var(--space-8) var(--space-3);
+    }
+
+    .collection-grid {
+      padding-block-start: var(--space-6);
+      gap: var(--space-10);
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Collection grid",
+  "settings": [
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "min": 8,
+      "max": 48,
+      "step": 4,
+      "label": "Products per page",
+      "default": 24
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "columns_desktop",
+      "label": "Columns — desktop",
+      "options": [
+        { "value": "2", "label": "2" },
+        { "value": "3", "label": "3" },
+        { "value": "4", "label": "4" }
+      ],
+      "default": "4"
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "label": "Columns — mobile",
+      "options": [
+        { "value": "1", "label": "1" },
+        { "value": "2", "label": "2" }
+      ],
+      "default": "2"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "Image ratio",
+      "options": [
+        { "value": "3/4", "label": "3:4 portrait" },
+        { "value": "4/5", "label": "4:5 portrait" },
+        { "value": "1/1", "label": "1:1 square" }
+      ],
+      "default": "3/4"
+    },
+    {
+      "type": "header",
+      "content": "Product card"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_quick_add",
+      "label": "Show quick-add button",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_sizes",
+      "label": "Show size pills",
+      "default": true
+    }
+  ],
+  "presets": [
+    { "name": "Collection grid" }
+  ]
+}
+{% endschema %}

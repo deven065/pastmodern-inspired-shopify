@@ -122,12 +122,27 @@
     }
 
     _activate(thumb) {
-      this.thumbs.forEach((t) => t.classList.remove('is-active'));
+      this.thumbs.forEach((t) => {
+        t.classList.remove('is-active');
+        t.setAttribute('aria-pressed', 'false');
+      });
       thumb.classList.add('is-active');
+      thumb.setAttribute('aria-pressed', 'true');
+
       const img = thumb.querySelector('img');
+
+      // Prefer data-full-src (modern Shopify CDN ?width= URLs)
+      if (thumb.dataset.fullSrc) {
+        this.main.src    = thumb.dataset.fullSrc;
+        this.main.srcset = thumb.dataset.fullSrcset || '';
+        if (img) this.main.alt = img.alt;
+        return;
+      }
+
+      // Legacy fallback: rewrite _NNNx size suffix in URL
       if (!img) return;
-      this.main.src    = img.src.replace('_100x', '_1000x');
-      this.main.srcset = img.srcset?.replace(/_\d+x/g, '_1000x') ?? '';
+      this.main.src    = img.src.replace(/_\d+x\d*(?=[.?])/, '_1200x');
+      this.main.srcset = '';
       this.main.alt    = img.alt;
     }
   }
@@ -401,19 +416,9 @@
     // Variant picker
     document.querySelectorAll('[data-variant-picker]').forEach((el) => new VariantPicker(el));
 
-    // Cart drawer
-    const cartDrawer = document.querySelector('[data-cart-drawer]');
-    if (cartDrawer) new CartDrawer(cartDrawer);
+    // Cart drawer and cart-icon binding are handled by assets/cart.js
 
     // Quick add
     QuickAdd.init();
-
-    // Cart icon opens drawer
-    document.querySelectorAll('[data-open-cart]').forEach((btn) => {
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        document.dispatchEvent(new CustomEvent('cart:open'));
-      });
-    });
   });
 })();

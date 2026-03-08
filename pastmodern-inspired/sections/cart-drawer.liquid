@@ -1,44 +1,78 @@
 {%- comment -%}
   sections/cart-drawer.liquid
-  Slide-in cart drawer rendered in layout/theme.liquid.
-  Populated and controlled by CartDrawer in assets/theme.js.
+  Slide-in cart drawer rendered once in layout/theme.liquid.
+  Opened / closed via cart:open / cart:close events in assets/cart.js.
+  Content refreshed after AJAX changes using the Section Rendering API.
 {%- endcomment -%}
 
-<div data-cart-overlay></div>
+<div class="cart-overlay" data-cart-overlay aria-hidden="true"></div>
 
 <div
+  class="cart-drawer"
+  id="cart-drawer"
   data-cart-drawer
   role="dialog"
   aria-modal="true"
   aria-label="{{ 'cart.title' | t }}"
+  aria-hidden="true"
+  inert
 >
+
+  {%- comment -%} ── Header ── {%- endcomment -%}
   <div class="cart-drawer__header">
-    <p class="cart-drawer__title eyebrow">{{ 'cart.title' | t }}</p>
+    <h2 class="cart-drawer__title">{{ 'cart.title' | t }}</h2>
     <button
+      class="cart-drawer__close"
+      type="button"
       data-cart-close
-      class="cart-drawer__close btn-ghost"
-      aria-label="{{ 'accessibility.close' | t | default: 'Close' }}"
+      aria-label="Close cart"
     >
-      {%- render 'icon-close' -%}
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true" focusable="false">
+        <line x1="18" y1="6" x2="6" y2="18"/>
+        <line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
     </button>
   </div>
 
-  <div data-cart-items class="cart-drawer__items">
-    {%- comment -%}Populated by CartDrawer JS{%- endcomment -%}
+  {%- comment -%} ── Line items ── {%- endcomment -%}
+  <div class="cart-drawer__items" data-cart-items>
+    {%- if cart.item_count == 0 -%}
+      <div class="cart-drawer__empty">
+        <p class="cart-drawer__empty-msg">Your bag is empty.</p>
+        <a
+          class="btn btn-ghost"
+          href="{{ routes.all_products_collection_url }}"
+          data-cart-continue
+        >Continue shopping</a>
+      </div>
+    {%- else -%}
+      {%- for item in cart.items -%}
+        {%- render 'cart-line-item', item: item -%}
+      {%- endfor -%}
+    {%- endif -%}
   </div>
 
-  <div class="cart-drawer__footer">
+  {%- comment -%} ── Footer (hidden when cart is empty) ── {%- endcomment -%}
+  <div
+    class="cart-drawer__footer"
+    data-cart-footer
+    {% if cart.item_count == 0 %}hidden{% endif %}
+  >
     <div class="cart-drawer__subtotal">
-      <span class="eyebrow">{{ 'cart.subtotal' | t | default: 'Subtotal' }}</span>
-      <span data-cart-subtotal></span>
+      <span class="cart-drawer__subtotal-label eyebrow">Subtotal</span>
+      <span class="cart-drawer__subtotal-amount" data-cart-subtotal>
+        {{- cart.total_price | money -}}
+      </span>
     </div>
-    <a href="{{ routes.cart_url }}" class="btn btn-primary btn-full">
-      {{ 'cart.checkout' | t }}
-    </a>
-    <p class="cart-drawer__note text-muted">
-      {{ 'cart.taxes_and_shipping' | t | default: 'Taxes and shipping calculated at checkout' }}
+    <p class="cart-drawer__taxes text-muted">
+      Taxes and shipping calculated at checkout
     </p>
+    <a
+      href="{{ routes.checkout_url }}"
+      class="btn btn-primary btn-full"
+    >{{ 'cart.checkout' | t }}</a>
   </div>
+
 </div>
 
 {% stylesheet %}

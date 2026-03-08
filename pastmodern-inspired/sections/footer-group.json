@@ -14,9 +14,21 @@
     "footer": {
       "type": "footer",
       "settings": {
-        "menu": "",
-        "show_payment_icons": true
-      }
+        "show_brand_col": true,
+        "show_social": true,
+        "show_payment": true
+      },
+      "blocks": {
+        "nav-col-1": {
+          "type": "nav_column",
+          "settings": { "heading": "Shop" }
+        },
+        "nav-col-2": {
+          "type": "nav_column",
+          "settings": { "heading": "Help" }
+        }
+      },
+      "block_order": ["nav-col-1", "nav-col-2"]
     }
   },
   "order": [

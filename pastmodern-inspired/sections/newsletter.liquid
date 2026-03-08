@@ -1,0 +1,335 @@
+{%- liquid
+  assign nl_eyebrow  = section.settings.eyebrow
+  assign nl_heading  = section.settings.heading
+  assign nl_subtext  = section.settings.subtext
+  assign nl_bg       = section.settings.bg_style
+  assign nl_align    = section.settings.text_align | default: 'center'
+-%}
+
+<div
+  class="newsletter newsletter--{{ nl_bg }}"
+  data-text-align="{{ nl_align }}"
+>
+
+  {%- comment -%} ── Copy ── {%- endcomment -%}
+  <div class="newsletter__copy">
+    {%- if nl_eyebrow != blank -%}
+      <p class="eyebrow">{{ nl_eyebrow }}</p>
+    {%- endif -%}
+    {%- if nl_heading != blank -%}
+      <h2 class="newsletter__heading">{{ nl_heading }}</h2>
+    {%- endif -%}
+    {%- if nl_subtext != blank -%}
+      <p class="newsletter__subtext text-muted">{{ nl_subtext }}</p>
+    {%- endif -%}
+  </div>
+
+  {%- comment -%} ── Form ── {%- endcomment -%}
+  {%- form 'customer', id: 'newsletter-form', class: 'newsletter__form' -%}
+    <input type="hidden" name="contact[tags]" value="newsletter">
+
+    <div class="newsletter__field-row">
+      <label class="visually-hidden" for="newsletter-email-{{ section.id }}">
+        Email address
+      </label>
+      <input
+        id="newsletter-email-{{ section.id }}"
+        class="newsletter__input"
+        type="email"
+        name="contact[email]"
+        autocomplete="email"
+        autocorrect="off"
+        autocapitalize="off"
+        spellcheck="false"
+        placeholder="{{ section.settings.input_placeholder | default: 'Your email address' }}"
+        required
+        aria-required="true"
+      >
+      <button class="newsletter__submit btn btn-primary" type="submit">
+        {{ section.settings.button_label | default: 'Subscribe' }}
+      </button>
+    </div>
+
+    {%- comment -%} Success / error states ── {%- endcomment -%}
+    {%- if form.posted_successfully? -%}
+      <p class="newsletter__success" role="status" aria-live="polite">
+        {{ section.settings.success_message | default: 'Thank you for subscribing.' }}
+      </p>
+    {%- elsif form.errors -%}
+      <p class="newsletter__error" role="alert">
+        {{ form.errors.translated_fields['email'] | capitalize }}
+        {{ form.errors.messages['email'] }}
+      </p>
+    {%- endif -%}
+
+    {%- if section.settings.fine_print != blank -%}
+      <p class="newsletter__fine-print text-muted">{{ section.settings.fine_print }}</p>
+    {%- endif -%}
+
+  {%- endform -%}
+
+</div>
+
+{% stylesheet %}
+  /* ── Wrapper ── */
+  .newsletter {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-8);
+    text-align: center;
+  }
+
+  .newsletter[data-text-align="left"]  { align-items: flex-start; text-align: left; }
+  .newsletter[data-text-align="right"] { align-items: flex-end;   text-align: right; }
+
+  .newsletter--subtle {
+    background-color: var(--color-bg-subtle);
+    padding-block: var(--section-spacing);
+    grid-column: 1 / -1;
+    padding-inline: var(--page-margin);
+  }
+
+  .newsletter--dark {
+    background-color: var(--color-text);
+    color: var(--color-bg);
+    padding-block: var(--section-spacing);
+    grid-column: 1 / -1;
+    padding-inline: var(--page-margin);
+  }
+
+  .newsletter--dark .eyebrow,
+  .newsletter--dark .newsletter__subtext { color: color-mix(in srgb, var(--color-bg) 60%, transparent); }
+
+  /* ── Copy ── */
+  .newsletter__copy {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    max-width: 42ch;
+  }
+
+  .newsletter[data-text-align="left"]  .newsletter__copy,
+  .newsletter[data-text-align="right"] .newsletter__copy { max-width: 50ch; }
+
+  .newsletter__heading {
+    font-family: var(--font-heading);
+    font-weight: var(--font-heading-weight);
+    font-style: italic;
+    font-size: clamp(var(--text-2xl), 4vw, var(--text-3xl));
+    line-height: var(--leading-tight);
+    letter-spacing: var(--tracking-tight);
+    margin: 0;
+  }
+
+  .newsletter__subtext {
+    font-size: var(--text-base);
+    line-height: var(--leading-relaxed, 1.65);
+    margin: 0;
+  }
+
+  /* ── Form ── */
+  .newsletter__form {
+    width: 100%;
+    max-width: 32rem;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .newsletter__field-row {
+    display: flex;
+    gap: 0;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-input);
+    overflow: hidden;
+    transition: border-color var(--duration-fast) var(--ease-default);
+  }
+
+  .newsletter--dark .newsletter__field-row {
+    border-color: color-mix(in srgb, var(--color-bg) 25%, transparent);
+  }
+
+  .newsletter__field-row:focus-within {
+    border-color: var(--color-text);
+  }
+
+  .newsletter--dark .newsletter__field-row:focus-within {
+    border-color: var(--color-bg);
+  }
+
+  .newsletter__input {
+    flex: 1;
+    min-width: 0;
+    padding: var(--space-3) var(--space-4);
+    font-size: var(--text-sm);
+    background: transparent;
+    border: none;
+    outline: none;
+    color: inherit;
+    border-radius: 0;
+  }
+
+  .newsletter__input::placeholder {
+    color: var(--color-text-muted);
+  }
+
+  .newsletter__submit {
+    flex-shrink: 0;
+    border-radius: 0;
+    border-inline-start: 1px solid var(--color-border);
+    white-space: nowrap;
+    font-size: var(--text-xs);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    padding-inline: var(--space-5);
+  }
+
+  .newsletter--dark .newsletter__submit {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    border-color: transparent;
+  }
+
+  .newsletter--dark .newsletter__submit:hover {
+    background-color: color-mix(in srgb, var(--color-bg) 85%, transparent);
+  }
+
+  /* ── Feedback ── */
+  .newsletter__success {
+    font-size: var(--text-sm);
+    color: var(--color-accent);
+    margin: 0;
+  }
+
+  .newsletter__error {
+    font-size: var(--text-sm);
+    color: #b04040;
+    margin: 0;
+  }
+
+  .newsletter--dark .newsletter__success {
+    color: color-mix(in srgb, var(--color-bg) 70%, var(--color-accent));
+  }
+
+  .newsletter__fine-print {
+    font-size: var(--text-xs);
+    line-height: var(--leading-relaxed, 1.65);
+    max-width: 36ch;
+    margin: 0 auto;
+  }
+
+  /* ── Mobile ── */
+  @media (max-width: 40rem) {
+    .newsletter__field-row {
+      flex-direction: column;
+      border-radius: var(--radius-input);
+      overflow: visible;
+      border: none;
+      gap: var(--space-3);
+    }
+
+    .newsletter__input {
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-input);
+      padding: var(--space-3) var(--space-4);
+    }
+
+    .newsletter__submit {
+      border: none;
+      border-radius: var(--radius-input);
+      width: 100%;
+      padding-block: var(--space-3);
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Newsletter",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow text",
+      "placeholder": "Join the inner circle"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Subscribe to our newsletter"
+    },
+    {
+      "type": "text",
+      "id": "subtext",
+      "label": "Subtext",
+      "default": "Early access, exclusive edits, and no noise."
+    },
+    {
+      "type": "text",
+      "id": "input_placeholder",
+      "label": "Input placeholder",
+      "default": "Your email address"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Subscribe"
+    },
+    {
+      "type": "text",
+      "id": "success_message",
+      "label": "Success message",
+      "default": "Thank you for subscribing."
+    },
+    {
+      "type": "text",
+      "id": "fine_print",
+      "label": "Fine print",
+      "info": "e.g. unsubscribe notice or privacy note",
+      "placeholder": "Unsubscribe at any time."
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "text_align",
+      "label": "Text alignment",
+      "options": [
+        { "value": "left",   "label": "Left" },
+        { "value": "center", "label": "Center" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "bg_style",
+      "label": "Background",
+      "options": [
+        { "value": "default", "label": "Default" },
+        { "value": "subtle",  "label": "Subtle tint" },
+        { "value": "dark",    "label": "Dark (inverted)" }
+      ],
+      "default": "default"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Newsletter",
+      "settings": {
+        "eyebrow": "Join the inner circle",
+        "heading": "Subscribe to our newsletter",
+        "subtext": "Early access, exclusive edits, and no noise.",
+        "bg_style": "dark"
+      }
+    }
+  ],
+  "disabled_on": {
+    "groups": ["header", "aside"]
+  }
+}
+{% endschema %}

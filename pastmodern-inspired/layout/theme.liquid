@@ -15,6 +15,7 @@
     {{ 'critical.css' | asset_url | stylesheet_tag: preload: true }}
     {{ 'base.css' | asset_url | stylesheet_tag }}
     {{ 'theme.css' | asset_url | stylesheet_tag }}
+    {{ 'cart.css'  | asset_url | stylesheet_tag }}
 
     {% render 'meta-tags' %}
 
@@ -35,5 +36,6 @@
     {% section 'cart-drawer' %}
 
     <script src="{{ 'theme.js' | asset_url }}" defer></script>
+    <script src="{{ 'cart.js'  | asset_url }}" defer></script>
   </body>
 </html>
