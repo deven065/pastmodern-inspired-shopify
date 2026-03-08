@@ -1,0 +1,1 @@
+/Users/shadoww/Desktop/Shopify/pastmodern-inspired/AGENTS.md
