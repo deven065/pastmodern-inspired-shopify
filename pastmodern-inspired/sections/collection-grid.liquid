@@ -24,114 +24,134 @@
       --cg-cols-mob: {{ section.settings.columns_mobile }};
     "
   >
+    <div class="collection-grid__inner">
 
-    {%- if paginate.items > 0 -%}
+      {%- if paginate.items > 0 -%}
 
-      {%- comment -%} ── Product grid ── {%- endcomment -%}
-      <ul class="collection-grid__list" role="list">
-        {%- for product in collection.products -%}
-          <li class="collection-grid__item">
-            {%- render 'product-card',
-              product:        product,
-              image_ratio:    cg_ratio,
-              sizes:          img_sizes,
-              show_quick_add: cg_quick_add,
-              show_sizes:     cg_sizes_ui,
-              lazy:           true
-            -%}
-          </li>
-        {%- endfor -%}
-      </ul>
+        {%- comment -%} ── Product grid ── {%- endcomment -%}
+        <ul class="collection-grid__list" role="list">
+          {%- for product in collection.products -%}
+            <li class="collection-grid__item reveal">
+              {%- render 'product-card',
+                product:        product,
+                image_ratio:    cg_ratio,
+                sizes:          img_sizes,
+                show_quick_add: cg_quick_add,
+                show_sizes:     cg_sizes_ui,
+                lazy:           true
+              -%}
+            </li>
+          {%- endfor -%}
+        </ul>
 
-      {%- comment -%} ── Pagination ── {%- endcomment -%}
-      {%- if paginate.pages > 1 -%}
-        <nav class="cg-pagination" aria-label="Collection pages">
-          <ul class="cg-pagination__list" role="list">
+        {%- comment -%} ── Pagination ── {%- endcomment -%}
+        {%- if paginate.pages > 1 -%}
+          <nav class="cg-pagination" aria-label="Collection pages">
+            <ul class="cg-pagination__list" role="list">
 
-            {%- if paginate.previous -%}
-              <li class="cg-pagination__item">
-                <a class="cg-pagination__link" href="{{ paginate.previous.url }}">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
-                  <span class="visually-hidden">Previous</span>
-                </a>
-              </li>
-            {%- endif -%}
-
-            {%- for part in paginate.parts -%}
-              {%- if part.is_link -%}
+              {%- if paginate.previous -%}
                 <li class="cg-pagination__item">
-                  <a class="cg-pagination__link" href="{{ part.url }}">{{ part.title }}</a>
-                </li>
-              {%- elsif part.title == paginate.current_page -%}
-                <li class="cg-pagination__item" aria-current="page">
-                  <span class="cg-pagination__link cg-pagination__link--current">{{ part.title }}</span>
-                </li>
-              {%- else -%}
-                <li class="cg-pagination__item">
-                  <span class="cg-pagination__link cg-pagination__link--ellipsis">{{ part.title }}</span>
+                  <a class="cg-pagination__link" href="{{ paginate.previous.url }}">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+                    <span class="visually-hidden">Previous</span>
+                  </a>
                 </li>
               {%- endif -%}
-            {%- endfor -%}
 
-            {%- if paginate.next -%}
-              <li class="cg-pagination__item">
-                <a class="cg-pagination__link" href="{{ paginate.next.url }}">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
-                  <span class="visually-hidden">Next</span>
-                </a>
-              </li>
-            {%- endif -%}
+              {%- for part in paginate.parts -%}
+                {%- if part.is_link -%}
+                  <li class="cg-pagination__item">
+                    <a class="cg-pagination__link" href="{{ part.url }}">{{ part.title }}</a>
+                  </li>
+                {%- elsif part.title == paginate.current_page -%}
+                  <li class="cg-pagination__item" aria-current="page">
+                    <span class="cg-pagination__link cg-pagination__link--current">{{ part.title }}</span>
+                  </li>
+                {%- else -%}
+                  <li class="cg-pagination__item">
+                    <span class="cg-pagination__link cg-pagination__link--ellipsis">{{ part.title }}</span>
+                  </li>
+                {%- endif -%}
+              {%- endfor -%}
 
-          </ul>
-        </nav>
+              {%- if paginate.next -%}
+                <li class="cg-pagination__item">
+                  <a class="cg-pagination__link" href="{{ paginate.next.url }}">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+                    <span class="visually-hidden">Next</span>
+                  </a>
+                </li>
+              {%- endif -%}
+
+            </ul>
+          </nav>
+        {%- endif -%}
+
+      {%- else -%}
+
+        {%- comment -%} ── Empty state ── {%- endcomment -%}
+        <div class="collection-grid__empty">
+          <p class="eyebrow">No products found</p>
+          {%- if current_tags.size > 0 -%}
+            <a class="btn btn-secondary" href="{{ collection.url }}">View all products</a>
+          {%- endif -%}
+        </div>
+
       {%- endif -%}
 
-    {%- else -%}
-
-      {%- comment -%} ── Empty state ── {%- endcomment -%}
-      <div class="collection-grid__empty">
-        <p>No products found.</p>
-        {%- if current_tags.size > 0 -%}
-          <a class="btn btn-ghost" href="{{ collection.url }}">View all products</a>
-        {%- endif -%}
-      </div>
-
-    {%- endif -%}
-
+    </div>
   </div>
 
 {%- endpaginate -%}
 
 {% stylesheet %}
-  /* ── Strip section wrapper padding ───────────────────────────── */
+  /* ── Strip section wrapper padding ───────────────────────── */
   .shopify-section:has(.collection-grid) {
     padding-block: 0;
   }
 
-  /* ── Section wrapper ──────────────────────────────────── */
+  /* ── Outer wrapper ────────────────────────────────────────── */
   .collection-grid {
-    padding-block-start: var(--space-12);
-    padding-block-end: var(--space-20);
+    padding-block: var(--space-10) var(--space-24);
+  }
+
+  /* ── Inner constraint ─────────────────────────────────────── */
+  .collection-grid__inner {
+    max-width: var(--page-width);
+    margin-inline: auto;
+    padding-inline: var(--page-margin);
     display: flex;
     flex-direction: column;
     gap: var(--space-16);
   }
 
-  /* ── Product list ─────────────────────────────────────── */
+  /* ── Product grid ─────────────────────────────────────────── */
   .collection-grid__list {
     display: grid;
     grid-template-columns: repeat(var(--cg-cols, 3), 1fr);
-    gap: var(--space-12) var(--space-8);  /* generous row / column breathing room */
+    /* Row gap generous; column gap tighter — fills premium catalog feel */
+    row-gap: clamp(var(--space-10), 5vw, var(--space-16));
+    column-gap: clamp(var(--space-4), 2.5vw, var(--space-8));
     list-style: none;
     margin: 0;
     padding: 0;
   }
 
   .collection-grid__item {
-    min-width: 0; /* prevent grid blowout */
+    min-width: 0;
   }
 
-  /* ── Empty state ─────────────────────────────────────── */
+  /* Stagger reveal on first 8 items only — avoids thrashing large catalogs */
+  .collection-grid__item.reveal:nth-child(1) { transition-delay: 0s; }
+  .collection-grid__item.reveal:nth-child(2) { transition-delay: 0.06s; }
+  .collection-grid__item.reveal:nth-child(3) { transition-delay: 0.12s; }
+  .collection-grid__item.reveal:nth-child(4) { transition-delay: 0.18s; }
+  .collection-grid__item.reveal:nth-child(5) { transition-delay: 0s; }
+  .collection-grid__item.reveal:nth-child(6) { transition-delay: 0.06s; }
+  .collection-grid__item.reveal:nth-child(7) { transition-delay: 0.12s; }
+  .collection-grid__item.reveal:nth-child(8) { transition-delay: 0.18s; }
+
+  /* ── Empty state ──────────────────────────────────────────── */
   .collection-grid__empty {
     padding-block: var(--space-24);
     display: flex;
@@ -139,16 +159,14 @@
     align-items: center;
     gap: var(--space-6);
     text-align: center;
-    color: var(--color-text-muted);
-    font-size: var(--text-xs);
-    letter-spacing: var(--tracking-widest);
-    text-transform: uppercase;
   }
 
-  /* ── Pagination ── */
+  /* ── Pagination ───────────────────────────────────────────── */
   .cg-pagination {
     display: flex;
     justify-content: center;
+    padding-block-start: var(--space-4);
+    border-block-start: 1px solid var(--color-border);
   }
 
   .cg-pagination__list {
@@ -157,7 +175,7 @@
     gap: var(--space-1);
     list-style: none;
     margin: 0;
-    padding: 0;
+    padding: var(--space-4) 0;
     flex-wrap: wrap;
   }
 
@@ -182,14 +200,10 @@
   }
 
   .cg-pagination__link:is(a):hover {
-    background-color: var(--color-text);
-    color: var(--color-bg);
-    border-color: var(--color-text);
+    border-color: color-mix(in srgb, var(--color-text) 30%, transparent);
   }
 
   .cg-pagination__link--current {
-    background-color: var(--color-text);
-    color: var(--color-bg);
     border-color: var(--color-text);
   }
 
@@ -197,18 +211,23 @@
     color: var(--color-text-muted);
     cursor: default;
     pointer-events: none;
+    min-width: auto;
   }
 
-  /* ── Mobile ───────────────────────────────────────────── */
+  /* ── Mobile ───────────────────────────────────────────────── */
   @media (max-width: 48rem) {
-    .collection-grid__list {
-      grid-template-columns: repeat(var(--cg-cols-mob, 2), 1fr);
-      gap: var(--space-10) var(--space-4);
+    .collection-grid {
+      padding-block: var(--space-6) var(--space-16);
     }
 
-    .collection-grid {
-      padding-block-start: var(--space-8);
-      gap: var(--space-12);
+    .collection-grid__list {
+      grid-template-columns: repeat(var(--cg-cols-mob, 2), 1fr);
+      row-gap: var(--space-10);
+      column-gap: var(--space-3);
+    }
+
+    .collection-grid__inner {
+      gap: var(--space-10);
     }
   }
 {% endstylesheet %}

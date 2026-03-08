@@ -80,7 +80,7 @@
   endif
 -%}
 
-<div class="product-card" data-product-card>
+<div class="product-card{% if is_sold_out %} product-card--sold-out{% endif %}" data-product-card>
   {%- comment -%} ── Media ── {%- endcomment -%}
   <div class="product-card__media" style="--card-ratio: {{ ratio }};">
     <a href="{{ product.url }}" class="product-card__media-link" aria-label="{{ product.title | escape }}" tabindex="-1">
@@ -140,7 +140,7 @@
       <div class="product-card__quick-add">
         {%- if quick_add_mode == 'add' -%}
           <button
-            class="btn btn-full product-card__quick-add-btn"
+            class="product-card__quick-add-btn"
             data-quick-add
             data-variant-id="{{ quick_add_variant.id }}"
             aria-label="Add {{ product.title | escape }} to bag"
@@ -148,7 +148,7 @@
           >Add to bag</button>
         {%- elsif quick_add_mode == 'soldout' -%}
           <button
-            class="btn btn-full product-card__quick-add-btn"
+            class="product-card__quick-add-btn"
             disabled
             aria-disabled="true"
             type="button"
@@ -156,7 +156,7 @@
         {%- elsif quick_add_mode == 'select' -%}
           <a
             href="{{ product.url }}"
-            class="btn btn-full product-card__quick-add-btn"
+            class="product-card__quick-add-btn"
             aria-label="Select options for {{ product.title | escape }}"
           >Select options</a>
         {%- endif -%}
@@ -213,8 +213,8 @@
 
 {% stylesheet %}
   /* ══════════════════════════════════════════════════════════
-     Product Card — premium fashion design system
-     Portrait 3:4 ratio · hover cross-fade · editorial info
+     Product Card — luxury fashion editorial
+     Portrait 3:4 · breath-in hover · glass quick-add
      ══════════════════════════════════════════════════════════ */
 
   /* ── Card shell ─────────────────────────────────────────── */
@@ -244,9 +244,10 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center top; /* keep face/neck in frame on portrait crops */
+    object-position: center top;
   }
 
+  /* Primary — slow Ken Burns; suppressed once hover image exists */
   .product-card__img--primary {
     z-index: 1;
     transition:
@@ -254,27 +255,31 @@
       transform var(--duration-slow) var(--ease-out);
   }
 
-  /* Ken Burns when no hover image is present */
   .product-card:hover .product-card__img--primary {
-    transform: scale(1.04);
+    transform: scale(1.035);
   }
 
+  .product-card:has(.product-card__img--hover):hover .product-card__img--primary {
+    transform: scale(1.02);
+    opacity: 0;
+  }
+
+  /* Hover/secondary — starts zoomed, breathes in to natural size as it reveals */
   .product-card__img--hover {
     z-index: 2;
     opacity: 0;
-    transition: opacity var(--duration-slow) var(--ease-default);
-  }
-
-  /* Hover image present: cross-fade and suppress scale on primary */
-  .product-card:has(.product-card__img--hover):hover .product-card__img--primary {
-    transform: none;
-    opacity: 0;
+    transform: scale(1.06);
+    transition:
+      opacity   var(--duration-slow) var(--ease-default),
+      transform 600ms               var(--ease-out);
   }
 
   .product-card:has(.product-card__img--hover):hover .product-card__img--hover {
     opacity: 1;
+    transform: scale(1);
   }
 
+  /* ── Placeholder ─────────────────────────────────────────── */
   .product-card__no-image {
     width: 100%;
     height: 100%;
@@ -287,39 +292,59 @@
   .product-card__placeholder-svg {
     width: 55%;
     height: 55%;
-    opacity: 0.18;
+    opacity: 0.14;
+  }
+
+  /* ── Sold-out veil ───────────────────────────────────────── */
+  .product-card--sold-out .product-card__media::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    background-color: color-mix(in srgb, var(--color-bg) 20%, transparent);
+    pointer-events: none;
   }
 
   /* ── Badge ──────────────────────────────────────────────── */
   .product-card__badge {
     position: absolute;
     top: var(--space-4);
-    left: var(--space-4);
     z-index: 5;
-    padding: var(--space-1) var(--space-3);
+    padding: 2px var(--space-3);
     font-family: var(--font-body);
-    font-size: var(--text-xs);
+    font-size: 0.5625rem;
     font-style: normal;
     font-weight: 400;
-    letter-spacing: var(--tracking-widest);
+    letter-spacing: 0.16em;
     text-transform: uppercase;
-    line-height: 1.5;
+    line-height: 1.8;
     pointer-events: none;
     white-space: nowrap;
   }
 
-  /* Custom and sale: dark filled — high visibility */
-  .product-card__badge--custom,
-  .product-card__badge--sale {
+  /* Custom — left, dark stamp */
+  .product-card__badge--custom {
+    left: var(--space-4);
     background-color: var(--color-text);
     color: var(--color-bg);
   }
 
-  /* Sold-out: outlined only — less visual aggression than a filled badge */
-  .product-card__badge--sold-out {
+  /* Sale — left, outlined, no aggression */
+  .product-card__badge--sale {
+    left: var(--space-4);
     background-color: transparent;
     color: var(--color-text);
-    border: 1px solid color-mix(in srgb, var(--color-text) 28%, transparent);
+    outline: 1px solid color-mix(in srgb, var(--color-text) 28%, transparent);
+    outline-offset: -1px;
+  }
+
+  /* Sold-out — right, very subtle */
+  .product-card__badge--sold-out {
+    right: var(--space-4);
+    background-color: transparent;
+    color: var(--color-text);
+    outline: 1px solid color-mix(in srgb, var(--color-text) 20%, transparent);
+    outline-offset: -1px;
   }
 
   /* ── Quick-add overlay ──────────────────────────────────── */
@@ -340,39 +365,54 @@
     opacity: 1;
   }
 
-  /* Clean off-white bar — inverts to charcoal on hover */
+  /* Glass bar — legible over any image, inverts on hover */
   .product-card__quick-add-btn {
-    background-color: color-mix(in srgb, var(--color-bg) 96%, transparent);
+    display: block;
+    width: 100%;
+    background-color: color-mix(in srgb, var(--color-bg) 86%, transparent);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     color: var(--color-text);
-    border-color: transparent;
-    border-top: 1px solid color-mix(in srgb, var(--color-border) 60%, transparent);
-    font-size: var(--text-xs);
-    letter-spacing: var(--tracking-widest);
-    padding-block: var(--space-4);
+    border: none;
+    border-top: 1px solid color-mix(in srgb, var(--color-border) 45%, transparent);
+    font-family: var(--font-body);
+    font-size: 0.5625rem;
+    font-style: normal;
+    font-weight: 400;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    text-align: center;
+    text-decoration: none;
+    padding-block: 0.95rem;
+    cursor: pointer;
+    white-space: nowrap;
     transition:
       background-color var(--duration-base) var(--ease-default),
       color            var(--duration-base) var(--ease-default);
   }
 
-  .product-card__quick-add-btn:hover:not([disabled]):not([aria-disabled="true"]) {
+  .product-card__quick-add-btn:not([disabled]):not([aria-disabled="true"]):hover {
     background-color: var(--color-text);
     color: var(--color-bg);
   }
 
-  /* ── Info ───────────────────────────────────────────────── */
+  .product-card__quick-add-btn[disabled],
+  .product-card__quick-add-btn[aria-disabled="true"] {
+    opacity: 0.38;
+    cursor: default;
+  }
+
+  /* ── Info block ─────────────────────────────────────────── */
   .product-card__info {
     display: flex;
     flex-direction: column;
     gap: var(--space-1);
-    padding-block: var(--space-4) var(--space-2);
+    padding-block: var(--space-5) var(--space-3);
   }
 
   /* ── Vendor ─────────────────────────────────────────────── */
   .product-card__vendor {
-    font-family: var(--font-body);
     font-size: var(--text-xs);
-    font-style: normal;
-    font-weight: 400;
     letter-spacing: var(--tracking-widest);
     text-transform: uppercase;
     color: var(--color-text-muted);
@@ -382,6 +422,7 @@
 
   /* ── Title ──────────────────────────────────────────────── */
   .product-card__title-link {
+    display: block;
     text-decoration: none;
     color: inherit;
   }
@@ -394,11 +435,16 @@
     line-height: var(--leading-snug);
     letter-spacing: 0.01em;
     margin: 0;
-    transition: opacity var(--duration-fast) var(--ease-default);
+    /* Progressive reveal underline from left */
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 0% 1px;
+    background-repeat: no-repeat;
+    background-position: left bottom 1px;
+    transition: background-size var(--duration-slow) var(--ease-out);
   }
 
   .product-card__title-link:hover .product-card__title {
-    opacity: 0.5;
+    background-size: 100% 1px;
   }
 
   /* ── Price ──────────────────────────────────────────────── */
@@ -410,7 +456,7 @@
     row-gap: var(--space-1);
     font-size: var(--text-xs);
     letter-spacing: var(--tracking-wide);
-    margin-block-start: var(--space-2);
+    margin-block-start: var(--space-3);
     color: var(--color-text-muted);
   }
 
@@ -418,12 +464,22 @@
     color: var(--color-text-muted);
   }
 
-  .price--sold-out {
-    color: var(--color-text-muted);
-    opacity: 0.55;
+  /* Scoped overrides — keep global theme.css definitions, refine here */
+  .product-card__price-row .price--compare {
+    opacity: 0.5;
+    text-decoration-thickness: 1px;
   }
 
-  /* ── Size hints ─────────────────────────────────────────── */
+  .product-card__price-row .price--sale {
+    color: var(--color-text);
+  }
+
+  .product-card__price-row .price--sold-out {
+    color: var(--color-text-muted);
+    opacity: 0.42;
+  }
+
+  /* ── Size pills ─────────────────────────────────────────── */
   .product-card__sizes {
     display: flex;
     flex-wrap: wrap;
@@ -431,24 +487,25 @@
     list-style: none;
     padding: 0;
     margin: 0;
-    margin-block-start: var(--space-2);
+    margin-block-start: var(--space-3);
   }
 
   .product-card__size-pill {
-    font-size: 0.5625rem; /* 9px — informational only, not interactive */
-    font-style: normal;
-    letter-spacing: var(--tracking-widest);
+    font-size: 0.5rem;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
-    padding: 1px var(--space-2);
-    border: 1px solid var(--color-border);
+    padding: 2px var(--space-2);
+    outline: 1px solid color-mix(in srgb, var(--color-border) 60%, transparent);
+    outline-offset: -1px;
     line-height: 1.8;
     color: var(--color-text-muted);
     white-space: nowrap;
   }
 
   .product-card__size-pill--oos {
-    opacity: 0.3;
+    opacity: 0.22;
     text-decoration: line-through;
+    text-decoration-thickness: 1px;
   }
 
   /* ── Touch: always-visible quick-add ───────────────────── */
@@ -462,8 +519,23 @@
 
     .product-card__quick-add-btn {
       background-color: transparent;
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
       color: var(--color-text);
-      border: 1px solid var(--color-border);
+      border: 1px solid color-mix(in srgb, var(--color-border) 75%, transparent);
+      padding-block: 0.8rem;
+    }
+
+    .product-card__quick-add-btn:active {
+      background-color: var(--color-text);
+      color: var(--color-bg);
+    }
+  }
+
+  /* ── Mobile ─────────────────────────────────────────────── */
+  @media (max-width: 48rem) {
+    .product-card__info {
+      padding-block: var(--space-4) var(--space-2);
     }
   }
 {% endstylesheet %}

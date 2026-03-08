@@ -123,12 +123,11 @@ img {
 /* ── Price ─────────────────────────────────────────────────── */
 .price--compare {
   text-decoration: line-through;
+  text-decoration-thickness: 1px;
   color: var(--color-text-muted);
-  margin-inline-end: var(--space-2);
 }
 
 .price--sale {
-  /* No garish accent — sale price stays in charcoal like body text */
   color: var(--color-text);
 }
 
