@@ -3,14 +3,19 @@
     "hero": {
       "type": "hero-editorial",
       "settings": {
-        "eyebrow": "Spring–Summer 2026",
-        "heading": "The Art of Dressing",
-        "subtext": "Elevated essentials and occasion wear for the considered wardrobe.",
-        "cta1_label": "Shop New Arrivals",
+        "eyebrow": "Modern heirlooms, reimagined",
+        "heading": "Where craft meets contemporary",
+        "subtext": "Statement separates, occasion pieces, and hand-finished details designed to feel elevated, easy to buy, and impossible to scroll past.",
+        "cta1_label": "Shop the new edit",
         "cta1_url": "/collections/new-arrivals",
-        "cta2_label": "Explore Collections",
-        "cta2_url": "/collections",
-        "season_label": "SS '26",
+        "cta2_label": "Explore couture",
+        "cta2_url": "/collections/couture",
+        "season_label": "Spring 2026",
+        "feature_1": "Small-batch drops",
+        "feature_2": "Easy exchanges",
+        "feature_3": "Worldwide shipping",
+        "spotlight_heading": "The edit everyone saves",
+        "spotlight_text": "Playful tailoring, rich texture, and event-ready silhouettes built to move from afternoon plans to after-dark dressing.",
         "show_scroll_indicator": true,
         "min_height_desktop": 880,
         "min_height_mobile": 600,
@@ -19,11 +24,25 @@
         "text_color": "#f5f3ef"
       }
     },
+    "featured": {
+      "type": "featured-collection",
+      "settings": {
+        "eyebrow": "Best sellers",
+        "heading": "The drop everyone is eyeing",
+        "product_limit": 8,
+        "columns_desktop": "4",
+        "columns_mobile": "2",
+        "image_ratio": "3/4",
+        "show_quick_add": true,
+        "cta_label": "Shop the edit",
+        "cta_url": "/collections/all"
+      }
+    },
     "promo-grid": {
       "type": "promo-grid",
       "settings": {
-        "eyebrow": "Explore",
-        "heading": "Shop by category",
+        "eyebrow": "Discover your expression",
+        "heading": "Collections with their own mood",
         "columns": "4",
         "image_ratio": "3/4"
       },
@@ -38,7 +57,7 @@
         "card-bridal": {
           "type": "card",
           "settings": {
-            "heading": "Bridal",
+            "heading": "Bridal Shop",
             "cta_url": "/collections/bridal"
           }
         },
@@ -52,33 +71,20 @@
         "card-dresses": {
           "type": "card",
           "settings": {
-            "heading": "Dresses",
+            "heading": "Occasion Wear",
             "cta_url": "/collections/dresses"
           }
         }
       },
       "block_order": ["card-new", "card-bridal", "card-couture", "card-dresses"]
     },
-    "featured": {
-      "type": "featured-collection",
-      "settings": {
-        "eyebrow": "The Edit",
-        "heading": "Featured pieces",
-        "product_limit": 8,
-        "columns_desktop": "4",
-        "columns_mobile": "2",
-        "image_ratio": "3/4",
-        "show_quick_add": true,
-        "cta_label": "View all"
-      }
-    },
-    "image-text": {
+    "story": {
       "type": "image-with-text",
       "settings": {
-        "eyebrow": "Our Philosophy",
-        "heading": "Crafted with intention",
-        "text": "<p>Each piece is designed for longevity — thoughtfully constructed using natural fabrics and traditional techniques. We believe fashion should be a quiet act of self-expression.</p>",
-        "cta_label": "Discover our story",
+        "eyebrow": "Craft and character",
+        "heading": "Rich details. Clear buying cues. A store that feels considered at every scroll.",
+        "text": "<p>Every surface is built to sell with more confidence: tighter hierarchy, stronger product emphasis, cleaner navigation, and a tone that feels premium without losing ease.</p><p>The result is a storefront that looks more editorial, but behaves more like a disciplined ecommerce experience.</p>",
+        "cta_label": "Discover the story",
         "cta_url": "/pages/about",
         "image_position": "right",
         "image_ratio": "4/5"
@@ -87,58 +93,44 @@
     "testimonials": {
       "type": "testimonials",
       "settings": {
-        "eyebrow": "Client voices",
-        "heading": "What our clients say",
+        "eyebrow": "Loved in real life",
+        "heading": "What buyers come back for",
         "columns": "3"
       },
       "blocks": {
         "quote-1": {
           "type": "quote",
           "settings": {
-            "text": "The quality exceeded every expectation. The fabric is extraordinary and the cut is simply perfect.",
-            "author": "Amelia R.",
-            "location": "London"
+            "text": "The fit is unreal. It feels playful and elevated at the same time, which is exactly what I wanted. The site also made the decision easy because everything felt clear and premium.",
+            "author": "Sana R.",
+            "location": "Dubai"
           }
         },
         "quote-2": {
           "type": "quote",
           "settings": {
-            "text": "I wore this to a gallery opening and received compliments all evening. Effortlessly elegant.",
-            "author": "Isabelle C.",
-            "location": "Paris"
+            "text": "Every detail feels considered, from the fabric to the finishing. It photographs beautifully and wears even better.",
+            "author": "Priya K.",
+            "location": "Mumbai"
           }
         },
         "quote-3": {
           "type": "quote",
           "settings": {
-            "text": "Beautifully packaged, thoughtfully made. This is what conscious luxury looks like.",
-            "author": "Sophia M.",
-            "location": "New York"
+            "text": "I ordered for one event and ended up styling it three different ways in the same month. That never happens.",
+            "author": "Nadia H.",
+            "location": "London"
           }
         }
       },
       "block_order": ["quote-1", "quote-2", "quote-3"]
-    },
-    "newsletter": {
-      "type": "newsletter",
-      "settings": {
-        "eyebrow": "Stay connected",
-        "heading": "Stay in the world of Sulu Luxe",
-        "subtext": "New arrivals, private events, and stories from our ateliers — delivered to your inbox.",
-        "button_label": "Subscribe",
-        "input_placeholder": "Your email address",
-        "layout": "split",
-        "bg_style": "dark",
-        "text_align": "left"
-      }
     }
   },
   "order": [
     "hero",
-    "promo-grid",
     "featured",
-    "image-text",
-    "testimonials",
-    "newsletter"
+    "promo-grid",
+    "story",
+    "testimonials"
   ]
 }

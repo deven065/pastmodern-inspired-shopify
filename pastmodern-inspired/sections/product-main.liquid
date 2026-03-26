@@ -10,6 +10,8 @@
 
 {%- liquid
   assign current_variant = product.selected_or_first_available_variant
+  assign first_media = product.selected_media | default: product.featured_media
+  assign pdp_img_alt = first_media.alt | default: product.title | escape
 
   # Section settings
   assign show_qty       = section.settings.show_quantity
@@ -65,7 +67,6 @@
   <div class="product-main__inner">
 
     {%- comment -%}━━━━━━━━━━━━━━━━━━━━━━━━ GALLERY (left) ━━━━━━━━━━━━━━━━━━━━━━━━{%- endcomment -%}
-        {%- assign pdp_img_alt = first_media.alt | default: product.title | escape -%}
     <div
       class="product-gallery"
       data-product-gallery
@@ -106,7 +107,6 @@
 
       {%- comment -%} Main image {%- endcomment -%}
       <div class="product-gallery__main-wrap">
-        {%- assign first_media = product.selected_media | default: product.featured_media -%}
         {%- if first_media != blank -%}
           <img
             src="{{ first_media | image_url: width: 1400 }}"

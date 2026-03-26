@@ -135,33 +135,6 @@
       <span class="product-card__badge product-card__badge--sale">Sale</span>
     {%- endif -%}
 
-    {%- comment -%} Quick add (single-variant products only) {%- endcomment -%}
-    {%- if quick_add_mode != nil -%}
-      <div class="product-card__quick-add">
-        {%- if quick_add_mode == 'add' -%}
-          <button
-            class="product-card__quick-add-btn"
-            data-quick-add
-            data-variant-id="{{ quick_add_variant.id }}"
-            aria-label="Add {{ product.title | escape }} to bag"
-            type="button"
-          >Add to bag</button>
-        {%- elsif quick_add_mode == 'soldout' -%}
-          <button
-            class="product-card__quick-add-btn"
-            disabled
-            aria-disabled="true"
-            type="button"
-          >Sold out</button>
-        {%- elsif quick_add_mode == 'select' -%}
-          <a
-            href="{{ product.url }}"
-            class="product-card__quick-add-btn"
-            aria-label="Select options for {{ product.title | escape }}"
-          >Select options</a>
-        {%- endif -%}
-      </div>
-    {%- endif -%}
   </div>
 
   {%- comment -%} ── Info ── {%- endcomment -%}
@@ -169,6 +142,60 @@
     {%- if do_vendor and product.vendor != blank -%}
       <p class="product-card__vendor">{{ product.vendor | escape }}</p>
     {%- endif -%}
+
+    {%- if do_sizes and size_option_index != nil -%}
+      {%- assign size_option = product.options_with_values[size_option_index] -%}
+      {%- if size_option.values.size > 0 -%}
+        <ul class="product-card__sizes" role="list" aria-label="Available sizes">
+          {%- for size_val in size_option.values -%}
+            {%- assign size_available = false -%}
+            {%- for variant in product.variants -%}
+              {%- if variant.options[size_option_index] == size_val and variant.available -%}
+                {%- assign size_available = true -%}
+                {%- break -%}
+              {%- endif -%}
+            {%- endfor -%}
+            <li class="product-card__size-pill{% unless size_available %} product-card__size-pill--oos{% endunless %}">
+              {{ size_val }}
+            </li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+    {%- endif -%}
+
+    <div class="product-card__actions">
+      {%- if quick_add_mode != nil -%}
+        {%- if quick_add_mode == 'add' -%}
+          <button
+            class="product-card__action product-card__action--primary"
+            data-quick-add
+            data-variant-id="{{ quick_add_variant.id }}"
+            aria-label="Add {{ product.title | escape }} to bag"
+            type="button"
+          >Quick add</button>
+        {%- elsif quick_add_mode == 'soldout' -%}
+          <button
+            class="product-card__action product-card__action--primary"
+            disabled
+            aria-disabled="true"
+            type="button"
+          >Sold out</button>
+        {%- else -%}
+          <a
+            href="{{ product.url }}"
+            class="product-card__action product-card__action--primary"
+            aria-label="Select options for {{ product.title | escape }}"
+          >Select options</a>
+        {%- endif -%}
+      {%- endif -%}
+
+      <a
+        href="{{ product.url }}"
+        class="product-card__action product-card__action--secondary"
+        aria-label="Quick shop {{ product.title | escape }}"
+      >Quick shop</a>
+    </div>
+
     <a href="{{ product.url }}" class="product-card__title-link">
       <p class="product-card__title">{{ product.title }}</p>
     </a>
@@ -200,27 +227,6 @@
       </div>
     {%- endif -%}
 
-    {%- comment -%} Size pills {%- endcomment -%}
-    {%- if do_sizes and size_option_index != nil -%}
-      {%- assign size_option = product.options_with_values[size_option_index] -%}
-      {%- if size_option.values.size > 0 -%}
-        <ul class="product-card__sizes" role="list" aria-label="Available sizes">
-          {%- for size_val in size_option.values -%}
-            {%- comment -%} Check if any variant with this size is available {%- endcomment -%}
-            {%- assign size_available = false -%}
-            {%- for variant in product.variants -%}
-              {%- if variant.options[size_option_index] == size_val and variant.available -%}
-                {%- assign size_available = true -%}
-                {%- break -%}
-              {%- endif -%}
-            {%- endfor -%}
-            <li class="product-card__size-pill{% unless size_available %} product-card__size-pill--oos{% endunless %}">
-              {{ size_val }}
-            </li>
-          {%- endfor -%}
-        </ul>
-      {%- endif -%}
-    {%- endif -%}
   </div>
 </div>
 
@@ -234,6 +240,11 @@
   .product-card {
     display: flex;
     flex-direction: column;
+    transition: transform var(--duration-base) var(--ease-default);
+  }
+
+  .product-card:hover {
+    transform: translateY(-3px);
   }
 
   /* ── Media ──────────────────────────────────────────────── */
@@ -242,6 +253,9 @@
     aspect-ratio: var(--card-ratio, 3/4);
     overflow: hidden;
     background-color: var(--color-bg-subtle);
+    border: 1px solid var(--color-border);
+    border-radius: 1.1rem;
+    box-shadow: var(--shadow-soft);
   }
 
   .product-card__media-link {
@@ -360,67 +374,13 @@
     outline-offset: -1px;
   }
 
-  /* ── Quick-add overlay ──────────────────────────────────── */
-  .product-card__quick-add {
-    position: absolute;
-    inset-inline: 0;
-    bottom: 0;
-    z-index: 6;
-    transform: translateY(100%);
-    opacity: 0;
-    transition:
-      transform var(--duration-base) var(--ease-out),
-      opacity   var(--duration-base) var(--ease-out);
-  }
-
-  .product-card:hover .product-card__quick-add {
-    transform: translateY(0);
-    opacity: 1;
-  }
-
-  /* Glass bar — legible over any image, inverts on hover */
-  .product-card__quick-add-btn {
-    display: block;
-    width: 100%;
-    background-color: color-mix(in srgb, var(--color-bg) 90%, transparent);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    color: var(--color-text);
-    border: none;
-    border-top: 1px solid color-mix(in srgb, var(--color-border) 35%, transparent);
-    font-family: var(--font-body);
-    font-size: 0.5625rem;
-    font-style: normal;
-    font-weight: 400;
-    letter-spacing: var(--tracking-brand, 0.18em);
-    text-transform: uppercase;
-    text-align: center;
-    text-decoration: none;
-    padding-block: 1rem;
-    cursor: pointer;
-    white-space: nowrap;
-    transition:
-      background-color var(--duration-measured) var(--ease-brand),
-      color            var(--duration-measured) var(--ease-brand);
-  }
-
-  .product-card__quick-add-btn:not([disabled]):not([aria-disabled="true"]):hover {
-    background-color: var(--color-accent);
-    color: var(--color-bg);
-  }
-
-  .product-card__quick-add-btn[disabled],
-  .product-card__quick-add-btn[aria-disabled="true"] {
-    opacity: 0.38;
-    cursor: default;
-  }
-
   /* ── Info block ─────────────────────────────────────────── */
   .product-card__info {
     display: flex;
     flex-direction: column;
-    gap: 0;
-    padding-block: var(--space-6) var(--space-4);
+    gap: var(--space-3);
+    padding-block: var(--space-4) var(--space-2);
+    padding-inline: 2px;
   }
 
   /* ── Vendor ─────────────────────────────────────────────── */
@@ -441,14 +401,13 @@
   }
 
   .product-card__title {
-    font-family: var(--font-heading);
-    font-size: clamp(var(--text-base), 1.1vw, var(--text-md));
-    font-style: italic;
-    font-weight: var(--font-heading-weight);
-    line-height: var(--leading-snug);
-    letter-spacing: 0.005em;
+    font-family: var(--font-body);
+    font-size: clamp(var(--text-sm), 1vw, var(--text-base));
+    font-style: normal;
+    font-weight: 500;
+    line-height: 1.45;
+    letter-spacing: 0.01em;
     margin: 0;
-    /* Progressive reveal underline from left */
     background-image: linear-gradient(currentColor, currentColor);
     background-size: 0% 1px;
     background-repeat: no-repeat;
@@ -469,12 +428,12 @@
     row-gap: var(--space-1);
     font-size: var(--text-sm);
     letter-spacing: var(--tracking-normal);
-    margin-block-start: var(--space-4);
-    color: var(--color-text-muted);
+    margin-block-start: 0;
+    color: var(--color-text-secondary);
   }
 
   .product-card__price {
-    color: var(--color-text-muted);
+    color: var(--color-text-secondary);
   }
 
   /* ── Rating star ─────────────────────────────────────────── */
@@ -516,21 +475,20 @@
   .product-card__sizes {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-1);
+    gap: 0.35rem;
     list-style: none;
     padding: 0;
     margin: 0;
-    margin-block-start: var(--space-3);
   }
 
   .product-card__size-pill {
-    font-size: 0.5rem;
-    letter-spacing: 0.12em;
+    font-size: 0.625rem;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
-    padding: 2px var(--space-2);
-    outline: 1px solid color-mix(in srgb, var(--color-border) 80%, transparent);
-    outline-offset: -1px;
-    line-height: 1.8;
+    padding: 0;
+    border: none;
+    background: none;
+    line-height: 1.5;
     color: var(--color-text-muted);
     white-space: nowrap;
   }
@@ -541,28 +499,69 @@
     text-decoration-thickness: 1px;
   }
 
-  /* ── Touch: always-visible quick-add ───────────────────── */
-  @media (hover: none) {
-    .product-card__quick-add {
-      position: static;
-      transform: none;
-      opacity: 1;
-      padding-block-start: var(--space-3);
-    }
+  .product-card__actions {
+    display: flex;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
 
-    .product-card__quick-add-btn {
-      background-color: transparent;
-      backdrop-filter: none;
-      -webkit-backdrop-filter: none;
-      color: var(--color-text);
-      border: 1px solid color-mix(in srgb, var(--color-border) 75%, transparent);
-      padding-block: 0.8rem;
-    }
+  .product-card__action {
+    flex: 1;
+    min-height: 2.65rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.7rem 0.8rem;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    background-color: color-mix(in srgb, var(--color-bg) 84%, white);
+    color: var(--color-text);
+    font-family: var(--font-body);
+    font-size: 0.625rem;
+    font-style: normal;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    text-align: center;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    transition:
+      background-color var(--duration-fast) var(--ease-default),
+      border-color var(--duration-fast) var(--ease-default),
+      color var(--duration-fast) var(--ease-default),
+      transform var(--duration-fast) var(--ease-default);
+  }
 
-    .product-card__quick-add-btn:active {
-      background-color: var(--color-text);
-      color: var(--color-bg);
-    }
+  .product-card__action:hover:not([disabled]):not([aria-disabled="true"]) {
+    transform: translateY(-1px);
+  }
+
+  .product-card__action:only-child {
+    flex-basis: 100%;
+  }
+
+  .product-card__action--primary {
+    background-color: var(--color-accent);
+    border-color: var(--color-accent);
+    color: #F8F4EA;
+  }
+
+  .product-card__action--primary:hover:not([disabled]):not([aria-disabled="true"]) {
+    background-color: var(--color-accent-hover);
+    border-color: var(--color-accent-hover);
+    color: #F8F4EA;
+  }
+
+  .product-card__action--secondary:hover {
+    border-color: color-mix(in srgb, var(--color-gold) 46%, var(--color-border));
+    background-color: color-mix(in srgb, var(--color-gold) 8%, white);
+  }
+
+  .product-card__action[disabled],
+  .product-card__action[aria-disabled="true"] {
+    opacity: 0.38;
+    cursor: default;
   }
 
   /* ── Rating ─────────────────────────────────────────────── */
@@ -570,7 +569,7 @@
     display: flex;
     align-items: center;
     gap: var(--space-2);
-    margin-block-start: var(--space-3);
+    margin-block-start: 0;
   }
 
   .product-card__rating-star {
@@ -593,7 +592,7 @@
   /* ── Mobile ─────────────────────────────────────────────── */
   @media (max-width: 48rem) {
     .product-card__info {
-      padding-block: var(--space-5) var(--space-3);
+      padding-block: var(--space-4) var(--space-3);
     }
 
     .product-card__title {
@@ -602,6 +601,10 @@
 
     .product-card__price-row {
       font-size: var(--text-xs);
+    }
+
+    .product-card__actions {
+      flex-direction: column;
     }
   }
 {% endstylesheet %}

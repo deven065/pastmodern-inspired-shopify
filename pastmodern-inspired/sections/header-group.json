@@ -4,13 +4,19 @@
   "sections": {
     "announcement-bar": {
       "type": "announcement-bar",
-      "settings": {}
+      "settings": {
+        "enable": true,
+        "message": "Complimentary shipping over $200 | Easy exchanges | Curated drops weekly",
+        "dismissible": true,
+        "bg_color": "#102A1C",
+        "text_color": "#E2CB83"
+      }
     },
     "header": {
       "type": "header",
       "settings": {
-        "header_bg": "#214630",
-        "header_text": "#F7F3EC"
+        "header_bg": "#173A28",
+        "header_text": "#F8F4EA"
       }
     }
   },

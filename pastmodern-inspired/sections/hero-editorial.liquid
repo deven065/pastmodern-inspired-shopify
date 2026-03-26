@@ -15,6 +15,11 @@
   assign cta2_url        = section.settings.cta2_url
   assign season_label    = section.settings.season_label
   assign show_scroll     = section.settings.show_scroll_indicator
+  assign feature_1       = section.settings.feature_1
+  assign feature_2       = section.settings.feature_2
+  assign feature_3       = section.settings.feature_3
+  assign spotlight_heading = section.settings.spotlight_heading
+  assign spotlight_text    = section.settings.spotlight_text
 -%}
 
 <div
@@ -83,6 +88,20 @@
       <p class="hero__subtext">{{ subtext }}</p>
     {%- endif -%}
 
+    {%- if feature_1 != blank or feature_2 != blank or feature_3 != blank -%}
+      <ul class="hero__capsules" role="list" aria-label="Shopping benefits">
+        {%- if feature_1 != blank -%}
+          <li class="hero__capsule">{{ feature_1 }}</li>
+        {%- endif -%}
+        {%- if feature_2 != blank -%}
+          <li class="hero__capsule">{{ feature_2 }}</li>
+        {%- endif -%}
+        {%- if feature_3 != blank -%}
+          <li class="hero__capsule">{{ feature_3 }}</li>
+        {%- endif -%}
+      </ul>
+    {%- endif -%}
+
     {%- if cta1_label != blank or cta2_label != blank -%}
       <div class="hero__actions">
         {%- if cta1_label != blank -%}
@@ -98,6 +117,17 @@
       </div>
     {%- endif -%}
   </div>
+
+  {%- if spotlight_heading != blank or spotlight_text != blank -%}
+    <aside class="hero__spotlight reveal">
+      {%- if spotlight_heading != blank -%}
+        <p class="hero__spotlight-heading">{{ spotlight_heading }}</p>
+      {%- endif -%}
+      {%- if spotlight_text != blank -%}
+        <p class="hero__spotlight-text">{{ spotlight_text }}</p>
+      {%- endif -%}
+    </aside>
+  {%- endif -%}
 
   {%- comment -%} ── Scroll indicator ── {%- endcomment -%}
   {%- if show_scroll -%}
@@ -118,11 +148,36 @@
     position: relative;
     display: flex;
     align-items: flex-end;
-    min-height: var(--hero-min-h-desk, 95dvh);
+    min-height: var(--hero-min-h-desk, 92dvh);
     overflow: hidden;
     color: var(--hero-text, #f5f4f0);
     grid-column: 1 / -1;
     width: 100%;
+    isolation: isolate;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at top right, color-mix(in srgb, var(--color-gold) 28%, transparent) 0%, transparent 32%),
+      linear-gradient(180deg, rgba(0, 0, 0, 0.08) 0%, transparent 38%);
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    inset: auto auto 6% -6%;
+    width: clamp(18rem, 30vw, 36rem);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--color-butter) 38%, transparent);
+    filter: blur(18px);
+    opacity: 0.7;
+    pointer-events: none;
   }
 
   /* ── Background ── */
@@ -162,14 +217,14 @@
     background:
       linear-gradient(
         to top,
-        rgba(0, 0, 0, calc(var(--hero-overlay, 0.4) * 1.3)) 0%,
-        rgba(0, 0, 0, var(--hero-overlay, 0.4))              40%,
-        transparent                                          85%
+        rgba(0, 0, 0, calc(var(--hero-overlay, 0.4) * 1.5)) 0%,
+        rgba(0, 0, 0, calc(var(--hero-overlay, 0.4) * 0.9)) 40%,
+        rgba(0, 0, 0, calc(var(--hero-overlay, 0.4) * 0.08)) 85%
       ),
       linear-gradient(
         to right,
-        rgba(0, 0, 0, calc(var(--hero-overlay, 0.4) * 0.65)) 0%,
-        transparent                                           55%
+        rgba(0, 0, 0, calc(var(--hero-overlay, 0.4) * 0.82)) 0%,
+        transparent                                           58%
       );
   }
 
@@ -194,6 +249,10 @@
     color: var(--hero-text, #f5f4f0);
     opacity: 0.55;
     margin: 0;
+    padding: 0.65rem 0.95rem;
+    border: 1px solid color-mix(in srgb, var(--hero-text, #f5f4f0) 20%, transparent);
+    background-color: color-mix(in srgb, var(--hero-text, #f5f4f0) 10%, transparent);
+    backdrop-filter: blur(12px);
   }
 
   /* ── Content ──
@@ -207,11 +266,11 @@
     max-width: var(--page-width);
     margin-inline: auto;
     padding-inline: var(--page-margin);
-    padding-block-start: clamp(var(--space-24), 14vw, var(--space-40));
-    padding-block-end:   clamp(var(--space-10), 6vw, var(--space-20));
+    padding-block-start: clamp(var(--space-20), 11vw, var(--space-36));
+    padding-block-end: clamp(var(--space-8), 5vw, var(--space-16));
     display: flex;
     flex-direction: column;
-    gap: var(--space-6);
+    gap: var(--space-5);
   }
 
   .hero[data-text-align="left"]   .hero__content { align-items: flex-start; text-align: left; }
@@ -220,8 +279,8 @@
 
   /* ── Eyebrow with leading rule (left-aligned only) ── */
   .hero__eyebrow {
-    color: inherit;
-    opacity: 0.75;
+    color: var(--color-gold-soft);
+    opacity: 1;
     margin: 0;
     display: flex;
     align-items: center;
@@ -243,32 +302,59 @@
     font-family: var(--font-heading);
     font-weight: var(--font-heading-weight);
     font-style: italic;
-    font-size: clamp(var(--text-3xl), 9vw, var(--text-5xl));
-    line-height: 0.9;
+    font-size: clamp(var(--text-3xl), 6.8vw, var(--text-5xl));
+    line-height: 0.88;
     letter-spacing: -0.04em;
     color: inherit;
     margin: 0;
-    max-width: 12ch;
+    max-width: 11ch;
+    overflow-wrap: normal;
+    word-break: normal;
+    hyphens: none;
+    text-wrap: balance;
+    text-shadow: 0 10px 32px rgba(0, 0, 0, 0.14);
   }
 
   .hero[data-text-align="center"] .hero__heading { max-width: 20ch; }
 
   /* ── Subtext ── */
   .hero__subtext {
-    font-size: var(--text-base);
+    font-size: clamp(var(--text-base), 1.4vw, var(--text-md));
     line-height: var(--leading-relaxed);
     color: inherit;
-    opacity: 0.60;
-    max-width: 32ch;
+    opacity: 0.82;
+    max-width: 41ch;
     margin: 0;
+  }
+
+  .hero__capsules {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-width: 40rem;
+  }
+
+  .hero__capsule {
+    padding: 0.7rem 0.95rem;
+    border: 1px solid color-mix(in srgb, var(--color-gold) 32%, transparent);
+    background-color: color-mix(in srgb, var(--header-bg, var(--color-accent)) 62%, transparent);
+    backdrop-filter: blur(18px);
+    font-size: 0.625rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: inherit;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
   }
 
   /* ── CTAs ── */
   .hero__actions {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-4);
-    margin-block-start: var(--space-6);
+    gap: var(--space-3);
+    margin-block-start: var(--space-4);
   }
 
   .hero[data-text-align="center"] .hero__actions { justify-content: center; }
@@ -277,21 +363,22 @@
   .hero__btn { min-width: 10rem; }
 
   .hero__btn--primary {
-    background-color: var(--hero-text, #f5f4f0);
-    color: var(--color-text);
-    border-color: var(--hero-text, #f5f4f0);
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--color-gold-soft) 88%, white) 0%, var(--color-gold) 100%);
+    color: #182015;
+    border-color: color-mix(in srgb, var(--color-gold-soft) 65%, transparent);
   }
 
   .hero__btn--primary:hover {
-    background-color: transparent;
-    color: var(--hero-text, #f5f4f0);
-    border-color: color-mix(in srgb, var(--hero-text, #f5f4f0) 55%, transparent);
+    background: color-mix(in srgb, var(--color-gold-soft) 92%, white);
+    color: #182015;
+    border-color: color-mix(in srgb, var(--color-gold-soft) 75%, transparent);
   }
 
   .hero__btn--secondary {
-    background-color: transparent;
+    background-color: color-mix(in srgb, var(--hero-text, #f5f4f0) 12%, transparent);
     color: var(--hero-text, #f5f4f0);
-    border-color: color-mix(in srgb, var(--hero-text, #f5f4f0) 38%, transparent);
+    border-color: color-mix(in srgb, var(--hero-text, #f5f4f0) 26%, transparent);
     letter-spacing: var(--tracking-widest);
   }
 
@@ -299,6 +386,43 @@
     background-color: color-mix(in srgb, var(--hero-text, #f5f4f0) 12%, transparent);
     color: var(--hero-text, #f5f4f0);
     border-color: color-mix(in srgb, var(--hero-text, #f5f4f0) 55%, transparent);
+  }
+
+  .hero__spotlight {
+    position: absolute;
+    right: var(--page-margin);
+    bottom: clamp(var(--space-8), 6vw, var(--space-14));
+    z-index: 1;
+    width: min(22rem, 28vw);
+    padding: clamp(var(--space-5), 2.4vw, var(--space-7));
+    background:
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--header-bg, var(--color-accent)) 82%, transparent) 0%,
+        color-mix(in srgb, var(--header-bg, var(--color-accent)) 66%, transparent) 100%
+      );
+    border: 1px solid color-mix(in srgb, var(--color-gold) 30%, transparent);
+    box-shadow: 0 20px 42px rgba(8, 14, 11, 0.18);
+    backdrop-filter: blur(22px);
+    border-radius: 1.25rem;
+  }
+
+  .hero__spotlight-heading {
+    margin: 0 0 var(--space-3);
+    font-size: 0.625rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-gold-soft);
+    opacity: 1;
+  }
+
+  .hero__spotlight-text {
+    margin: 0;
+    font-family: var(--font-heading);
+    font-style: italic;
+    font-size: clamp(var(--text-md), 1.8vw, var(--text-xl));
+    line-height: 1.15;
+    max-width: 14ch;
   }
 
   /* ── Scroll indicator ── */
@@ -349,7 +473,7 @@
   /* ── Mobile ── */
   @media (max-width: 48rem) {
     .hero {
-      min-height: var(--hero-min-h-mob, 85dvh);
+      min-height: var(--hero-min-h-mob, 78dvh);
       align-items: flex-end;
     }
 
@@ -358,8 +482,8 @@
     .hero:not(:has(.hero__img--mobile)) .hero__img--desktop { display: block; }
 
     .hero__heading {
-      font-size: clamp(var(--text-2xl), 10vw, var(--text-3xl));
-      max-width: 100%;
+      font-size: clamp(var(--text-2xl), 8.6vw, var(--text-3xl));
+      max-width: 11ch;
     }
 
     .hero__season  { display: none; }
@@ -370,7 +494,25 @@
       align-items: flex-start;
     }
 
-    .hero__btn { min-width: 14rem; }
+    .hero__btn { min-width: min(100%, 14rem); }
+
+    .hero__capsules {
+      gap: var(--space-2);
+    }
+
+    .hero__capsule {
+      padding: 0.65rem 0.85rem;
+    }
+
+    .hero__spotlight {
+      position: static;
+      width: auto;
+      margin: 0 var(--page-margin) var(--space-8);
+    }
+
+    .hero__spotlight-text {
+      max-width: none;
+    }
 
     .hero[data-text-align="center"] .hero__content,
     .hero[data-text-align="right"]  .hero__content {
@@ -433,6 +575,28 @@
       "placeholder": "Discover the new season"
     },
     {
+      "type": "header",
+      "content": "Benefit chips"
+    },
+    {
+      "type": "text",
+      "id": "feature_1",
+      "label": "Feature chip 1",
+      "placeholder": "Easy exchanges"
+    },
+    {
+      "type": "text",
+      "id": "feature_2",
+      "label": "Feature chip 2",
+      "placeholder": "Small-batch drops"
+    },
+    {
+      "type": "text",
+      "id": "feature_3",
+      "label": "Feature chip 3",
+      "placeholder": "Worldwide shipping"
+    },
+    {
       "type": "text",
       "id": "cta1_label",
       "label": "Primary button label",
@@ -469,6 +633,22 @@
       "id": "show_scroll_indicator",
       "label": "Show scroll indicator",
       "default": true
+    },
+    {
+      "type": "header",
+      "content": "Spotlight panel"
+    },
+    {
+      "type": "text",
+      "id": "spotlight_heading",
+      "label": "Spotlight heading",
+      "placeholder": "The edit of now"
+    },
+    {
+      "type": "textarea",
+      "id": "spotlight_text",
+      "label": "Spotlight text",
+      "placeholder": "A short editorial statement shown in the floating panel."
     },
     {
       "type": "header",
@@ -522,6 +702,11 @@
       "settings": {
         "heading":          "Dressed for\nevery moment",
         "eyebrow":          "New arrivals",
+        "feature_1":        "Easy exchanges",
+        "feature_2":        "Small-batch drops",
+        "feature_3":        "Worldwide shipping",
+        "spotlight_heading": "The edit of now",
+        "spotlight_text":   "Statement shapes, tactile fabrics, and pieces that make everyday dressing feel like an event.",
         "cta1_label":       "Shop now",
         "text_align":       "left",
         "overlay_opacity":  35,

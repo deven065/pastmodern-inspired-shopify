@@ -11,8 +11,9 @@
   #shopify-section-{{ section.id }} {
     --header-bg:       {{ section.settings.header_bg }};
     --header-text:     {{ section.settings.header_text }};
-    --header-position: {%- if section.settings.sticky_header %}sticky{% else %}relative{% endif -%};
+    --header-position: {%- if settings.header_sticky == false %}relative{% else %}sticky{% endif -%};
     --header-height:   {{ section.settings.header_height_desktop | default: 72 }}px;
+    --logo-width:      {{ logo_width | default: 120 }}px;
   }
   @media (max-width: 56.25rem) {
     #shopify-section-{{ section.id }} { --header-height: 4.25rem; }
@@ -63,16 +64,28 @@
 
     <ul class="header-drawer__nav" role="list">
       {%- for link in menu_links -%}
+        {%- liquid
+          assign link_is_active = false
+          if link.current or link.active or link.child_active
+            assign link_is_active = true
+          endif
+        -%}
         <li>
           {%- if link.links.size > 0 -%}
             <details class="header-drawer__details">
-              <summary class="header-drawer__summary">
+              <summary class="header-drawer__summary{% if link_is_active %} is-active{% endif %}">
                 {{- link.title -}}
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" width="14" height="14" class="chevron">
                   <path d="m6 9 6 6 6-6"/>
                 </svg>
               </summary>
               <ul class="header-drawer__sub" role="list">
+                <li>
+                  <a href="{{ link.url }}" class="header-drawer__link header-drawer__link--sub header-drawer__link--parent"
+                    {%- if link.current %} aria-current="page"{% endif %}>
+                    Shop all {{- ' ' -}}{{- link.title -}}
+                  </a>
+                </li>
                 {%- for child in link.links -%}
                   <li>
                     <a href="{{ child.url }}" class="header-drawer__link header-drawer__link--sub"
@@ -112,7 +125,7 @@
 </nav>
 
 {%- comment -%} ── Main header ── {%- endcomment -%}
-<header class="header" data-header role="banner">
+<header class="header full-width" data-header role="banner">
   <div class="header__inner">
 
     {%- comment -%} Left — hamburger (mobile) + desktop nav {%- endcomment -%}
@@ -132,19 +145,32 @@
       <nav class="header__nav" aria-label="Main navigation">
         <ul class="header__nav-list" role="list">
           {%- for link in menu_links -%}
-            <li class="header__nav-item{% if link.links.size > 0 %} header__nav-item--has-dropdown{% endif %}">
+            {%- liquid
+              assign link_is_active = false
+              if link.current or link.active or link.child_active
+                assign link_is_active = true
+              endif
+            -%}
+            <li class="header__nav-item{% if link.links.size > 0 %} header__nav-item--has-dropdown{% endif %}{% if link_is_active %} is-active{% endif %}">
               {%- if link.links.size > 0 -%}
-                <button
+                <a
+                  href="{{ link.url }}"
                   class="header__nav-link header__nav-link--parent"
-                  aria-expanded="false"
                   aria-haspopup="true"
+                  {%- if link.current %} aria-current="page"{% endif %}
                 >
                   {{- link.title -}}
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" width="12" height="12" class="chevron">
                     <path d="m6 9 6 6 6-6"/>
                   </svg>
-                </button>
+                </a>
                 <ul class="header__dropdown" role="list">
+                  <li>
+                    <a href="{{ link.url }}" class="header__dropdown-link header__dropdown-link--parent"
+                      {%- if link.current %} aria-current="page"{% endif %}>
+                      Shop all {{- ' ' -}}{{- link.title -}}
+                    </a>
+                  </li>
                   {%- for child in link.links -%}
                     <li>
                       <a href="{{ child.url }}" class="header__dropdown-link"
@@ -241,96 +267,129 @@
 </header>
 
 {% stylesheet %}
-  /* ── Header shell ─────────────────────────────────────────── */
   .header {
-    background-color: var(--header-bg, var(--color-bg));
-    color: var(--header-text, var(--color-text));
-    border-block-end: 1px solid var(--color-border);
     position: var(--header-position, sticky);
     top: 0;
     z-index: 100;
-    transition: box-shadow var(--duration-base) var(--ease-default);
+    color: var(--header-text, var(--color-text));
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--header-bg, var(--color-accent)) 95%, black) 0%, var(--header-bg, var(--color-accent)) 100%);
+    border-block-end: 1px solid color-mix(in srgb, var(--color-gold) 28%, transparent);
+    transition:
+      box-shadow var(--duration-base) var(--ease-default),
+      background-color var(--duration-base) var(--ease-default),
+      border-color var(--duration-base) var(--ease-default);
+  }
+
+  .header::after {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, color-mix(in srgb, var(--color-gold) 58%, transparent) 48%, transparent 100%);
+    opacity: 0.8;
+    pointer-events: none;
   }
 
   .header.is-sticky {
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    background-color: color-mix(in srgb, var(--header-bg, var(--color-bg)) 88%, transparent);
-    box-shadow: 0 1px 0 color-mix(in srgb, var(--color-border) 40%, transparent);
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
+    background-color: color-mix(in srgb, var(--header-bg, var(--color-accent)) 90%, transparent);
+    box-shadow:
+      0 1px 0 color-mix(in srgb, var(--color-gold) 24%, transparent),
+      0 18px 40px rgba(10, 18, 14, 0.18);
     border-block-end-color: transparent;
   }
 
-  /* Strip Shopify's default section padding */
   .shopify-section-group-header-group .shopify-section {
     padding-block: 0;
   }
 
   .header__inner {
     display: grid;
-    grid-template-columns: 1fr auto 1fr;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
     align-items: center;
-    height: var(--header-height, 4.5rem);
-    padding-inline: var(--page-margin);
+    gap: clamp(var(--space-4), 2vw, var(--space-8));
+    height: var(--header-height, 5rem);
+    width: min(
+      calc(var(--page-width) - (var(--page-margin) * 2)),
+      calc(100% - (var(--page-margin) * 2))
+    );
     max-width: var(--page-width);
     margin-inline: auto;
+    padding-inline: 0;
   }
 
-  /* ── Logo ─────────────────────────────────────────────────── */
-  .header__logo {
-    display: flex;
-    justify-content: center;
-  }
-
-  .header__logo a {
-    text-decoration: none;
-    color: inherit;
-    display: flex;
-    align-items: center;
-  }
-
-  .header__logo-img {
-    display: block;
-    width: var(--logo-width, 120px);
-    height: auto;
-  }
-
-  .header__logo-text {
-    font-family: var(--font-heading);
-    font-size: var(--text-2xl);
-    font-style: italic;
-    letter-spacing: var(--tracking-tight);
-    line-height: 1;
-    white-space: nowrap;
-  }
-
-  /* ── Icon buttons ─────────────────────────────────────────── */
   .header__start,
   .header__end {
     display: flex;
     align-items: center;
     gap: var(--space-2);
+    min-width: 0;
   }
 
   .header__end {
     justify-content: flex-end;
   }
 
-  .header__icon-btn {
-    position: relative;
+  .header__logo {
     display: flex;
-    align-items: center;
     justify-content: center;
-    background: none;
-    border: none;
-    color: inherit;
-    cursor: pointer;
-    padding: 6px;
-    text-decoration: none;
-    transition: opacity var(--duration-fast) var(--ease-default);
+    min-width: 0;
   }
 
-  .header__icon-btn:hover {
-    opacity: 0.45;
+  .header__logo a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .header__logo-img {
+    display: block;
+    width: min(var(--logo-width, 150px), var(--logo-max-width, 170px));
+    height: auto;
+  }
+
+  .header__logo-text {
+    font-family: var(--font-heading);
+    font-size: clamp(var(--text-xl), 2.6vw, var(--text-3xl));
+    font-style: italic;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    white-space: nowrap;
+    color: var(--color-gold-soft);
+  }
+
+  .header__icon-btn,
+  .header__hamburger {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.6rem;
+    height: 2.6rem;
+    border: 1px solid color-mix(in srgb, var(--color-gold) 34%, transparent);
+    border-radius: 999px;
+    background-color: color-mix(in srgb, var(--header-bg, var(--color-accent)) 82%, white 6%);
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer;
+    padding: 0;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+    transition:
+      transform var(--duration-fast) var(--ease-default),
+      border-color var(--duration-fast) var(--ease-default),
+      background-color var(--duration-fast) var(--ease-default),
+      opacity var(--duration-fast) var(--ease-default);
+  }
+
+  .header__icon-btn:hover,
+  .header__hamburger:hover {
+    transform: translateY(-1px);
+    border-color: color-mix(in srgb, var(--color-gold) 54%, transparent);
+    background-color: color-mix(in srgb, var(--header-bg, var(--color-accent)) 72%, white 12%);
   }
 
   .header__icon-btn--muted {
@@ -340,37 +399,36 @@
 
   .header__cart-count {
     position: absolute;
-    top: -2px;
-    right: -6px;
-    min-width: 1.1rem;
-    height: 1.1rem;
+    top: -3px;
+    right: -3px;
+    min-width: 1rem;
+    height: 1rem;
     padding-inline: 3px;
-    border-radius: var(--radius-pill);
+    border-radius: 999px;
     background-color: var(--color-gold);
-    color: #1E1D1A;
-    font-size: 0.6rem;
-    font-weight: 600;
-    line-height: 1.1rem;
+    color: #182015;
+    font-size: 0.5625rem;
+    font-weight: 700;
+    line-height: 1rem;
     text-align: center;
+    box-shadow: 0 10px 18px rgba(24, 32, 21, 0.2);
   }
 
-  /* ── Desktop nav ──────────────────────────────────────────── */
   .header__hamburger {
     display: none;
+  }
+
+  .header__nav {
+    min-width: 0;
   }
 
   .header__nav-list {
     display: flex;
     align-items: center;
-    gap: var(--space-7);
+    gap: clamp(var(--space-3), 1.8vw, var(--space-8));
     list-style: none;
     margin: 0;
     padding: 0;
-  }
-
-  /* Slightly tighter spacing on mid-size laptops */
-  @media (max-width: 75rem) {
-    .header__nav-list { gap: var(--space-5); }
   }
 
   .header__nav-item {
@@ -378,75 +436,82 @@
   }
 
   .header__nav-link {
-    font-size: var(--text-xs);
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    text-decoration: none;
-    color: inherit;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding-block: 1.5rem;
     background: none;
     border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: var(--space-1);
-    padding-block: var(--space-2);
-    padding-block-end: calc(var(--space-2) + 4px);
+    color: color-mix(in srgb, var(--header-text, white) 80%, transparent);
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    text-decoration: none;
     white-space: nowrap;
     position: relative;
+    transition: color var(--duration-fast) var(--ease-default);
   }
 
-  /* Center-outward underline — the luxury editorial nav signature */
   .header__nav-link::after {
     content: '';
     position: absolute;
-    bottom: 0;
-    left: 50%;
-    right: 50%;
+    left: 0;
+    right: 100%;
+    bottom: 1.05rem;
     height: 1px;
-    background: currentColor;
-    opacity: 0.4;
+    background: linear-gradient(90deg, var(--color-gold) 0%, color-mix(in srgb, var(--color-gold-soft) 80%, transparent) 100%);
     transition:
-      left  var(--duration-measured, 600ms) var(--ease-brand, var(--ease-out)),
-      right var(--duration-measured, 600ms) var(--ease-brand, var(--ease-out));
+      right var(--duration-measured) var(--ease-brand),
+      opacity var(--duration-fast) var(--ease-default);
+    opacity: 0;
+  }
+
+  .header__nav-link:hover,
+  .header__nav-link[aria-current="page"],
+  .header__nav-item.is-active > .header__nav-link {
+    color: var(--header-text, white);
   }
 
   .header__nav-link:hover::after,
-  .header__nav-link[aria-current="page"]::after {
-    left: 0;
+  .header__nav-link[aria-current="page"]::after,
+  .header__nav-item.is-active > .header__nav-link::after {
     right: 0;
+    opacity: 1;
   }
 
   .header__nav-link .chevron {
+    width: 0.7rem;
+    height: 0.7rem;
+    color: color-mix(in srgb, var(--color-gold-soft) 90%, transparent);
     transition: transform var(--duration-fast) var(--ease-default);
   }
 
-  .header__nav-link--parent[aria-expanded="true"] .chevron {
+  .header__nav-item:hover > .header__nav-link .chevron,
+  .header__nav-item:focus-within > .header__nav-link .chevron {
     transform: rotate(180deg);
   }
 
-  /* Dropdown */
   .header__dropdown {
     position: absolute;
-    top: calc(100% + var(--space-2));
-    left: 50%;
-    transform: translateX(-50%);
-    min-width: 12rem;
-    background-color: color-mix(in srgb, var(--color-bg) 96%, transparent);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: none;
-    border-top: 1px solid var(--color-border);
+    top: calc(100% - 0.35rem);
+    left: 0;
+    min-width: 15rem;
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--color-bg) 92%, white) 0%, color-mix(in srgb, var(--color-bg) 100%, var(--color-bg-warm)) 100%);
+    border: 1px solid color-mix(in srgb, var(--color-gold) 28%, var(--color-border));
+    border-radius: 1rem;
     box-shadow:
-      0 16px 40px color-mix(in srgb, var(--color-text) 8%, transparent),
-      0 4px 12px  color-mix(in srgb, var(--color-text) 4%, transparent);
+      0 24px 60px rgba(13, 20, 16, 0.14),
+      inset 0 1px 0 rgba(255, 255, 255, 0.5);
     list-style: none;
     margin: 0;
-    padding: var(--space-4) 0;
+    padding: 0.5rem 0;
     opacity: 0;
     pointer-events: none;
-    translate: 0 var(--space-2);
+    translate: 0 0.75rem;
     transition:
-      opacity  var(--duration-measured) var(--ease-brand),
+      opacity var(--duration-measured) var(--ease-brand),
       translate var(--duration-measured) var(--ease-brand);
   }
 
@@ -460,94 +525,28 @@
 
   .header__dropdown-link {
     display: block;
-    padding: var(--space-4) var(--space-7);
-    font-size: var(--text-xs);
-    letter-spacing: var(--tracking-brand);
+    padding: 0.9rem 1.1rem;
+    font-size: 0.6875rem;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
     text-decoration: none;
-    color: inherit;
+    color: var(--color-text);
     white-space: nowrap;
-    transition: background-color var(--duration-fast) var(--ease-default);
+    transition:
+      color var(--duration-fast) var(--ease-default),
+      background-color var(--duration-fast) var(--ease-default);
+  }
+
+  .header__dropdown-link--parent {
+    color: var(--color-accent);
   }
 
   .header__dropdown-link:hover,
   .header__dropdown-link[aria-current="page"] {
-    background-color: var(--color-bg-subtle);
+    color: var(--color-text);
+    background-color: color-mix(in srgb, var(--color-gold) 10%, white);
   }
 
-  /* ── Mobile: swap nav for hamburger below 900px ───────────── */
-  @media (max-width: 56.25rem) {
-    .header__inner {
-      height: var(--header-height, 4.25rem);
-      padding-inline: clamp(1rem, 5vw, var(--page-margin));
-    }
-
-    /* ── Logo: proportional cap, never crowds icons ── */
-    .header__logo-img {
-      max-width: 88px;
-      width: min(var(--logo-width, 88px), 88px);
-      /* Ensure pixel-sharp rendering on retina */
-      image-rendering: -webkit-optimize-contrast;
-    }
-
-    .header__logo-text {
-      font-size: var(--text-xl);
-      letter-spacing: -0.025em;
-    }
-
-    /* ── Search lives in the drawer on mobile — remove from bar ── */
-    .header__search-btn {
-      display: none;
-    }
-
-    /* ── Icon clusters: optically flush to edges, zero gap ── */
-    .header__start,
-    .header__end {
-      gap: 0;
-    }
-
-    /* ── All icons: 18px, tighter padding for visual precision ── */
-    .header__icon-btn {
-      padding: 7px;
-    }
-    .header__icon-btn svg {
-      width: 18px;
-      height: 18px;
-    }
-
-    /* ── Hamburger: same optical padding as icons ── */
-    .header__hamburger {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: none;
-      border: none;
-      color: inherit;
-      cursor: pointer;
-      padding: 7px;
-      min-width: 2.75rem;
-      min-height: 2.75rem;
-    }
-
-    .header__nav {
-      display: none;
-    }
-
-    /* ── Cart badge: minimal dot, not a notification pill ── */
-    .header__cart-count {
-      min-width: 0.8125rem;
-      height: 0.8125rem;
-      line-height: 0.8125rem;
-      font-size: 0.4375rem;
-      font-weight: 700;
-      letter-spacing: 0;
-      top: 2px;
-      right: -2px;
-      padding-inline: 2px;
-    }
-  }
-
-  /* ── Mobile drawer ────────────────────────────────────────── */
   .header-overlay {
     position: fixed;
     inset: 0;
@@ -573,14 +572,16 @@
     inset-block: 0;
     inset-inline-start: 0;
     z-index: 120;
-    width: min(100vw, 22rem);
-    background-color: var(--color-bg);
+    width: min(100vw, 23rem);
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--color-bg) 94%, white) 0%, color-mix(in srgb, var(--color-bg) 100%, var(--color-bg-warm)) 100%);
     display: flex;
     flex-direction: column;
     visibility: hidden;
     transform: translateX(-100%);
+    box-shadow: 24px 0 70px rgba(13, 20, 16, 0.18);
     transition:
-      transform  var(--duration-measured) var(--ease-brand),
+      transform var(--duration-measured) var(--ease-brand),
       visibility 0s linear var(--duration-measured);
     overflow-y: auto;
     overscroll-behavior: contain;
@@ -591,30 +592,29 @@
     visibility: visible;
     transform: translateX(0);
     transition:
-      transform  var(--duration-measured) var(--ease-brand),
+      transform var(--duration-measured) var(--ease-brand),
       visibility 0s linear 0s;
   }
 
   .header-drawer__inner {
     display: flex;
     flex-direction: column;
-    gap: var(--space-3);
-    padding: var(--space-8) var(--space-7);
+    gap: var(--space-4);
+    padding: max(var(--space-8), env(safe-area-inset-top, 0px)) max(var(--space-7), env(safe-area-inset-right, 0px)) max(var(--space-7), env(safe-area-inset-bottom, 0px)) max(var(--space-7), env(safe-area-inset-left, 0px));
   }
 
   .header-drawer__header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    flex-direction: row-reverse;
+    gap: var(--space-4);
     padding-block-end: var(--space-6);
     border-block-end: 1px solid var(--color-border);
   }
 
   .header-drawer__brand-img {
     display: block;
-    width: var(--logo-width, 90px);
-    max-width: 110px;
+    width: min(var(--logo-width, 90px), 110px);
     height: auto;
   }
 
@@ -624,59 +624,62 @@
     font-size: var(--text-xl);
     letter-spacing: var(--tracking-tight);
     line-height: 1;
+    color: var(--color-accent);
   }
 
   .header-drawer__close {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    background: none;
-    border: none;
-    color: inherit;
-    cursor: pointer;
-    padding: var(--space-2);
     min-width: 2.75rem;
     min-height: 2.75rem;
-    opacity: 0.55;
-    transition: opacity var(--duration-fast) var(--ease-default);
+    padding: 0;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    background-color: color-mix(in srgb, var(--color-bg) 82%, white);
+    color: inherit;
+    cursor: pointer;
+    transition:
+      transform var(--duration-fast) var(--ease-default),
+      border-color var(--duration-fast) var(--ease-default);
   }
 
   .header-drawer__close:hover {
-    opacity: 1;
+    transform: rotate(90deg);
+    border-color: color-mix(in srgb, var(--color-text) 20%, transparent);
   }
 
-  .header-drawer__nav {
+  .header-drawer__nav,
+  .header-drawer__sub {
     list-style: none;
     margin: 0;
     padding: 0;
-    display: flex;
-    flex-direction: column;
   }
 
-  .header-drawer__link {
-    display: block;
+  .header-drawer__link,
+  .header-drawer__summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     padding-block: var(--space-4);
     border-block-end: 1px solid var(--color-border);
-    font-size: var(--text-xs);
-    letter-spacing: 0.12em;
+    font-size: 0.71875rem;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
     text-decoration: none;
     color: inherit;
-    transition: color var(--duration-fast) var(--ease-default), opacity var(--duration-fast) var(--ease-default);
+    cursor: pointer;
+    transition: color var(--duration-fast) var(--ease-default);
   }
 
-  .header-drawer__link:hover { opacity: 0.6; }
-  .header-drawer__link[aria-current="page"] {
+  .header-drawer__link:hover,
+  .header-drawer__summary:hover {
     color: var(--color-accent);
-    opacity: 1;
   }
 
-  .header-drawer__link--sub {
-    padding-inline-start: var(--space-6);
-    font-size: var(--text-xs);
-    letter-spacing: 0.08em;
-    opacity: 0.72;
-    border-block-end: none;
+  .header-drawer__link[aria-current="page"],
+  .header-drawer__summary.is-active {
+    color: var(--color-accent);
   }
 
   .header-drawer__details > summary {
@@ -687,32 +690,25 @@
     display: none;
   }
 
-  .header-drawer__summary {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-block: var(--space-4);
-    border-block-end: 1px solid var(--color-border);
-    font-size: var(--text-xs);
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    cursor: pointer;
-    color: inherit;
-  }
-
   .header-drawer__summary .chevron {
-    transition: transform var(--duration-fast) var(--ease-default);
     flex-shrink: 0;
+    transition: transform var(--duration-fast) var(--ease-default);
   }
 
   .header-drawer__details[open] .header-drawer__summary .chevron {
     transform: rotate(180deg);
   }
 
-  .header-drawer__sub {
-    list-style: none;
-    margin: 0;
-    padding: 0;
+  .header-drawer__link--sub {
+    padding-inline-start: var(--space-6);
+    font-size: 0.6875rem;
+    letter-spacing: 0.14em;
+    border-block-end: none;
+    color: var(--color-text-muted);
+  }
+
+  .header-drawer__link--parent {
+    color: var(--color-accent);
   }
 
   .header-drawer__search {
@@ -722,78 +718,78 @@
   }
 
   .header-drawer__search input {
-    background-color: var(--color-bg-subtle);
-    border-color: transparent;
+    background-color: color-mix(in srgb, var(--color-bg) 84%, white);
+    border-color: var(--color-border);
     font-size: var(--text-sm);
   }
 
-  /* ── iOS safe-area insets (notch, Dynamic Island, home bar) ── */
-  .header {
-    padding-block-start: env(safe-area-inset-top, 0px);
-  }
-
-  .header-drawer__inner {
-    padding-block-start: max(var(--space-8), env(safe-area-inset-top, 0px));
-    padding-block-end:   max(var(--space-6), env(safe-area-inset-bottom, 0px));
-    padding-inline-start: max(var(--space-7), env(safe-area-inset-left, 0px));
-    padding-inline-end:   max(var(--space-7), env(safe-area-inset-right, 0px));
-  }
-
-  /* ── 44px minimum touch targets + tap-highlight reset ───────  */
+  .header,
   .header__icon-btn,
-  .header-drawer__close {
-    min-width: 2.75rem;
-    min-height: 2.75rem;
-    -webkit-tap-highlight-color: transparent;
-    touch-action: manipulation;
-  }
-
-  .header__hamburger {
-    -webkit-tap-highlight-color: transparent;
-    touch-action: manipulation;
-  }
-
+  .header__hamburger,
+  .header-drawer__close,
   .header-drawer__link,
   .header-drawer__summary {
     -webkit-tap-highlight-color: transparent;
     touch-action: manipulation;
   }
+
+  .header {
+    padding-block-start: env(safe-area-inset-top, 0px);
+  }
+
+  @media (max-width: 56.25rem) {
+    .header__inner {
+      height: 4.5rem;
+      gap: var(--space-2);
+    }
+
+    .header__nav {
+      display: none;
+    }
+
+    .header__hamburger {
+      display: inline-flex;
+    }
+
+    .header__start,
+    .header__end {
+      gap: 0.35rem;
+    }
+
+    .header__search-btn {
+      display: none;
+    }
+
+    .header__logo-img {
+      width: min(var(--logo-width, 96px), 104px);
+      image-rendering: -webkit-optimize-contrast;
+    }
+
+    .header__logo-text {
+      font-size: var(--text-xl);
+    }
+
+    .header__icon-btn,
+    .header__hamburger {
+      width: 2.5rem;
+      height: 2.5rem;
+    }
+
+    .header__cart-count {
+      min-width: 0.8125rem;
+      height: 0.8125rem;
+      line-height: 0.8125rem;
+      font-size: 0.4375rem;
+      top: 0;
+      right: 0;
+      padding-inline: 2px;
+    }
+  }
 {% endstylesheet %}
 
 {% javascript %}
   (function () {
-    /*
-     * NOTE: Sticky header and mobile drawer are handled by theme.js
-     * (StickyHeader + HeaderMenu classes). Only section-specific
-     * interactions that don't exist in theme.js live here.
-     */
-
-    /* ── Desktop dropdown buttons ── */
-    document.querySelectorAll('.header__nav-link--parent').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        var expanded = btn.getAttribute('aria-expanded') === 'true';
-        document.querySelectorAll('.header__nav-link--parent').forEach(function (b) {
-          b.setAttribute('aria-expanded', 'false');
-        });
-        btn.setAttribute('aria-expanded', String(!expanded));
-      });
-
-      /* Close on outside click */
-      document.addEventListener('click', function (e) {
-        if (!btn.closest('.header__nav-item').contains(e.target)) {
-          btn.setAttribute('aria-expanded', 'false');
-        }
-      });
-    });
-
-    /* ── Logo width CSS var ── */
-    var logoImg = document.querySelector('.header__logo-img');
-    if (logoImg) {
-      document.documentElement.style.setProperty(
-        '--logo-width',
-        logoImg.getAttribute('width') + 'px'
-      );
-    }
+    /* Header interactions are handled by theme.js. */
   })();
 {% endjavascript %}
 

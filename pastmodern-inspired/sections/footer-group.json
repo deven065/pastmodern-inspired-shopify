@@ -15,8 +15,12 @@
       "type": "footer",
       "settings": {
         "show_brand_col": true,
+        "brand_text": "Modern occasionwear, elevated separates, and hand-finished details designed to look rich, photograph beautifully, and sell with confidence.",
         "show_social": true,
-        "show_payment": true
+        "show_payment": true,
+        "show_newsletter": true,
+        "newsletter_heading": "Join the private list",
+        "newsletter_sub_text": "New arrivals, styling edits, and early access to the pieces that move first."
       },
       "blocks": {
         "nav-col-1": {

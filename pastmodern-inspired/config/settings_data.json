@@ -10,8 +10,15 @@
 {
   "current": {
     "section_spacing": "compact",
-    "color_background": "#F7F3EC",
-    "color_text": "#1E1D1A",
-    "color_accent": "#214630"
+    "page_width": "105rem",
+    "page_margin": 20,
+    "logo_max_width": 170,
+    "button_style": "soft",
+    "header_sticky": true,
+    "heading_scale": 1.1,
+    "body_font_size": "1rem",
+    "color_background": "#F8F4EA",
+    "color_text": "#1C221C",
+    "color_accent": "#173A28"
   }
 }

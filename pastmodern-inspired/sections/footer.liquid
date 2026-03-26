@@ -14,7 +14,7 @@
   endfor
 -%}
 
-<footer class="site-footer" role="contentinfo">
+<footer class="site-footer full-width" role="contentinfo">
 
   {%- comment -%} ── Newsletter strip — full-width above column grid ── {%- endcomment -%}
   {%- if section.settings.show_newsletter -%}
@@ -184,13 +184,17 @@
   /* ── Site footer shell ── */
   .site-footer {
     padding-block: var(--space-16) var(--space-10);
-    padding-inline: var(--page-margin);
+    padding-inline: max(
+      var(--page-margin),
+      calc((100vw - var(--page-width) + (var(--page-margin) * 2)) / 2)
+    );
     display: flex;
     flex-direction: column;
     gap: var(--space-10);
 
-    /* ── Deep Emerald base ───────────────────────────────────────── */
-    background-color: #214630;
+    background:
+      radial-gradient(circle at top right, rgba(199, 163, 71, 0.16) 0%, transparent 24%),
+      linear-gradient(180deg, #102115 0%, #163120 52%, #22452d 100%);
 
     /* Locally override design tokens so every child selector
        gets the right colour for a dark-bg context without
@@ -201,7 +205,7 @@
     --color-bg:         #214630;
     --color-bg-subtle:  rgba(247, 243, 236, 0.06);
     --color-bg-warm:    rgba(247, 243, 236, 0.06);
-    --color-accent:     #D6C08A;   /* Antique Gold — links, focus, eyebrows in footer */
+    --color-accent:     #DFA86D;
   }
 
   /* ── Upper grid ── */
@@ -296,10 +300,10 @@
     font-size: var(--text-sm);
     color: var(--color-text-muted);
     text-decoration: none;
-    transition: color var(--duration-measured) var(--ease-brand);
+    transition: color var(--duration-measured) var(--ease-brand), opacity var(--duration-fast) var(--ease-default);
   }
 
-  .footer__nav-link:hover        { color: var(--color-text); }
+  .footer__nav-link:hover        { color: var(--color-text); opacity: 1; }
   .footer__nav-link:focus-visible {
     outline: 2px solid var(--color-text);
     outline-offset: 2px;
@@ -331,7 +335,7 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: var(--space-3) var(--space-6);
+    gap: var(--space-3) var(--space-5);
   }
 
   .footer__copyright { font-size: var(--text-xs); margin: 0; }
@@ -377,11 +381,17 @@
   /* ── Newsletter strip (full-width above columns) ── */
   .footer__newsletter-strip {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
     align-items: center;
-    gap: var(--space-6) var(--space-12);
-    padding-block-end: var(--space-10);
-    border-block-end: 1px solid var(--color-border);
+    gap: var(--space-5) var(--space-10);
+    padding: clamp(var(--space-6), 3vw, var(--space-8));
+    border: 1px solid color-mix(in srgb, var(--color-gold) 28%, var(--color-border));
+    border-radius: 1.35rem;
+    background:
+      linear-gradient(135deg, rgba(247, 243, 236, 0.06) 0%, rgba(247, 243, 236, 0.02) 100%);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.04),
+      0 18px 40px rgba(8, 14, 11, 0.14);
   }
 
   .footer__newsletter-intro {
@@ -393,7 +403,7 @@
   .footer__newsletter-heading {
     font-family: var(--font-heading);
     font-style: italic;
-    font-size: clamp(var(--text-xl), 2.5vw, var(--text-2xl));
+    font-size: clamp(var(--text-xl), 2.5vw, var(--text-3xl));
     letter-spacing: var(--tracking-tight);
     line-height: var(--leading-tight);
     color: var(--color-text);
@@ -418,12 +428,19 @@
   .footer__newsletter-field {
     display: flex;
     align-items: center;
-    border-block-end: 1px solid var(--color-border);
-    transition: border-color var(--duration-measured) var(--ease-brand);
+    min-height: 3.5rem;
+    padding-inline: var(--space-4);
+    border: 1px solid color-mix(in srgb, var(--color-gold) 24%, var(--color-border));
+    border-radius: 999px;
+    background-color: rgba(247, 243, 236, 0.04);
+    transition:
+      border-color var(--duration-measured) var(--ease-brand),
+      background-color var(--duration-fast) var(--ease-default);
   }
 
   .footer__newsletter-field:focus-within {
-    border-block-end-color: var(--color-accent);
+    border-color: var(--color-gold-soft);
+    background-color: rgba(247, 243, 236, 0.08);
   }
 
   .footer__newsletter-field input {
@@ -436,6 +453,7 @@
     letter-spacing: 0.02em;
     color: var(--color-text);
     min-width: 0;
+    box-shadow: none;
   }
 
   .footer__newsletter-field input::placeholder {
@@ -450,15 +468,16 @@
     background: none;
     border: none;
     cursor: pointer;
-    color: var(--color-text);
+    color: var(--color-gold-soft);
     padding: var(--space-2) 0 var(--space-2) var(--space-2);
     display: flex;
     align-items: center;
-    transition: opacity var(--duration-fast) var(--ease-default);
+    transition: opacity var(--duration-fast) var(--ease-default), transform var(--duration-fast) var(--ease-default);
   }
 
   .footer__newsletter-field button:hover {
-    opacity: 0.55;
+    opacity: 1;
+    transform: translateX(1px);
   }
 
   .footer__newsletter-success {

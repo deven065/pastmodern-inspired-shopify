@@ -91,54 +91,58 @@
 </div>
 
 {% stylesheet %}
-  /* ── Wrapper ─────────────────────────────────────────────── */
   .promo-grid {
     display: flex;
     flex-direction: column;
-    gap: var(--space-10);
+    gap: var(--space-6);
   }
 
-  /* ── Section header ─────────────────────────────────────── */
   .promo-grid__header {
     display: flex;
     flex-direction: column;
     gap: var(--space-3);
+    max-width: 36rem;
   }
 
   .promo-grid__heading {
     font-family: var(--font-heading);
     font-weight: var(--font-heading-weight);
     font-style: italic;
-    font-size: clamp(var(--text-2xl), 4vw, var(--text-3xl));
+    font-size: clamp(var(--text-2xl), 4vw, var(--text-4xl));
     line-height: var(--leading-tight);
     letter-spacing: var(--tracking-tight);
     margin: 0;
   }
 
-  /* ── Card grid ──────────────────────────────────────────── */
   .promo-grid__cards {
     display: grid;
-    grid-template-columns: repeat(var(--pg-cols, 4), 1fr);
-    /* Near-seamless grid — editorial magazine spread feel */
-    gap: var(--space-1);
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: clamp(var(--space-3), 1.8vw, var(--space-4));
     list-style: none;
     margin: 0;
     padding: 0;
   }
 
-  /* ── Individual card ────────────────────────────────────── */
+  .promo-card:nth-child(1) { grid-column: span 7; }
+  .promo-card:nth-child(2) { grid-column: span 5; }
+  .promo-card:nth-child(3) { grid-column: span 5; }
+  .promo-card:nth-child(4) { grid-column: span 7; }
+
   .promo-card__link {
     display: block;
     text-decoration: none;
     color: white;
     overflow: hidden;
+    border-radius: 1.35rem;
+    box-shadow: var(--shadow-card);
   }
 
   .promo-card__media {
     position: relative;
-    aspect-ratio: var(--card-ratio, 3/4);
+    aspect-ratio: 5 / 6;
     overflow: hidden;
     background-color: var(--color-bg-subtle);
+    border: 1px solid color-mix(in srgb, var(--color-accent) 10%, var(--color-border));
   }
 
   .promo-card__img {
@@ -173,22 +177,18 @@
     object-fit: cover;
   }
 
-  /* ── Overlay gradient + text ─────────────────────────────
-     Calibrated for editorial fashion photography: the lower third
-     is the natural darkest area of most studio/campaign shots.
-     A lighter touch here lets the image's own depth do the work. */
   .promo-card__overlay {
     position: absolute;
     inset: 0;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    padding: var(--space-7);
+    padding: clamp(var(--space-5), 2vw, var(--space-8));
     background: linear-gradient(
       to top,
-      rgba(0, 0, 0, 0.60) 0%,
-      rgba(0, 0, 0, 0.08) 52%,
-      transparent          100%
+      rgba(8, 12, 9, 0.82) 0%,
+      rgba(8, 12, 9, 0.14) 55%,
+      transparent 100%
     );
     transition: background 0.55s var(--ease-out);
   }
@@ -196,13 +196,12 @@
   .promo-card__link:hover .promo-card__overlay {
     background: linear-gradient(
       to top,
-      rgba(0, 0, 0, 0.76) 0%,
-      rgba(0, 0, 0, 0.18) 56%,
-      transparent          100%
+      rgba(8, 12, 9, 0.88) 0%,
+      rgba(8, 12, 9, 0.22) 56%,
+      transparent 100%
     );
   }
 
-  /* ── Footer: heading + arrow ────────────────────────────── */
   .promo-card__footer {
     display: flex;
     align-items: flex-end;
@@ -215,17 +214,24 @@
     font-family: var(--font-heading);
     font-style: italic;
     font-weight: var(--font-heading-weight);
-    /* Larger editorial category type — commands presence over photography */
-    font-size: clamp(var(--text-xl), 2.2vw, var(--text-3xl));
+    font-size: clamp(var(--text-xl), 2.6vw, var(--text-4xl));
     line-height: var(--leading-tight);
     letter-spacing: var(--tracking-tight);
     color: white;
-    /* Ensures legibility over high-key (bright) photography areas */
+    max-width: 9ch;
     text-shadow: 0 2px 24px rgba(0, 0, 0, 0.35);
   }
 
   .promo-card__arrow {
     flex-shrink: 0;
+    width: 2.5rem;
+    height: 2.5rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    border: 1px solid rgba(226, 203, 131, 0.45);
+    background-color: rgba(255, 255, 255, 0.08);
     opacity: 0;
     transform: translate(-0.4rem, 0.4rem);
     transition:
@@ -238,19 +244,28 @@
     transform: translate(0, 0);
   }
 
-  /* ── Tablet: 2 cols ─────────────────────────────────────── */
   @media (max-width: 62rem) {
     .promo-grid__cards {
-      grid-template-columns: repeat(var(--pg-cols-mob, 2), 1fr);
-      gap: 2px;
+      grid-template-columns: repeat(var(--pg-cols-mob, 2), minmax(0, 1fr));
+      gap: var(--space-3);
+    }
+
+    .promo-card:nth-child(1),
+    .promo-card:nth-child(2),
+    .promo-card:nth-child(3),
+    .promo-card:nth-child(4) {
+      grid-column: span 1;
+    }
+
+    .promo-card__media {
+      aspect-ratio: var(--card-ratio, 3/4);
     }
   }
 
-  /* ── Mobile: always 2 cols, compact ────────────────────── */
   @media (max-width: 30rem) {
     .promo-grid__cards {
       grid-template-columns: repeat(2, 1fr);
-      gap: 2px;
+      gap: var(--space-3);
     }
 
     .promo-card__overlay {

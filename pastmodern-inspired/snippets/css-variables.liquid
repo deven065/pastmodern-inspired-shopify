@@ -25,29 +25,39 @@
     --color-text:   {{ settings.color_text }};
     --color-accent: {{ settings.color_accent }};
 
-    /* ── Colors — Sulu Luxe fixed palette ───────────────────── */
-    /* Neutrals */
-    --color-bg-warm:        #EFE7DA;   /* Warm Cream — subtle section variation   */
-    --color-bg-stone:       #DCCFBE;   /* Stone Beige — stronger section contrast */
-    --color-bg-subtle:      #EFE7DA;   /* Alias → Warm Cream (used for image bgs) */
-    --color-border:         #E7DFD2;   /* Mist Border — borders, dividers, inputs */
-    --color-text-muted:     #8A847C;   /* Warm mid-tone — captions, secondary UI  */
-    --color-text-secondary: #4A4944;   /* Soft Graphite — secondary body text     */
-    --color-overlay:        {{ settings.color_text | color_modify: 'alpha', 0.48 }};
+    /* ── Colors — green and gold luxury system ────────────── */
+    --color-bg-warm:        #EEE4CE;
+    --color-bg-stone:       #D6C6A3;
+    --color-bg-subtle:      #FBF7F0;
+    --color-surface:        color-mix(in srgb, {{ settings.color_background }} 90%, white);
+    --color-surface-strong: color-mix(in srgb, {{ settings.color_background }} 82%, white);
+    --color-border:         color-mix(in srgb, {{ settings.color_accent }} 14%, #C7A347 18%);
+    --color-border-strong:  color-mix(in srgb, {{ settings.color_accent }} 26%, #C7A347 18%);
+    --color-text-muted:     #6E6B61;
+    --color-text-secondary: #2D342B;
+    --color-overlay:        rgba(8, 16, 12, 0.48);
 
-    /* Emerald family */
-    --color-accent-hover:   #2B5F41;   /* Heritage Green — hover on primary accent */
-    --color-accent-soft:    #366F4C;   /* Soft Emerald — lighter accent context    */
-    --color-sage:           #7D947F;   /* Muted Sage — subtle green tint           */
-    --color-accent-subtle:  color-mix(in srgb, {{ settings.color_accent }} 8%, transparent);
-    --color-accent-dim:     color-mix(in srgb, {{ settings.color_accent }} 18%, transparent);
+    /* Brand and accent family */
+    --color-accent-hover:   #102B1D;
+    --color-accent-soft:    #2F5A3E;
+    --color-sage:           #7F9077;
+    --color-accent-subtle:  color-mix(in srgb, {{ settings.color_accent }} 10%, white);
+    --color-accent-dim:     color-mix(in srgb, {{ settings.color_accent }} 16%, transparent);
 
-    /* Gold family — sparingly as micro-luxury accents */
-    --color-gold:           #D6C08A;   /* Antique Gold — stars, micro accents  */
-    --color-gold-soft:      #C8B27A;   /* Soft Gold — hover/alternate gold     */
+    /* Gold-forward highlight family */
+    --color-gold:           #C7A347;
+    --color-gold-soft:      #E2CB83;
+    --color-clay:           #A98428;
+    --color-blush:          #E4E9DE;
+    --color-butter:         #DCC067;
+    --color-mint:           #CBD8C4;
+    --color-berry:          #415646;
+    --color-sand:           #9E8241;
 
-    /* Sand */
-    --color-sand:           #B7AA98;   /* Sand Taupe — UI separation, muted elements */
+    /* Shadows */
+    --shadow-soft:          0 18px 42px rgba(16, 24, 18, 0.08);
+    --shadow-card:          0 26px 72px rgba(16, 24, 18, 0.12);
+    --shadow-pop:           0 18px 42px rgba(16, 24, 18, 0.16);
 
     /* ── Layout ─────────────────────────────────────────────────── */
     --page-width:    {{ settings.page_width }};
@@ -71,7 +81,7 @@
 
     /* ── Section vertical rhythm ─────────────────────────── */
     {%- if settings.section_spacing == 'compact' -%}
-      --section-spacing: clamp(1.75rem, 3.5vw, 3rem);
+      --section-spacing: clamp(1.5rem, 3vw, 2.75rem);
     {%- elsif settings.section_spacing == 'comfortable' -%}
       --section-spacing: clamp(2.75rem, 5.5vw, 5rem);
     {%- else -%}

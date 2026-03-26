@@ -51,60 +51,67 @@
 </div>
 
 {% stylesheet %}
-  /* ── Wrapper ────────────────────────────────────────────── */
   .testimonials {
     display: flex;
     flex-direction: column;
-    gap: var(--space-14);
+    gap: var(--space-6);
   }
 
-  /* ── Header ─────────────────────────────────────────────── */
   .testimonials__header {
     display: flex;
     flex-direction: column;
     gap: var(--space-3);
-    align-items: center;
-    text-align: center;
+    align-items: flex-start;
+    text-align: left;
+    max-width: 38rem;
   }
 
   .testimonials__heading {
     font-family: var(--font-heading);
     font-weight: var(--font-heading-weight);
     font-style: italic;
-    font-size: clamp(var(--text-2xl), 4vw, var(--text-3xl));
+    font-size: clamp(var(--text-2xl), 4vw, var(--text-4xl));
     line-height: var(--leading-tight);
     letter-spacing: var(--tracking-tight);
     margin: 0;
   }
 
-  /* ── Grid ───────────────────────────────────────────────── */
   .testimonials__grid {
     display: grid;
-    grid-template-columns: repeat(var(--t-cols, 3), 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4);
     list-style: none;
     margin: 0;
     padding: 0;
     align-items: start;
   }
 
-  /* ── Individual testimonial ──────────────────────────────── */
   .testimonial {
-    padding-block: var(--space-10);
-    border-block-start: 1px solid var(--color-border);
-  }
-
-  /* Column dividers */
-  .testimonial + .testimonial {
-    border-inline-start: 1px solid var(--color-border);
-    padding-inline-start: var(--space-8);
+    min-height: 100%;
+    padding: clamp(var(--space-6), 2.5vw, var(--space-8));
+    border: 1px solid color-mix(in srgb, var(--color-gold) 20%, var(--color-border));
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--color-bg) 78%, white) 0%, color-mix(in srgb, var(--color-bg) 96%, var(--color-bg-warm)) 100%);
+    box-shadow: var(--shadow-soft);
+    border-radius: 1.35rem;
   }
 
   .testimonial:first-child {
-    padding-inline-start: 0;
+    grid-column: 1 / -1;
+    background:
+      linear-gradient(135deg, color-mix(in srgb, var(--color-accent) 96%, black) 0%, color-mix(in srgb, var(--color-accent-soft) 88%, var(--color-accent)) 100%);
+    color: #F8F4EA;
+    border-color: color-mix(in srgb, var(--color-gold) 34%, transparent);
   }
 
-  .testimonials__grid .testimonial:not(:first-child) {
-    padding-inline-start: var(--space-8);
+  .testimonial:nth-child(2) {
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--color-mint) 22%, white) 0%, color-mix(in srgb, var(--color-bg) 96%, white) 100%);
+  }
+
+  .testimonial:nth-child(3) {
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--color-gold) 12%, white) 0%, color-mix(in srgb, var(--color-bg) 96%, white) 100%);
   }
 
   /* ── Blockquote ──────────────────────────────────────────── */
@@ -115,7 +122,6 @@
     margin: 0;
   }
 
-  /* ── Large decorative opening quote mark ─────────────────── */
   .testimonial__mark {
     font-family: var(--font-heading);
     font-style: italic;
@@ -128,7 +134,6 @@
     pointer-events: none;
   }
 
-  /* ── Quote text ──────────────────────────────────────────── */
   .testimonial__text {
     font-family: var(--font-heading);
     font-style: italic;
@@ -139,7 +144,19 @@
     margin: 0;
   }
 
-  /* ── Attribution ─────────────────────────────────────────── */
+  .testimonial:first-child .testimonial__text,
+  .testimonial:first-child .testimonial__author {
+    color: #F8F4EA;
+  }
+
+  .testimonial:first-child .testimonial__location {
+    color: color-mix(in srgb, #F8F4EA 64%, transparent);
+  }
+
+  .testimonial:first-child .testimonial__rule {
+    background-color: color-mix(in srgb, var(--color-gold) 55%, transparent);
+  }
+
   .testimonial__footer {
     display: flex;
     align-items: center;
@@ -176,19 +193,13 @@
     color: var(--color-text-muted);
   }
 
-  /* ── Mobile: single column ───────────────────────────────── */
   @media (max-width: 62rem) {
     .testimonials__grid {
       grid-template-columns: 1fr;
     }
 
-    .testimonial + .testimonial {
-      border-inline-start: none;
-      padding-inline-start: 0;
-    }
-
-    .testimonials__grid .testimonial:not(:first-child) {
-      padding-inline-start: 0;
+    .testimonial:first-child {
+      grid-column: auto;
     }
   }
 {% endstylesheet %}

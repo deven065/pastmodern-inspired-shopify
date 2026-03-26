@@ -66,13 +66,10 @@
 </div>
 
 {% stylesheet %}
-  /* ── Wrapper ───────────────────────────────────────────────── */
-  /* Image column is intentionally dominant (57 %) — editorial photography
-     should lead the narrative; text is the supporting counterpoint.     */
   .iwt {
     display: grid;
-    grid-template-columns: 57fr 43fr;
-    gap: clamp(var(--space-14), 7vw, var(--space-24));
+    grid-template-columns: 58fr 42fr;
+    gap: clamp(var(--space-8), 4vw, var(--space-14));
     align-items: center;
   }
 
@@ -90,6 +87,9 @@
     aspect-ratio: var(--iwt-ratio, 4/5);
     overflow: hidden;
     background-color: var(--color-bg-subtle);
+    border: 1px solid color-mix(in srgb, var(--color-accent) 10%, var(--color-border));
+    border-radius: 1.4rem;
+    box-shadow: var(--shadow-card);
   }
 
   .iwt__img {
@@ -122,8 +122,14 @@
   .iwt__content {
     display: flex;
     flex-direction: column;
-    gap: var(--space-6);
+    gap: var(--space-5);
     max-width: 48ch;
+    padding: clamp(var(--space-6), 2.6vw, var(--space-10));
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--color-bg) 84%, white) 0%, color-mix(in srgb, var(--color-bg) 100%, var(--color-bg-warm)) 100%);
+    border: 1px solid color-mix(in srgb, var(--color-gold) 24%, var(--color-border));
+    border-radius: 1.4rem;
+    box-shadow: var(--shadow-soft);
   }
 
   .iwt--image-right .iwt__content {
@@ -138,7 +144,7 @@
     font-family: var(--font-heading);
     font-weight: var(--font-heading-weight);
     font-style: italic;
-    font-size: clamp(var(--text-2xl), 4.5vw, var(--text-4xl));
+    font-size: clamp(var(--text-2xl), 4.2vw, var(--text-4xl));
     line-height: var(--leading-tight);
     letter-spacing: var(--tracking-tight);
     margin: 0;
@@ -147,7 +153,7 @@
   .iwt__text {
     font-size: var(--text-base);
     line-height: var(--leading-relaxed);
-    color: var(--color-text-muted);
+    color: var(--color-text-secondary);
   }
 
   .iwt__text p {

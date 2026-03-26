@@ -79,24 +79,42 @@
     align-items: center;
     gap: var(--space-8);
     text-align: center;
+    position: relative;
+    overflow: hidden;
   }
 
   .newsletter[data-text-align="left"]  { align-items: flex-start; text-align: left; }
   .newsletter[data-text-align="right"] { align-items: flex-end;   text-align: right; }
 
   .newsletter--subtle {
-    background-color: var(--color-bg-subtle);
+    background:
+      linear-gradient(135deg, color-mix(in srgb, var(--color-bg) 74%, white) 0%, color-mix(in srgb, var(--color-blush) 26%, white) 100%);
     padding-block: var(--section-spacing);
     grid-column: 1 / -1;
     padding-inline: var(--page-margin);
   }
 
   .newsletter--dark {
-    background-color: var(--color-text);
+    background:
+      radial-gradient(circle at top right, color-mix(in srgb, var(--color-gold) 28%, transparent) 0%, transparent 28%),
+      linear-gradient(135deg, #13281a 0%, #1b3a26 55%, #274f34 100%);
     color: var(--color-bg);
     padding-block: var(--section-spacing);
     grid-column: 1 / -1;
     padding-inline: var(--page-margin);
+  }
+
+  .newsletter::before {
+    content: '';
+    position: absolute;
+    inset: auto -8% -35% auto;
+    width: clamp(14rem, 24vw, 22rem);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--color-gold) 34%, transparent);
+    filter: blur(12px);
+    opacity: 0.55;
+    pointer-events: none;
   }
 
   .newsletter--dark .eyebrow,
@@ -136,19 +154,24 @@
     display: flex;
     flex-direction: column;
     gap: var(--space-3);
+    position: relative;
+    z-index: 1;
   }
 
   .newsletter__field-row {
     display: flex;
     gap: 0;
-    border: 1px solid var(--color-border);
+    border: 1px solid color-mix(in srgb, var(--color-border) 88%, transparent);
     border-radius: var(--radius-input);
     overflow: hidden;
+    background-color: color-mix(in srgb, var(--color-bg) 72%, white);
+    box-shadow: var(--shadow-soft);
     transition: border-color var(--duration-measured) var(--ease-brand);
   }
 
   .newsletter--dark .newsletter__field-row {
-    border-color: color-mix(in srgb, var(--color-bg) 25%, transparent);
+    border-color: color-mix(in srgb, var(--color-bg) 20%, transparent);
+    background-color: color-mix(in srgb, var(--color-bg) 90%, transparent);
   }
 
   .newsletter__field-row:focus-within {

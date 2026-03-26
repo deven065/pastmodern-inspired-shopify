@@ -112,7 +112,7 @@
 
   /* ── Outer wrapper ────────────────────────────────────────── */
   .collection-grid {
-    padding-block: var(--space-8) var(--space-32);
+    padding-block: var(--space-6) var(--space-16);
   }
 
   /* ── Inner constraint ─────────────────────────────────────── */
@@ -122,15 +122,15 @@
     padding-inline: var(--page-margin);
     display: flex;
     flex-direction: column;
-    gap: var(--space-16);
+    gap: var(--space-10);
   }
 
   /* ── Product grid ─────────────────────────────────────────── */
   .collection-grid__list {
     display: grid;
     grid-template-columns: repeat(var(--cg-cols, 3), 1fr);
-    row-gap: clamp(var(--space-12), 5.5vw, var(--space-20));
-    column-gap: clamp(var(--space-3), 2vw, var(--space-6));
+    row-gap: clamp(var(--space-7), 3vw, var(--space-10));
+    column-gap: clamp(var(--space-3), 1.5vw, var(--space-5));
     list-style: none;
     margin: 0;
     padding: 0;
@@ -190,7 +190,8 @@
     text-transform: uppercase;
     text-decoration: none;
     color: var(--color-text);
-    border: 1px solid transparent;
+    border: 1px solid color-mix(in srgb, var(--color-gold) 18%, var(--color-border));
+    background-color: color-mix(in srgb, var(--color-bg) 86%, white);
     border-radius: 0;
     transition:
       border-color     var(--duration-fast) var(--ease-default),
@@ -203,7 +204,9 @@
   }
 
   .cg-pagination__link--current {
-    border-color: var(--color-text);
+    border-color: var(--color-accent);
+    background-color: var(--color-accent);
+    color: #F8F4EA;
   }
 
   .cg-pagination__link--ellipsis {

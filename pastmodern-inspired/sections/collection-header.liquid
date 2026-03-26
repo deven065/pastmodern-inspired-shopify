@@ -18,7 +18,7 @@
   assign show_filter  = section.settings.show_filter_trigger
 -%}
 
-<div class="collection-header" data-align="{{ heading_alignment }}">
+<div class="collection-header full-width" data-align="{{ heading_alignment }}">
 
   {%- comment -%} ── Identity ── {%- endcomment -%}
   <div class="collection-header__inner">
@@ -132,6 +132,10 @@
   .collection-header {
     display: flex;
     flex-direction: column;
+    background:
+      radial-gradient(circle at top right, color-mix(in srgb, var(--color-gold) 24%, transparent) 0%, transparent 28%),
+      linear-gradient(180deg, color-mix(in srgb, var(--color-bg) 88%, white) 0%, color-mix(in srgb, var(--color-bg) 100%, var(--color-bg-warm)) 100%);
+    border-block-end: 1px solid var(--color-border);
   }
 
   /* ── Inner constraint (all rows share this) ─────────────── */
@@ -144,10 +148,11 @@
 
   /* ── Identity block ─────────────────────────────────────── */
   .collection-header__identity {
-    padding-block: var(--space-16) var(--space-12);
+    padding-block: clamp(var(--space-10), 4.5vw, var(--space-16)) var(--space-8);
     display: flex;
     flex-direction: column;
     gap: var(--space-4);
+    max-width: 48rem;
   }
 
   .collection-header[data-align="center"] .collection-header__identity {
@@ -181,7 +186,7 @@
     font-family: var(--font-heading);
     font-weight: var(--font-heading-weight);
     font-style: italic;
-    font-size: clamp(var(--text-3xl), 4.5vw, var(--text-4xl));
+    font-size: clamp(var(--text-3xl), 4.2vw, var(--text-4xl));
     line-height: var(--leading-tight);
     letter-spacing: -0.03em;
     margin: 0;
@@ -190,7 +195,7 @@
   /* ── Description ────────────────────────────────────────── */
   .collection-header__description {
     font-size: var(--text-base);
-    color: var(--color-text-muted);
+    color: var(--color-text-secondary);
     line-height: var(--leading-relaxed);
     max-width: 52ch;
     margin-block-start: var(--space-2);
@@ -204,18 +209,20 @@
   /* ── Category tag nav (underline tab style) ─────────────── */
   .collection-header__tags-row {
     border-block-start: 1px solid var(--color-border);
+    background-color: color-mix(in srgb, var(--color-bg) 84%, white);
   }
 
   .collection-header__tags {
     display: flex;
     flex-wrap: wrap;
-    gap: 0;
+    gap: var(--space-2);
+    padding-block: var(--space-4);
   }
 
   .tag-pill {
     display: inline-flex;
     align-items: center;
-    padding: var(--space-4) var(--space-5);
+    padding: 0.8rem 1rem;
     font-family: var(--font-body);
     font-size: var(--text-xs);
     font-weight: 400;
@@ -224,26 +231,28 @@
     text-transform: uppercase;
     text-decoration: none;
     color: var(--color-text-muted);
-    border: none;
-    border-block-end: 1px solid transparent;
+    border: 1px solid color-mix(in srgb, var(--color-gold) 18%, var(--color-border));
+    background-color: color-mix(in srgb, var(--color-bg) 88%, white);
+    border-radius: 999px;
     white-space: nowrap;
     transition:
       color        var(--duration-fast) var(--ease-default),
-      border-color var(--duration-fast) var(--ease-default);
+      border-color var(--duration-fast) var(--ease-default),
+      background-color var(--duration-fast) var(--ease-default);
   }
-
-  .collection-header__tags .tag-pill:first-child { padding-inline-start: 0; }
 
   .tag-pill:hover { color: var(--color-text); }
 
   .tag-pill--active {
-    color: var(--color-accent);
-    border-block-end-color: var(--color-accent);
+    color: #F8F4EA;
+    background-color: var(--color-accent);
+    border-color: var(--color-accent);
   }
 
   /* ── Toolbar ────────────────────────────────────────────── */
   .collection-header__toolbar-row {
     border-block: 1px solid var(--color-border);
+    background-color: color-mix(in srgb, var(--color-bg) 90%, white);
   }
 
   .collection-header__toolbar {
@@ -266,7 +275,7 @@
   .collection-header__controls {
     display: flex;
     align-items: center;
-    gap: var(--space-6);
+    gap: var(--space-3);
   }
 
   /* Bare filter button */
@@ -280,14 +289,22 @@
     letter-spacing: var(--tracking-widest);
     text-transform: uppercase;
     color: var(--color-text);
-    background: none;
-    border: none;
-    padding: 0;
+    background-color: color-mix(in srgb, var(--color-bg) 88%, white);
+    border: 1px solid color-mix(in srgb, var(--color-gold) 18%, var(--color-border));
+    border-radius: 999px;
+    padding: 0.8rem 1rem;
     cursor: pointer;
-    transition: opacity var(--duration-fast) var(--ease-default);
+    transition:
+      opacity var(--duration-fast) var(--ease-default),
+      border-color var(--duration-fast) var(--ease-default),
+      background-color var(--duration-fast) var(--ease-default);
   }
 
-  .ch-filter-btn:hover { opacity: 0.5; }
+  .ch-filter-btn:hover {
+    opacity: 1;
+    border-color: color-mix(in srgb, var(--color-gold) 42%, var(--color-border));
+    background-color: color-mix(in srgb, var(--color-gold) 6%, white);
+  }
 
   /* Frameless sort select */
   .ch-sort-form { display: inline-flex; align-items: center; }
@@ -299,17 +316,16 @@
     letter-spacing: var(--tracking-widest);
     text-transform: uppercase;
     color: var(--color-text);
-    background-color: transparent;
-    border: none;
-    border-radius: 0;
-    padding: 0;
-    padding-inline-end: var(--space-5);
+    background-color: color-mix(in srgb, var(--color-bg) 88%, white);
+    border: 1px solid color-mix(in srgb, var(--color-gold) 18%, var(--color-border));
+    border-radius: 999px;
+    padding: 0.8rem 2.2rem 0.8rem 1rem;
     cursor: pointer;
     appearance: none;
     -webkit-appearance: none;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='6' viewBox='0 0 9 6' fill='none'%3E%3Cpath d='M1 1L4.5 5L8 1' stroke='%23666' stroke-width='1' stroke-linecap='square'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
-    background-position: right 0 center;
+    background-position: right 0.95rem center;
     outline: none;
     width: auto;
   }
