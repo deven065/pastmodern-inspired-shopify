@@ -21,43 +21,58 @@
     --font-heading-style:  {{ settings.type_heading_font.style }};
 
     /* ── Colors — merchant-controllable ────────────────────── */
-    --color-bg:     {{ settings.color_background }};
-    --color-text:   {{ settings.color_text }};
-    --color-accent: {{ settings.color_accent }};
+    --color-bg-base:     {{ settings.color_background }};
+    --color-text-base:   {{ settings.color_text }};
+    --color-accent-base: {{ settings.color_accent }};
+    --color-bg:          var(--color-bg-base);
+    --color-text:        var(--color-text-base);
+    --color-accent:      var(--color-accent-base);
 
-    /* ── Colors — green and gold luxury system ────────────── */
-    --color-bg-warm:        #EEE4CE;
-    --color-bg-stone:       #D6C6A3;
-    --color-bg-subtle:      #FBF7F0;
-    --color-surface:        color-mix(in srgb, {{ settings.color_background }} 90%, white);
-    --color-surface-strong: color-mix(in srgb, {{ settings.color_background }} 82%, white);
-    --color-border:         color-mix(in srgb, {{ settings.color_accent }} 14%, #C7A347 18%);
-    --color-border-strong:  color-mix(in srgb, {{ settings.color_accent }} 26%, #C7A347 18%);
-    --color-text-muted:     #6E6B61;
-    --color-text-secondary: #2D342B;
-    --color-overlay:        rgba(8, 16, 12, 0.48);
+    /* ── Colors — emerald-led conversion palette ───────────── */
+    --color-bg-warm:        #F3E7D6;
+    --color-bg-stone:       #E0C9A4;
+    --color-bg-subtle:      #FCF6EE;
+    --color-surface:        color-mix(in srgb, var(--color-bg) 84%, #FFF8F1);
+    --color-surface-strong: color-mix(in srgb, var(--color-bg) 74%, #FFF8F1);
+    --color-border:         color-mix(in srgb, var(--color-accent) 14%, #D5B06C 38%);
+    --color-border-strong:  color-mix(in srgb, var(--color-accent) 22%, #C99E43 48%);
+    --color-text-muted:     #746A60;
+    --color-text-secondary: #22352B;
+    --color-overlay:        rgba(7, 12, 10, 0.42);
 
     /* Brand and accent family */
-    --color-accent-hover:   #102B1D;
-    --color-accent-soft:    #2F5A3E;
-    --color-sage:           #7F9077;
-    --color-accent-subtle:  color-mix(in srgb, {{ settings.color_accent }} 10%, white);
-    --color-accent-dim:     color-mix(in srgb, {{ settings.color_accent }} 16%, transparent);
+    --color-accent-hover:   #103222;
+    --color-accent-soft:    #3A694F;
+    --color-sage:           #869A7D;
+    --color-accent-subtle:  color-mix(in srgb, var(--color-accent) 12%, #FFF8F1);
+    --color-accent-dim:     color-mix(in srgb, var(--color-accent) 22%, transparent);
 
     /* Gold-forward highlight family */
-    --color-gold:           #C7A347;
-    --color-gold-soft:      #E2CB83;
-    --color-clay:           #A98428;
-    --color-blush:          #E4E9DE;
-    --color-butter:         #DCC067;
-    --color-mint:           #CBD8C4;
-    --color-berry:          #415646;
-    --color-sand:           #9E8241;
+    --color-gold:           #C9A24B;
+    --color-gold-soft:      #E7CA86;
+    --color-clay:           #B77555;
+    --color-blush:          #F0E2D6;
+    --color-butter:         #E3C164;
+    --color-mint:           #D7E1D2;
+    --color-berry:          #536A5B;
+    --color-sand:           #B48C3E;
+    --color-rose-clay:      #C88668;
+    --color-success:        #86A38D;
 
     /* Shadows */
-    --shadow-soft:          0 18px 42px rgba(16, 24, 18, 0.08);
-    --shadow-card:          0 26px 72px rgba(16, 24, 18, 0.12);
-    --shadow-pop:           0 18px 42px rgba(16, 24, 18, 0.16);
+    --shadow-soft:          0 18px 38px rgba(18, 24, 20, 0.08);
+    --shadow-card:          0 28px 78px rgba(18, 24, 20, 0.12);
+    --shadow-pop:           0 22px 52px rgba(18, 24, 20, 0.18);
+    --color-input-bg:       color-mix(in srgb, var(--color-bg) 72%, #FFF8F1);
+    --color-input-bg-active: color-mix(in srgb, var(--color-bg) 78%, white);
+    --color-input-shadow:   inset 0 1px 0 rgba(255, 255, 255, 0.72);
+    --color-input-shadow-active: inset 0 1px 0 rgba(255, 255, 255, 0.88);
+    --color-page-top-glow:  rgba(201, 162, 75, 0.18);
+    --color-page-bottom-glow: rgba(58, 105, 79, 0.1);
+    --color-page-gradient-start: color-mix(in srgb, var(--color-bg) 88%, #FFF8F1);
+    --color-page-gradient-end: color-mix(in srgb, var(--color-bg) 74%, var(--color-bg-warm));
+    --color-page-sheen:     rgba(255, 255, 255, 0.58);
+    --color-page-sheen-accent: rgba(201, 162, 75, 0.12);
 
     /* ── Layout ─────────────────────────────────────────────────── */
     --page-width:    {{ settings.page_width }};
@@ -86,5 +101,48 @@
       --section-spacing: clamp(2.75rem, 5.5vw, 5rem);
     {%- else -%}
       --section-spacing: clamp(4rem, 8vw, 8rem);
-    {%- endif -%}  }
+    {%- endif -%}
+  }
+
+  html[data-color-mode="dark"] {
+    color-scheme: dark;
+    --color-bg:            #08100D;
+    --color-text:          #F4EDDE;
+    --color-accent:        var(--color-accent-base);
+    --color-bg-warm:       #152119;
+    --color-bg-stone:      #263327;
+    --color-bg-subtle:     #0D1712;
+    --color-surface:       color-mix(in srgb, #0F1814 90%, rgba(247, 243, 236, 0.04));
+    --color-surface-strong: #16211A;
+    --color-border:        color-mix(in srgb, var(--color-gold) 28%, rgba(247, 243, 236, 0.12));
+    --color-border-strong: color-mix(in srgb, var(--color-gold) 44%, rgba(247, 243, 236, 0.18));
+    --color-text-muted:    #AFA792;
+    --color-text-secondary: #E7DEC9;
+    --color-overlay:       rgba(4, 8, 6, 0.76);
+    --color-accent-hover:  #25543A;
+    --color-accent-soft:   #3E7453;
+    --color-sage:          #93A38D;
+    --color-accent-subtle: color-mix(in srgb, var(--color-accent) 20%, rgba(247, 243, 236, 0.04));
+    --color-accent-dim:    color-mix(in srgb, var(--color-accent) 28%, transparent);
+    --color-clay:          #D38B66;
+    --color-blush:         #D8D4C7;
+    --color-mint:          #96A892;
+    --color-berry:         #6D846C;
+    --color-sand:          #D1AC60;
+    --color-rose-clay:     #D89A78;
+    --color-success:       #A1C5A7;
+    --shadow-soft:         0 22px 52px rgba(0, 0, 0, 0.32);
+    --shadow-card:         0 32px 86px rgba(0, 0, 0, 0.46);
+    --shadow-pop:          0 22px 52px rgba(0, 0, 0, 0.54);
+    --color-input-bg:      color-mix(in srgb, var(--color-bg) 88%, rgba(247, 243, 236, 0.06));
+    --color-input-bg-active: color-mix(in srgb, var(--color-bg) 80%, rgba(247, 243, 236, 0.1));
+    --color-input-shadow:  inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    --color-input-shadow-active: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    --color-page-top-glow: rgba(199, 163, 71, 0.12);
+    --color-page-bottom-glow: rgba(35, 71, 48, 0.18);
+    --color-page-gradient-start: color-mix(in srgb, var(--color-bg) 96%, #0C130F);
+    --color-page-gradient-end: color-mix(in srgb, var(--color-bg-warm) 84%, #08100D);
+    --color-page-sheen:    rgba(255, 255, 255, 0.04);
+    --color-page-sheen-accent: rgba(199, 163, 71, 0.14);
+  }
 {% endstyle %}

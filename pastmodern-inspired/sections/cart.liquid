@@ -4,6 +4,37 @@
   https://shopify.dev/docs/storefronts/themes/architecture/templates/cart
 {% endcomment %}
 
+{%- liquid
+  assign free_shipping_threshold_cents = settings.free_shipping_threshold | times: 100
+  assign free_shipping_progress = 0
+  assign free_shipping_remaining = free_shipping_threshold_cents | minus: cart.total_price
+  assign dispatch_message = settings.proof_item_1_text | default: 'Ships in 3–5 business days.'
+  assign returns_message = settings.proof_item_2_text | default: 'Easy exchanges and returns within 30 days.'
+  if free_shipping_threshold_cents > 0
+    assign free_shipping_progress = cart.total_price | times: 100 | divided_by: free_shipping_threshold_cents
+    if free_shipping_progress > 100
+      assign free_shipping_progress = 100
+    endif
+  endif
+
+  assign cross_sell_product = nil
+  if settings.cart_cross_sell_collection != blank
+    for cross_sell_candidate in settings.cart_cross_sell_collection.products
+      assign in_cart = false
+      for item in cart.items
+        if item.product.id == cross_sell_candidate.id
+          assign in_cart = true
+          break
+        endif
+      endfor
+      unless in_cart
+        assign cross_sell_product = cross_sell_candidate
+        break
+      endunless
+    endfor
+  endif
+-%}
+
 <section class="cart-page">
   <div class="cart-page__hero">
     <p class="eyebrow">Shopping bag</p>
@@ -119,6 +150,21 @@
         <div class="cart-summary">
           <h2 class="cart-summary__title">Order summary</h2>
 
+          {%- if free_shipping_threshold_cents > 0 -%}
+            <div class="cart-summary__shipping-progress">
+              <div class="cart-summary__shipping-track" aria-hidden="true">
+                <span class="cart-summary__shipping-bar" style="width: {{ free_shipping_progress }}%;"></span>
+              </div>
+              <p class="cart-summary__shipping-text">
+                {%- if free_shipping_remaining > 0 -%}
+                  You're {{ free_shipping_remaining | money }} away from complimentary shipping.
+                {%- else -%}
+                  Complimentary shipping unlocked for this order.
+                {%- endif -%}
+              </p>
+            </div>
+          {%- endif -%}
+
           <div class="cart-summary__rows">
             <div class="cart-summary__row">
               <span>Subtotal</span>
@@ -171,13 +217,67 @@
           <a href="{{ routes.all_products_collection_url }}" class="btn btn-ghost">
             Continue shopping
           </a>
+
+          <div class="cart-summary__assurance" role="list" aria-label="Checkout reassurance">
+            <span class="cart-summary__assurance-item">Secure checkout</span>
+            <span class="cart-summary__assurance-item">{{ dispatch_message | escape }}</span>
+            <span class="cart-summary__assurance-item">{{ returns_message | escape }}</span>
+          </div>
+
+          {%- if settings.shipping_policy_url != blank or settings.returns_policy_url != blank or settings.size_help_url != blank or settings.support_url != blank -%}
+            <div class="cart-summary__links">
+              {%- if settings.shipping_policy_url != blank -%}
+                <a href="{{ settings.shipping_policy_url }}">Shipping</a>
+              {%- endif -%}
+              {%- if settings.returns_policy_url != blank -%}
+                <a href="{{ settings.returns_policy_url }}">Returns</a>
+              {%- endif -%}
+              {%- if settings.size_help_url != blank -%}
+                <a href="{{ settings.size_help_url }}">Size help</a>
+              {%- endif -%}
+              {%- if settings.support_url != blank -%}
+                <a href="{{ settings.support_url }}">{{ settings.support_label | default: 'Need styling help?' }}</a>
+              {%- endif -%}
+            </div>
+          {%- endif -%}
         </div>
 
         <div class="cart-summary__benefits">
-          <p class="cart-summary__benefit"><strong>Shipping</strong> Complimentary on qualifying orders.</p>
-          <p class="cart-summary__benefit"><strong>Returns</strong> Easy exchanges within 30 days.</p>
-          <p class="cart-summary__benefit"><strong>Need help?</strong> Reach out from the contact page for sizing support.</p>
+          <p class="cart-summary__benefit"><strong>Shipping</strong> {{ dispatch_message | escape }}</p>
+          <p class="cart-summary__benefit"><strong>Returns</strong> {{ returns_message | escape }}</p>
+          <p class="cart-summary__benefit">
+            <strong>Need help?</strong>
+            {%- if settings.support_url != blank -%}
+              <a href="{{ settings.support_url }}">{{ settings.support_label | default: 'Reach out for sizing or styling support.' }}</a>
+            {%- else -%}
+              Reach out from the contact page for sizing support.
+            {%- endif -%}
+          </p>
         </div>
+
+        {%- if cross_sell_product != blank -%}
+          <div class="cart-summary__cross-sell">
+            <p class="cart-summary__cross-sell-eyebrow">Complete the look</p>
+            <a href="{{ cross_sell_product.url }}" class="cart-summary__cross-sell-card">
+              {%- if cross_sell_product.featured_media -%}
+                {{
+                  cross_sell_product.featured_media
+                  | image_url: width: 200
+                  | image_tag:
+                      widths: '100, 160, 200',
+                      sizes: '84px',
+                      loading: 'lazy',
+                      class: 'cart-summary__cross-sell-image',
+                      alt: cross_sell_product.title
+                }}
+              {%- endif -%}
+              <div class="cart-summary__cross-sell-copy">
+                <span class="cart-summary__cross-sell-title">{{ cross_sell_product.title | escape }}</span>
+                <span class="cart-summary__cross-sell-price">{{ cross_sell_product.price | money }}</span>
+              </div>
+            </a>
+          </div>
+        {%- endif -%}
       </aside>
     </form>
   {%- endif -%}
@@ -390,6 +490,35 @@
     color: var(--color-text);
   }
 
+  .cart-summary__shipping-progress {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    margin-bottom: var(--space-5);
+  }
+
+  .cart-summary__shipping-track {
+    width: 100%;
+    height: 0.45rem;
+    border-radius: 999px;
+    overflow: hidden;
+    background-color: color-mix(in srgb, var(--color-bg) 88%, white);
+  }
+
+  .cart-summary__shipping-bar {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--color-gold-soft) 0%, var(--color-gold) 100%);
+  }
+
+  .cart-summary__shipping-text {
+    margin: 0;
+    font-size: var(--text-xs);
+    line-height: var(--leading-relaxed);
+    color: var(--color-text-secondary);
+  }
+
   .cart-summary__discounts {
     list-style: none;
     padding: 0;
@@ -436,10 +565,96 @@
     margin: var(--space-6) 0 var(--space-4);
   }
 
+  .cart-summary__assurance {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+  }
+
+  .cart-summary__assurance-item {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.45rem 0.75rem;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--color-gold) 18%, var(--color-border));
+    background-color: color-mix(in srgb, var(--color-bg) 88%, white);
+    font-size: 0.625rem;
+    letter-spacing: 0.08em;
+    line-height: 1.35;
+    color: var(--color-text);
+  }
+
+  .cart-summary__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+  }
+
+  .cart-summary__links a {
+    font-size: 0.625rem;
+    letter-spacing: var(--tracking-widest);
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
   .cart-summary__benefits {
     display: flex;
     flex-direction: column;
     gap: var(--space-4);
+  }
+
+  .cart-summary__cross-sell {
+    padding: clamp(var(--space-6), 2vw, var(--space-8));
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--color-bg) 84%, white) 0%, color-mix(in srgb, var(--color-bg) 96%, var(--color-bg-warm)) 100%);
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-soft);
+  }
+
+  .cart-summary__cross-sell-eyebrow {
+    margin: 0 0 var(--space-3);
+    font-size: 0.5625rem;
+    letter-spacing: var(--tracking-widest);
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .cart-summary__cross-sell-card {
+    display: grid;
+    grid-template-columns: 5rem 1fr;
+    gap: var(--space-4);
+    align-items: center;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .cart-summary__cross-sell-image {
+    width: 5rem;
+    height: 6rem;
+    object-fit: cover;
+    object-position: top center;
+    background-color: var(--color-bg-subtle);
+  }
+
+  .cart-summary__cross-sell-copy {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .cart-summary__cross-sell-title {
+    font-family: var(--font-heading);
+    font-style: italic;
+    font-size: var(--text-base);
+    color: var(--color-text);
+  }
+
+  .cart-summary__cross-sell-price {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
   }
 
   .cart-summary__benefit {
@@ -456,6 +671,12 @@
     letter-spacing: var(--tracking-brand);
     text-transform: uppercase;
     color: var(--color-text);
+  }
+
+  .cart-summary__benefit a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 3px;
   }
 
   .cart-page__empty {

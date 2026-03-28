@@ -13,6 +13,10 @@
 (function () {
   'use strict';
 
+  const shopifyRoot = () => window.Shopify?.routes?.root || '/';
+
+  const cartApiUrl = (path) => `${shopifyRoot()}${path}`;
+
   /* ───────────────────────────────────────────────────────────────────────────
      ProductForm
      Intercepts the add-to-cart form submit, POSTs via fetch, then opens cart.
@@ -30,6 +34,12 @@
     }
 
     async _onSubmit(e) {
+      const submitter = e.submitter;
+
+      if (submitter && !submitter.hasAttribute('data-atc')) {
+        return;
+      }
+
       e.preventDefault();
       if (this.btn.disabled) return;
 
@@ -41,7 +51,7 @@
       if (this.errEl)     this.errEl.hidden = true;
 
       try {
-        const res = await fetch('/cart/add.js', {
+        const res = await fetch(cartApiUrl('cart/add.js'), {
           method:  'POST',
           headers: { Accept: 'application/json' },
           body:    new FormData(this.form),

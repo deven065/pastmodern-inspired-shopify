@@ -73,3 +73,6 @@ create_product \
   "Atelier Rikka" \
   "Skirts" \
   '["new-arrivals","skirts","couture"]'
+
+echo
+echo "Products created. Run ./price_products.sh to apply the market pricing in product_pricing.json."

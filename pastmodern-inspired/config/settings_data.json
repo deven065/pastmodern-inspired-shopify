@@ -19,6 +19,21 @@
     "body_font_size": "1rem",
     "color_background": "#F8F4EA",
     "color_text": "#1C221C",
-    "color_accent": "#173A28"
+    "color_accent": "#173A28",
+    "free_shipping_threshold": 200,
+    "enable_welcome_capture": true,
+    "welcome_incentive_label": "Unlock complimentary first-order shipping",
+    "welcome_heading": "Make your first order feel easier",
+    "welcome_subtext": "Join the private list for complimentary first-order shipping, early access to new drops, and the pieces that usually move first.",
+    "welcome_button_label": "Unlock access",
+    "welcome_success_message": "You're in. Watch your inbox for early access and shipping perks.",
+    "welcome_fine_print": "By subscribing, you agree to receive marketing emails. No hard discounts. Just first access, soft perks, and the pieces that move fastest.",
+    "proof_item_1_label": "Dispatch",
+    "proof_item_1_text": "Ships in 3–5 business days.",
+    "proof_item_2_label": "Returns",
+    "proof_item_2_text": "Easy exchanges and returns within 30 days.",
+    "proof_item_3_label": "Craft",
+    "proof_item_3_text": "Small-batch pieces with premium finishing.",
+    "support_label": "Need styling help?"
   }
 }

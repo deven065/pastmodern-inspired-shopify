@@ -24,6 +24,10 @@
         "text_color": "#f5f3ef"
       }
     },
+    "proof-strip": {
+      "type": "proof-strip",
+      "settings": {}
+    },
     "featured": {
       "type": "featured-collection",
       "settings": {
@@ -41,8 +45,8 @@
     "promo-grid": {
       "type": "promo-grid",
       "settings": {
-        "eyebrow": "Discover your expression",
-        "heading": "Collections with their own mood",
+        "eyebrow": "Shop by occasion",
+        "heading": "Start with the moment you are dressing for",
         "columns": "4",
         "image_ratio": "3/4"
       },
@@ -57,44 +61,32 @@
         "card-bridal": {
           "type": "card",
           "settings": {
-            "heading": "Bridal Shop",
+            "heading": "Bridal Events",
             "cta_url": "/collections/bridal"
           }
         },
         "card-couture": {
           "type": "card",
           "settings": {
-            "heading": "Couture",
+            "heading": "After Dark",
             "cta_url": "/collections/couture"
           }
         },
         "card-dresses": {
           "type": "card",
           "settings": {
-            "heading": "Occasion Wear",
+            "heading": "Wedding Guest",
             "cta_url": "/collections/dresses"
           }
         }
       },
       "block_order": ["card-new", "card-bridal", "card-couture", "card-dresses"]
     },
-    "story": {
-      "type": "image-with-text",
-      "settings": {
-        "eyebrow": "Craft and character",
-        "heading": "Rich details. Clear buying cues. A store that feels considered at every scroll.",
-        "text": "<p>Every surface is built to sell with more confidence: tighter hierarchy, stronger product emphasis, cleaner navigation, and a tone that feels premium without losing ease.</p><p>The result is a storefront that looks more editorial, but behaves more like a disciplined ecommerce experience.</p>",
-        "cta_label": "Discover the story",
-        "cta_url": "/pages/about",
-        "image_position": "right",
-        "image_ratio": "4/5"
-      }
-    },
     "testimonials": {
       "type": "testimonials",
       "settings": {
-        "eyebrow": "Loved in real life",
-        "heading": "What buyers come back for",
+        "eyebrow": "Proof from real buyers",
+        "heading": "Why first-time visitors feel comfortable saying yes",
         "columns": "3"
       },
       "blocks": {
@@ -103,7 +95,10 @@
           "settings": {
             "text": "The fit is unreal. It feels playful and elevated at the same time, which is exactly what I wanted. The site also made the decision easy because everything felt clear and premium.",
             "author": "Sana R.",
-            "location": "Dubai"
+            "location": "Dubai",
+            "rating": "4.9 / 5",
+            "fit_note": "True to size",
+            "product_label": "Ruched Mini Dress"
           }
         },
         "quote-2": {
@@ -111,7 +106,10 @@
           "settings": {
             "text": "Every detail feels considered, from the fabric to the finishing. It photographs beautifully and wears even better.",
             "author": "Priya K.",
-            "location": "Mumbai"
+            "location": "Mumbai",
+            "rating": "5.0 / 5",
+            "fit_note": "Rich fabrication",
+            "product_label": "Satin Wrap Top"
           }
         },
         "quote-3": {
@@ -119,18 +117,81 @@
           "settings": {
             "text": "I ordered for one event and ended up styling it three different ways in the same month. That never happens.",
             "author": "Nadia H.",
-            "location": "London"
+            "location": "London",
+            "rating": "4.8 / 5",
+            "fit_note": "Easy to style",
+            "product_label": "Structured Column Skirt"
           }
         }
       },
       "block_order": ["quote-1", "quote-2", "quote-3"]
+    },
+    "instagram": {
+      "type": "instagram-showcase",
+      "settings": {
+        "eyebrow": "Seen on Instagram",
+        "heading": "A closer look at @sulu_luxe",
+        "text": "Style notes, behind-the-seams moments, and real-life wear that help first-time visitors trust the collection beyond a product card.",
+        "handle": "@sulu_luxe",
+        "cta_label": "Follow on Instagram",
+        "cta_url": "https://www.instagram.com/sulu_luxe/"
+      },
+      "blocks": {
+        "post-1": {
+          "type": "post",
+          "settings": {
+            "post_url": "https://www.instagram.com/sulu_luxe/",
+            "label": "Bridal details",
+            "caption": "Closer detail for the pieces that get saved first"
+          }
+        },
+        "post-2": {
+          "type": "post",
+          "settings": {
+            "post_url": "https://www.instagram.com/sulu_luxe/",
+            "label": "Occasionwear",
+            "caption": "Event dressing in motion, beyond the product grid"
+          }
+        },
+        "post-3": {
+          "type": "post",
+          "settings": {
+            "post_url": "https://www.instagram.com/sulu_luxe/",
+            "label": "Behind the seams",
+            "caption": "A more human look at craft, finish, and fit"
+          }
+        },
+        "post-4": {
+          "type": "post",
+          "settings": {
+            "post_url": "https://www.instagram.com/sulu_luxe/",
+            "label": "Best sellers",
+            "caption": "How the strongest silhouettes land in real life"
+          }
+        }
+      },
+      "block_order": ["post-1", "post-2", "post-3", "post-4"]
+    },
+    "story": {
+      "type": "image-with-text",
+      "settings": {
+        "eyebrow": "Craft and character",
+        "heading": "Designed to feel considered before it ever reaches your wardrobe.",
+        "text": "<p>From the cut of each silhouette to the way every product page explains fit, delivery, and returns, the experience is built to feel rich without feeling risky.</p><p>That means first-time buyers can move from inspiration to checkout with more confidence and less second-guessing.</p>",
+        "cta_label": "Discover the story",
+        "cta_url": "/pages/about",
+        "image_position": "right",
+        "image_ratio": "4/5"
+      }
     }
   },
   "order": [
     "hero",
+    "proof-strip",
     "featured",
     "promo-grid",
-    "story",
-    "testimonials"
+    "testimonials",
+    "instagram",
+    "story"
   ]
 }

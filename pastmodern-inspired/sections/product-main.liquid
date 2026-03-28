@@ -19,11 +19,18 @@
   assign show_crumbs    = section.settings.show_breadcrumbs
   assign sticky_atc     = section.settings.sticky_atc_mobile
   assign size_guide_url = section.settings.size_guide_url
+  assign size_guide_link = product.metafields.custom.size_guide_link.value | default: size_guide_url | default: settings.size_help_url
+  assign size_guide_content = product.metafields.custom.size_guide_content
 
   # Trust messaging: section setting overrides metafield
   assign delivery      = product.metafields.custom.delivery_timeline.value
   assign shipping_note = product.metafields.custom.shipping_note.value
   assign return_note   = product.metafields.custom.return_note.value
+  assign dispatch_eta  = product.metafields.custom.dispatch_eta.value
+  assign fit_summary   = product.metafields.custom.fit_summary.value
+  assign fit_signal    = product.metafields.custom.fit_signal.value
+  assign model_info    = product.metafields.custom.model_info.value
+  assign ugc_quote     = product.metafields.custom.ugc_quote.value
   if section.settings.delivery_text != blank
     assign delivery = section.settings.delivery_text
   endif
@@ -32,6 +39,9 @@
   endif
   if section.settings.return_text != blank
     assign return_note = section.settings.return_text
+  endif
+  if dispatch_eta == blank
+    assign dispatch_eta = delivery
   endif
 
   # Short intro: prefer metafield, fall back to description
@@ -251,6 +261,39 @@
         <p class="product-intro">{{ intro }}</p>
       {%- endif -%}
 
+      {%- if fit_signal != blank or fit_summary != blank or model_info != blank or dispatch_eta != blank or ugc_quote != blank or pdp_count > 0 -%}
+        <div class="product-proof-panel">
+          <div class="product-proof-panel__chips">
+            {%- if pdp_count > 0 -%}
+              <span class="product-proof-panel__chip">{{ pdp_count }} verified reviews</span>
+            {%- endif -%}
+            {%- if fit_signal != blank -%}
+              <span class="product-proof-panel__chip">{{ fit_signal | escape }}</span>
+            {%- endif -%}
+            {%- if dispatch_eta != blank -%}
+              <span class="product-proof-panel__chip">Ships in {{ dispatch_eta | escape }}</span>
+            {%- endif -%}
+          </div>
+
+          {%- if fit_summary != blank or model_info != blank -%}
+            <div class="product-proof-panel__facts">
+              {%- if fit_summary != blank -%}
+                <p class="product-proof-panel__fact"><strong>Fit</strong>{{ fit_summary | escape }}</p>
+              {%- endif -%}
+              {%- if model_info != blank -%}
+                <p class="product-proof-panel__fact"><strong>Model</strong>{{ model_info | escape }}</p>
+              {%- endif -%}
+            </div>
+          {%- endif -%}
+
+          {%- if ugc_quote != blank -%}
+            <blockquote class="product-proof-panel__quote">
+              {{ ugc_quote | escape }}
+            </blockquote>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
       {%- comment -%}══════════════ PRODUCT FORM ══════════════{%- endcomment -%}
       {%- form 'product', product,
           id: 'product-form',
@@ -282,9 +325,24 @@
                     data-option-selected="{{ opt_index }}"
                   >{{- current_variant.options[opt_index] | escape -}}</span>
 
-                  {%- if opt_down == 'size' and size_guide_url != blank -%}
+                  {%- if opt_down == 'size' and size_guide_content != blank -%}
+                    <details class="product-size-guide-inline">
+                      <summary class="product-size-guide">Size guide</summary>
+                      <div class="product-size-guide-inline__content">
+                        {{ size_guide_content | metafield_tag }}
+                        {%- if size_guide_link != blank -%}
+                          <a
+                            href="{{ size_guide_link }}"
+                            class="product-size-guide-inline__link"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >Open full guide</a>
+                        {%- endif -%}
+                      </div>
+                    </details>
+                  {%- elsif opt_down == 'size' and size_guide_link != blank -%}
                     <a
-                      href="{{ size_guide_url }}"
+                      href="{{ size_guide_link }}"
                       class="product-size-guide"
                       target="_blank"
                       rel="noopener noreferrer"
@@ -403,6 +461,17 @@
           </div>
         {%- endif -%}
 
+        <div class="product-payment-trust">
+          <p class="product-payment-trust__label">Secure checkout</p>
+          {%- if shop.enabled_payment_types.size > 0 -%}
+            <ul class="product-payment-trust__icons" role="list" aria-label="Accepted payment methods">
+              {%- for type in shop.enabled_payment_types limit: 5 -%}
+                <li>{{ type | payment_type_svg_tag: class: 'product-payment-trust__icon' }}</li>
+              {%- endfor -%}
+            </ul>
+          {%- endif -%}
+        </div>
+
       {%- endform -%}
 
       {%- comment -%}══════════════ TRUST STRIP ══════════════{%- endcomment -%}
@@ -448,6 +517,23 @@
             </div>
           {%- endif -%}
 
+        </div>
+      {%- endif -%}
+
+      {%- if settings.shipping_policy_url != blank or settings.returns_policy_url != blank or settings.size_help_url != blank or settings.support_url != blank -%}
+        <div class="product-trust__links" role="list" aria-label="Helpful links">
+          {%- if settings.shipping_policy_url != blank -%}
+            <a href="{{ settings.shipping_policy_url }}" class="product-trust__link">Shipping</a>
+          {%- endif -%}
+          {%- if settings.returns_policy_url != blank -%}
+            <a href="{{ settings.returns_policy_url }}" class="product-trust__link">Returns</a>
+          {%- endif -%}
+          {%- if settings.size_help_url != blank -%}
+            <a href="{{ settings.size_help_url }}" class="product-trust__link">Size help</a>
+          {%- endif -%}
+          {%- if settings.support_url != blank -%}
+            <a href="{{ settings.support_url }}" class="product-trust__link">{{ settings.support_label | default: 'Need styling help?' }}</a>
+          {%- endif -%}
         </div>
       {%- endif -%}
 

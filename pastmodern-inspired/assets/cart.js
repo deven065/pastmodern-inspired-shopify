@@ -10,6 +10,10 @@
 (function () {
   'use strict';
 
+  const shopifyRoot = () => window.Shopify?.routes?.root || '/';
+
+  const cartApiUrl = (path) => `${shopifyRoot()}${path}`;
+
   class CartDrawer {
     constructor(el) {
       this.el         = el;
@@ -33,7 +37,9 @@
       });
 
       // ── Close triggers ─────────────────────────────────────
-      el.querySelector('[data-cart-close]')?.addEventListener('click', () => this.close());
+      el.querySelectorAll('[data-cart-close]').forEach((btn) => {
+        btn.addEventListener('click', () => this.close());
+      });
       this.overlay?.addEventListener('click', () => this.close());
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && this._isOpen()) this.close();
@@ -104,12 +110,12 @@
       this.items?.setAttribute('aria-busy', 'true');
 
       try {
-        const res = await fetch('/cart/change.js', {
+        const res = await fetch(cartApiUrl('cart/change.js'), {
           method:  'POST',
           headers: { 'Content-Type': 'application/json' },
           body:    JSON.stringify({ id: key, quantity: qty }),
         });
-        if (!res.ok) throw new Error(`/cart/change.js responded ${res.status}`);
+        if (!res.ok) throw new Error(`${cartApiUrl('cart/change.js')} responded ${res.status}`);
         const cart = await res.json();
         await this._refreshSection(cart);
       } catch (err) {
@@ -125,8 +131,8 @@
     // Called on open — reads current cart state then re-renders section
     async _refresh() {
       try {
-        const res  = await fetch('/cart.js');
-        if (!res.ok) throw new Error(`/cart.js responded ${res.status}`);
+        const res  = await fetch(cartApiUrl('cart.js'));
+        if (!res.ok) throw new Error(`${cartApiUrl('cart.js')} responded ${res.status}`);
         const cart = await res.json();
         await this._refreshSection(cart);
       } catch (err) {
@@ -177,7 +183,7 @@
     // Lightweight count-only refresh (e.g. after QuickAdd from listing page)
     async _syncCount() {
       try {
-        const res  = await fetch('/cart.js');
+        const res  = await fetch(cartApiUrl('cart.js'));
         const cart = await res.json();
         this._updateCount(cart.item_count);
       } catch (_) {}

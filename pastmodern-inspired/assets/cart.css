@@ -422,10 +422,132 @@ body.cart-open { overflow: hidden; }
   margin: calc(var(--space-1) * -1) 0 0;
 }
 
+.cart-drawer__shipping-progress {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.cart-drawer__shipping-track {
+  width: 100%;
+  height: 0.4rem;
+  border-radius: 999px;
+  background-color: color-mix(in srgb, var(--color-bg) 84%, white);
+  overflow: hidden;
+}
+
+.cart-drawer__shipping-bar {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--color-gold-soft) 0%, var(--color-gold) 100%);
+}
+
+.cart-drawer__shipping-text {
+  margin: 0;
+  font-size: var(--text-xs);
+  line-height: var(--leading-relaxed);
+  color: var(--color-text-secondary);
+}
+
 /* Checkout CTA — inherits btn btn-primary btn-full from base */
 .cart-drawer__checkout {
   letter-spacing: var(--tracking-brand) !important;
   font-size: var(--text-xs) !important;
+}
+
+.cart-drawer__view-cart {
+  display: inline-flex;
+  justify-content: center;
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-brand);
+  text-transform: uppercase;
+  color: var(--color-text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.cart-drawer__assurance {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.cart-drawer__assurance-item {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.4rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--color-gold) 18%, var(--color-border));
+  background-color: color-mix(in srgb, var(--color-bg) 88%, white);
+  font-size: 0.625rem;
+  letter-spacing: 0.08em;
+  line-height: 1.35;
+  color: var(--color-text);
+}
+
+.cart-drawer__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.cart-drawer__links a {
+  font-size: 0.625rem;
+  letter-spacing: var(--tracking-widest);
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.cart-drawer__cross-sell {
+  margin-top: var(--space-6);
+  padding-block: var(--space-6) var(--space-2);
+  border-top: 1px solid var(--color-border);
+}
+
+.cart-drawer__cross-sell-eyebrow {
+  margin: 0 0 var(--space-3);
+  font-size: 0.5625rem;
+  letter-spacing: var(--tracking-widest);
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.cart-drawer__cross-sell-card {
+  display: grid;
+  grid-template-columns: 4.5rem 1fr;
+  gap: var(--space-3);
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+}
+
+.cart-drawer__cross-sell-image {
+  width: 4.5rem;
+  height: 5.5rem;
+  object-fit: cover;
+  object-position: top center;
+  background-color: var(--color-bg-subtle);
+}
+
+.cart-drawer__cross-sell-copy {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.cart-drawer__cross-sell-title {
+  font-family: var(--font-heading);
+  font-style: italic;
+  font-size: var(--text-sm);
+  color: var(--color-text);
+}
+
+.cart-drawer__cross-sell-price {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
 }
 
 /* Continue shopping — understated text button */

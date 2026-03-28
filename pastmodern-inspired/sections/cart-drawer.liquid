@@ -5,6 +5,37 @@
   Content refreshed after AJAX changes using the Section Rendering API.
 {%- endcomment -%}
 
+{%- liquid
+  assign free_shipping_threshold_cents = settings.free_shipping_threshold | times: 100
+  assign free_shipping_progress = 0
+  assign free_shipping_remaining = free_shipping_threshold_cents | minus: cart.total_price
+  assign dispatch_message = settings.proof_item_1_text | default: 'Ships in 3–5 business days.'
+  assign returns_message = settings.proof_item_2_text | default: 'Easy exchanges and returns within 30 days.'
+  if free_shipping_threshold_cents > 0
+    assign free_shipping_progress = cart.total_price | times: 100 | divided_by: free_shipping_threshold_cents
+    if free_shipping_progress > 100
+      assign free_shipping_progress = 100
+    endif
+  endif
+
+  assign cross_sell_product = nil
+  if settings.cart_cross_sell_collection != blank
+    for cross_sell_candidate in settings.cart_cross_sell_collection.products
+      assign in_cart = false
+      for item in cart.items
+        if item.product.id == cross_sell_candidate.id
+          assign in_cart = true
+          break
+        endif
+      endfor
+      unless in_cart
+        assign cross_sell_product = cross_sell_candidate
+        break
+      endunless
+    endfor
+  endif
+-%}
+
 <div class="cart-overlay" data-cart-overlay aria-hidden="true"></div>
 
 <div
@@ -78,6 +109,30 @@
         {%- render 'cart-line-item', item: item -%}
       {%- endfor -%}
 
+      {%- if cross_sell_product != blank -%}
+        <div class="cart-drawer__cross-sell">
+          <p class="cart-drawer__cross-sell-eyebrow">Complete the look</p>
+          <a href="{{ cross_sell_product.url }}" class="cart-drawer__cross-sell-card">
+            {%- if cross_sell_product.featured_media -%}
+              {{
+                cross_sell_product.featured_media
+                | image_url: width: 180
+                | image_tag:
+                    widths: '90, 140, 180',
+                    sizes: '72px',
+                    loading: 'lazy',
+                    class: 'cart-drawer__cross-sell-image',
+                    alt: cross_sell_product.title
+              }}
+            {%- endif -%}
+            <div class="cart-drawer__cross-sell-copy">
+              <span class="cart-drawer__cross-sell-title">{{ cross_sell_product.title | escape }}</span>
+              <span class="cart-drawer__cross-sell-price">{{ cross_sell_product.price | money }}</span>
+            </div>
+          </a>
+        </div>
+      {%- endif -%}
+
     {%- endif -%}
   </div>
 
@@ -94,14 +149,59 @@
       </span>
     </div>
 
+    {%- if free_shipping_threshold_cents > 0 -%}
+      <div class="cart-drawer__shipping-progress">
+        <div class="cart-drawer__shipping-track" aria-hidden="true">
+          <span class="cart-drawer__shipping-bar" style="width: {{ free_shipping_progress }}%;"></span>
+        </div>
+        <p class="cart-drawer__shipping-text">
+          {%- if free_shipping_remaining > 0 -%}
+            You're {{ free_shipping_remaining | money }} away from complimentary shipping.
+          {%- else -%}
+            Complimentary shipping unlocked for this order.
+          {%- endif -%}
+        </p>
+      </div>
+    {%- endif -%}
+
     <p class="cart-drawer__taxes">
       Taxes and shipping calculated at checkout
     </p>
 
-    <a
-      href="{{ routes.checkout_url }}"
-      class="cart-drawer__checkout btn btn-primary btn-full"
-    >Checkout</a>
+    <form action="{{ routes.cart_url }}" method="post">
+      <button
+        type="submit"
+        name="checkout"
+        class="cart-drawer__checkout btn btn-primary btn-full"
+      >
+        Checkout
+      </button>
+    </form>
+
+    <a href="{{ routes.cart_url }}" class="cart-drawer__view-cart">View full bag</a>
+
+    <div class="cart-drawer__assurance" role="list" aria-label="Checkout reassurance">
+      <span class="cart-drawer__assurance-item">Secure checkout</span>
+      <span class="cart-drawer__assurance-item">{{ dispatch_message | escape }}</span>
+      <span class="cart-drawer__assurance-item">{{ returns_message | escape }}</span>
+    </div>
+
+    {%- if settings.shipping_policy_url != blank or settings.returns_policy_url != blank or settings.size_help_url != blank or settings.support_url != blank -%}
+      <div class="cart-drawer__links">
+        {%- if settings.shipping_policy_url != blank -%}
+          <a href="{{ settings.shipping_policy_url }}">Shipping</a>
+        {%- endif -%}
+        {%- if settings.returns_policy_url != blank -%}
+          <a href="{{ settings.returns_policy_url }}">Returns</a>
+        {%- endif -%}
+        {%- if settings.size_help_url != blank -%}
+          <a href="{{ settings.size_help_url }}">Size help</a>
+        {%- endif -%}
+        {%- if settings.support_url != blank -%}
+          <a href="{{ settings.support_url }}">{{ settings.support_label | default: 'Need styling help?' }}</a>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
 
     <button
       type="button"

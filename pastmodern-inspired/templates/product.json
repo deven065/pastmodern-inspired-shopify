@@ -77,11 +77,20 @@
         "products_to_show": 4,
         "recommendation_intent": "related"
       }
+    },
+    "complete-the-look": {
+      "type": "complementary-products",
+      "settings": {
+        "eyebrow": "Finish the look",
+        "heading": "Style it with",
+        "products_to_show": 4
+      }
     }
   },
   "order": [
     "product-main",
     "product-accordion",
+    "complete-the-look",
     "related-products"
   ]
 }

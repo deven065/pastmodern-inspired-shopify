@@ -266,6 +266,69 @@
   max-width: 44ch;
 }
 
+.product-proof-panel {
+  margin-bottom: var(--space-7);
+  padding: var(--space-5);
+  border-radius: 1.2rem;
+  border: 1px solid color-mix(in srgb, var(--color-gold) 18%, var(--color-border));
+  background-color: color-mix(in srgb, var(--color-bg) 90%, white);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.product-proof-panel__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.product-proof-panel__chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.7rem;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--color-gold) 16%, var(--color-border));
+  background-color: color-mix(in srgb, var(--color-gold) 5%, white);
+  color: var(--color-text);
+  font-size: 0.5625rem;
+  letter-spacing: var(--tracking-widest);
+  text-transform: uppercase;
+}
+
+.product-proof-panel__facts {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.product-proof-panel__fact {
+  margin: 0;
+  font-size: var(--text-xs);
+  line-height: var(--leading-relaxed);
+  color: var(--color-text-muted);
+}
+
+.product-proof-panel__fact strong {
+  display: block;
+  margin-bottom: 2px;
+  font-size: 0.5625rem;
+  letter-spacing: var(--tracking-widest);
+  text-transform: uppercase;
+  color: var(--color-text);
+}
+
+.product-proof-panel__quote {
+  margin: 0;
+  padding-inline-start: var(--space-4);
+  border-inline-start: 1px solid color-mix(in srgb, var(--color-gold) 22%, var(--color-border));
+  font-family: var(--font-heading);
+  font-style: italic;
+  font-size: var(--text-base);
+  line-height: var(--leading-snug);
+  color: var(--color-text);
+}
+
 /* ─────────────────────────────────────────────────────────
    STAR RATING — metafields-driven, review-app compatible
    ───────────────────────────────────────────────────────── */
@@ -342,6 +405,45 @@
 .product-size-guide:hover {
   color: var(--color-text);
   text-decoration-color: currentcolor;
+}
+
+.product-size-guide-inline {
+  margin-inline-start: auto;
+}
+
+.product-size-guide-inline summary {
+  list-style: none;
+}
+
+.product-size-guide-inline summary::-webkit-details-marker {
+  display: none;
+}
+
+.product-size-guide-inline__content {
+  margin-top: var(--space-3);
+  padding: var(--space-4);
+  border: 1px solid color-mix(in srgb, var(--color-gold) 16%, var(--color-border));
+  border-radius: 1rem;
+  background-color: color-mix(in srgb, var(--color-bg) 92%, white);
+  font-size: var(--text-xs);
+  line-height: var(--leading-relaxed);
+  color: var(--color-text-muted);
+}
+
+.product-size-guide-inline__content :is(p, ul, ol):first-child {
+  margin-top: 0;
+}
+
+.product-size-guide-inline__content :is(p, ul, ol):last-child {
+  margin-bottom: 0;
+}
+
+.product-size-guide-inline__link {
+  display: inline-flex;
+  margin-top: var(--space-3);
+  color: var(--color-text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .product-option__values {
@@ -554,6 +656,37 @@
 
 .product-dynamic-checkout { margin-block-start: var(--space-3); }
 
+.product-payment-trust {
+  margin-top: var(--space-4);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.product-payment-trust__label {
+  margin: 0;
+  font-size: 0.5625rem;
+  letter-spacing: var(--tracking-widest);
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.product-payment-trust__icons {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.product-payment-trust__icon {
+  width: 2rem;
+  height: auto;
+}
+
 .shopify-payment-button { margin: 0 !important; }
 
 .shopify-payment-button__button {
@@ -621,6 +754,24 @@
   text-transform: uppercase;
   color: var(--color-text);
   margin-bottom: 2px;
+}
+
+.product-trust__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  padding-top: var(--space-2);
+  border-top: 1px solid color-mix(in srgb, var(--color-gold) 12%, var(--color-border));
+}
+
+.product-trust__link {
+  font-size: 0.625rem;
+  letter-spacing: var(--tracking-widest);
+  text-transform: uppercase;
+  color: var(--color-text);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--color-gold) 24%, var(--color-border));
+  text-underline-offset: 3px;
 }
 
 /* ═══════════════════════════════════════════════════════════

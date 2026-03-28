@@ -220,5 +220,129 @@
         "info": "Applies to all primary, secondary, and ghost buttons."
       }
     ]
+  },
+  {
+    "name": "Conversion",
+    "settings": [
+      {
+        "type": "range",
+        "id": "free_shipping_threshold",
+        "label": "Free shipping threshold",
+        "min": 0,
+        "max": 1000,
+        "step": 25,
+        "unit": "USD",
+        "default": 200
+      },
+      {
+        "type": "collection",
+        "id": "cart_cross_sell_collection",
+        "label": "Cart cross-sell collection"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_welcome_capture",
+        "label": "Enable first-session welcome capture",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "welcome_incentive_label",
+        "label": "Welcome incentive label",
+        "default": "Unlock complimentary first-order shipping"
+      },
+      {
+        "type": "text",
+        "id": "welcome_heading",
+        "label": "Welcome heading",
+        "default": "Make your first order feel easier"
+      },
+      {
+        "type": "textarea",
+        "id": "welcome_subtext",
+        "label": "Welcome message",
+        "default": "Join the private list for complimentary first-order shipping, early access to new drops, and the pieces that usually move first."
+      },
+      {
+        "type": "text",
+        "id": "welcome_button_label",
+        "label": "Welcome button label",
+        "default": "Unlock access"
+      },
+      {
+        "type": "text",
+        "id": "welcome_success_message",
+        "label": "Welcome success message",
+        "default": "You're in. Watch your inbox for early access and shipping perks."
+      },
+      {
+        "type": "textarea",
+        "id": "welcome_fine_print",
+        "label": "Welcome fine print",
+        "default": "By subscribing, you agree to receive marketing emails. No hard discounts. Just first access, soft perks, and the pieces that move fastest."
+      },
+      {
+        "type": "text",
+        "id": "proof_item_1_label",
+        "label": "Proof item 1 label",
+        "default": "Dispatch"
+      },
+      {
+        "type": "text",
+        "id": "proof_item_1_text",
+        "label": "Proof item 1 text",
+        "default": "Ships in 3–5 business days."
+      },
+      {
+        "type": "text",
+        "id": "proof_item_2_label",
+        "label": "Proof item 2 label",
+        "default": "Returns"
+      },
+      {
+        "type": "text",
+        "id": "proof_item_2_text",
+        "label": "Proof item 2 text",
+        "default": "Easy exchanges and returns within 30 days."
+      },
+      {
+        "type": "text",
+        "id": "proof_item_3_label",
+        "label": "Proof item 3 label",
+        "default": "Craft"
+      },
+      {
+        "type": "text",
+        "id": "proof_item_3_text",
+        "label": "Proof item 3 text",
+        "default": "Small-batch pieces with premium finishing."
+      },
+      {
+        "type": "url",
+        "id": "shipping_policy_url",
+        "label": "Shipping policy URL"
+      },
+      {
+        "type": "url",
+        "id": "returns_policy_url",
+        "label": "Returns policy URL"
+      },
+      {
+        "type": "url",
+        "id": "size_help_url",
+        "label": "Size guide URL"
+      },
+      {
+        "type": "url",
+        "id": "support_url",
+        "label": "Support link URL"
+      },
+      {
+        "type": "text",
+        "id": "support_label",
+        "label": "Support link label",
+        "default": "Need styling help?"
+      }
+    ]
   }
 ]

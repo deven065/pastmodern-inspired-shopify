@@ -7,7 +7,7 @@
         "show_tags": true,
         "show_count": true,
         "show_sort": true,
-        "show_filter_trigger": false
+        "show_filter_trigger": true
       }
     },
     "collection-grid": {

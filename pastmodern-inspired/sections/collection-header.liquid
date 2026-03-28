@@ -16,9 +16,28 @@
   assign show_count   = section.settings.show_count
   assign show_sort    = section.settings.show_sort
   assign show_filter  = section.settings.show_filter_trigger
+  assign has_filters  = false
+  assign active_filter_count = 0
+
+  for filter in collection.filters
+    if filter.type == 'price_range'
+      assign has_filters = true
+      if filter.min_value.value != blank or filter.max_value.value != blank
+        assign active_filter_count = active_filter_count | plus: 1
+      endif
+    elsif filter.values.size > 0
+      assign has_filters = true
+      assign active_filter_count = active_filter_count | plus: filter.active_values.size
+    endif
+  endfor
 -%}
 
-<div class="collection-header full-width" data-align="{{ heading_alignment }}">
+<div
+  class="collection-header full-width"
+  data-collection-header
+  data-active-filter-count="{{ active_filter_count }}"
+  data-align="{{ heading_alignment }}"
+>
 
   {%- comment -%} ── Identity ── {%- endcomment -%}
   <div class="collection-header__inner">
@@ -73,13 +92,14 @@
           {%- endif -%}
 
           <div class="collection-header__controls">
-            {%- if show_filter -%}
+            {%- if show_filter and has_filters -%}
               <button
                 class="ch-filter-btn"
                 type="button"
                 data-filter-trigger
                 aria-expanded="false"
                 aria-controls="collection-filters"
+                hidden
               >
                 <svg width="13" height="9" viewBox="0 0 13 9" fill="none" aria-hidden="true" focusable="false">
                   <line x1="0" y1="1"   x2="13" y2="1"   stroke="currentColor" stroke-width="1"/>
@@ -90,6 +110,9 @@
                   <circle cx="9" cy="8"   r="1.8" fill="var(--color-bg)" stroke="currentColor" stroke-width="1"/>
                 </svg>
                 <span>Filter</span>
+                {%- if active_filter_count > 0 -%}
+                  <span class="ch-filter-btn__count">{{ active_filter_count }}</span>
+                {%- endif -%}
               </button>
             {%- endif -%}
 
@@ -120,6 +143,108 @@
     </div>
   {%- endif -%}
 
+  {%- if show_filter and has_filters -%}
+    <div class="collection-header__filters-row" id="collection-filters" data-filter-panel>
+      <div class="collection-header__inner">
+        {%- if active_filter_count > 0 -%}
+          <div class="collection-header__active-filters">
+            <a href="{{ collection.url }}" class="collection-header__clear-all">Clear all</a>
+            <div class="collection-header__active-pills">
+              {%- for filter in collection.filters -%}
+                {%- if filter.type == 'price_range' -%}
+                  {%- if filter.min_value.value != blank or filter.max_value.value != blank -%}
+                    <a class="tag-pill tag-pill--active" href="{{ filter.url_to_remove }}">
+                      {{ filter.min_value.value | default: 0 | money_without_trailing_zeros }} - {{ filter.max_value.value | default: filter.range_max | money_without_trailing_zeros }}
+                    </a>
+                  {%- endif -%}
+                {%- else -%}
+                  {%- for value in filter.active_values -%}
+                    <a class="tag-pill tag-pill--active" href="{{ value.url_to_remove }}">{{ value.label | escape }}</a>
+                  {%- endfor -%}
+                {%- endif -%}
+              {%- endfor -%}
+            </div>
+          </div>
+        {%- endif -%}
+
+        <form class="collection-header__filters-form" action="{{ form_url }}" method="get">
+          {%- if current_sort != blank -%}
+            <input type="hidden" name="sort_by" value="{{ current_sort }}">
+          {%- endif -%}
+
+          <div class="collection-header__filters-grid">
+            {%- for filter in collection.filters -%}
+              <details class="ch-filter-group" open>
+                <summary class="ch-filter-group__summary">
+                  <span>{{ filter.label | escape }}</span>
+                  <span class="ch-filter-group__meta">
+                    {%- if filter.type == 'price_range' -%}
+                      Price
+                    {%- else -%}
+                      {{ filter.active_values.size }} selected
+                    {%- endif -%}
+                  </span>
+                </summary>
+
+                <div class="ch-filter-group__body">
+                  {%- if filter.type == 'price_range' -%}
+                    <div class="ch-filter-range">
+                      <label class="ch-filter-range__field">
+                        <span>Min</span>
+                        <input
+                          type="number"
+                          name="{{ filter.min_value.param_name }}"
+                          value="{{ filter.min_value.value }}"
+                          min="0"
+                          max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                          placeholder="0"
+                        >
+                      </label>
+                      <label class="ch-filter-range__field">
+                        <span>Max</span>
+                        <input
+                          type="number"
+                          name="{{ filter.max_value.param_name }}"
+                          value="{{ filter.max_value.value }}"
+                          min="0"
+                          max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                          placeholder="{{ filter.range_max | money_without_trailing_zeros }}"
+                        >
+                      </label>
+                    </div>
+                  {%- else -%}
+                    <ul class="ch-filter-list" role="list">
+                      {%- for value in filter.values -%}
+                        <li>
+                          <label class="ch-filter-option">
+                            <input
+                              type="checkbox"
+                              name="{{ value.param_name }}"
+                              value="{{ value.value }}"
+                              {% if value.active %}checked{% endif %}
+                              {% if value.count == 0 and value.active == false %}disabled{% endif %}
+                            >
+                            <span class="ch-filter-option__label">{{ value.label | escape }}</span>
+                            <span class="ch-filter-option__count">{{ value.count }}</span>
+                          </label>
+                        </li>
+                      {%- endfor -%}
+                    </ul>
+                  {%- endif -%}
+                </div>
+              </details>
+            {%- endfor -%}
+          </div>
+
+          <div class="collection-header__filters-actions">
+            <button type="submit" class="btn btn-primary">Apply filters</button>
+            <a href="{{ collection.url }}" class="btn btn-ghost">Reset</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  {%- endif -%}
+
 </div>
 
 {% stylesheet %}
@@ -132,10 +257,24 @@
   .collection-header {
     display: flex;
     flex-direction: column;
+    position: relative;
+    overflow: clip;
     background:
-      radial-gradient(circle at top right, color-mix(in srgb, var(--color-gold) 24%, transparent) 0%, transparent 28%),
+      radial-gradient(circle at top right, color-mix(in srgb, var(--color-gold) 26%, transparent) 0%, transparent 30%),
+      radial-gradient(circle at bottom left, color-mix(in srgb, var(--color-accent-soft) 14%, transparent) 0%, transparent 34%),
       linear-gradient(180deg, color-mix(in srgb, var(--color-bg) 88%, white) 0%, color-mix(in srgb, var(--color-bg) 100%, var(--color-bg-warm)) 100%);
     border-block-end: 1px solid var(--color-border);
+  }
+
+  .collection-header::before {
+    content: '';
+    position: absolute;
+    inset: 0 auto auto 0;
+    width: min(28rem, 40vw);
+    height: min(28rem, 40vw);
+    border-radius: 999px;
+    background: radial-gradient(circle, color-mix(in srgb, var(--color-gold) 12%, transparent) 0%, transparent 70%);
+    pointer-events: none;
   }
 
   /* ── Inner constraint (all rows share this) ─────────────── */
@@ -148,11 +287,32 @@
 
   /* ── Identity block ─────────────────────────────────────── */
   .collection-header__identity {
-    padding-block: clamp(var(--space-10), 4.5vw, var(--space-16)) var(--space-8);
+    padding: clamp(var(--space-8), 4vw, var(--space-12));
+    margin-block: clamp(var(--space-8), 4vw, var(--space-12));
     display: flex;
     flex-direction: column;
     gap: var(--space-4);
     max-width: 48rem;
+    border: 1px solid color-mix(in srgb, var(--color-gold) 22%, var(--color-border));
+    border-radius: 1.6rem;
+    background:
+      linear-gradient(145deg, color-mix(in srgb, var(--color-surface) 96%, white) 0%, color-mix(in srgb, var(--color-blush) 12%, var(--color-surface-strong)) 52%, color-mix(in srgb, var(--color-gold) 8%, var(--color-surface)) 100%);
+    box-shadow:
+      0 24px 50px color-mix(in srgb, var(--color-accent) 8%, transparent),
+      inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .collection-header__identity::after {
+    content: '';
+    position: absolute;
+    inset: auto -5rem -6rem auto;
+    width: 15rem;
+    height: 15rem;
+    border-radius: 999px;
+    background: radial-gradient(circle, color-mix(in srgb, var(--color-accent-soft) 12%, transparent) 0%, transparent 72%);
+    pointer-events: none;
   }
 
   .collection-header[data-align="center"] .collection-header__identity {
@@ -186,7 +346,7 @@
     font-family: var(--font-heading);
     font-weight: var(--font-heading-weight);
     font-style: italic;
-    font-size: clamp(var(--text-3xl), 4.2vw, var(--text-4xl));
+    font-size: clamp(var(--text-3xl), 4.5vw, 4.9rem);
     line-height: var(--leading-tight);
     letter-spacing: -0.03em;
     margin: 0;
@@ -194,7 +354,7 @@
 
   /* ── Description ────────────────────────────────────────── */
   .collection-header__description {
-    font-size: var(--text-base);
+    font-size: clamp(var(--text-base), 1.5vw, var(--text-md));
     color: var(--color-text-secondary);
     line-height: var(--leading-relaxed);
     max-width: 52ch;
@@ -209,7 +369,8 @@
   /* ── Category tag nav (underline tab style) ─────────────── */
   .collection-header__tags-row {
     border-block-start: 1px solid var(--color-border);
-    background-color: color-mix(in srgb, var(--color-bg) 84%, white);
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--color-surface) 90%, white) 0%, color-mix(in srgb, var(--color-blush) 10%, var(--color-surface)) 100%);
   }
 
   .collection-header__tags {
@@ -232,27 +393,38 @@
     text-decoration: none;
     color: var(--color-text-muted);
     border: 1px solid color-mix(in srgb, var(--color-gold) 18%, var(--color-border));
-    background-color: color-mix(in srgb, var(--color-bg) 88%, white);
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--color-surface) 92%, white) 0%, color-mix(in srgb, var(--color-blush) 10%, var(--color-surface)) 100%);
     border-radius: 999px;
     white-space: nowrap;
     transition:
       color        var(--duration-fast) var(--ease-default),
       border-color var(--duration-fast) var(--ease-default),
-      background-color var(--duration-fast) var(--ease-default);
+      background-color var(--duration-fast) var(--ease-default),
+      transform var(--duration-fast) var(--ease-default),
+      box-shadow var(--duration-fast) var(--ease-default);
+    box-shadow: 0 10px 18px color-mix(in srgb, var(--color-gold) 8%, transparent);
   }
 
-  .tag-pill:hover { color: var(--color-text); }
+  .tag-pill:hover {
+    color: var(--color-text);
+    transform: translateY(-2px);
+    border-color: color-mix(in srgb, var(--color-gold) 38%, var(--color-border));
+  }
 
   .tag-pill--active {
     color: #F8F4EA;
-    background-color: var(--color-accent);
-    border-color: var(--color-accent);
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--color-gold) 12%, var(--color-accent-soft)) 0%, var(--color-accent) 100%);
+    border-color: color-mix(in srgb, var(--color-gold) 38%, var(--color-accent));
+    box-shadow: 0 14px 24px color-mix(in srgb, var(--color-accent) 14%, transparent);
   }
 
   /* ── Toolbar ────────────────────────────────────────────── */
   .collection-header__toolbar-row {
     border-block: 1px solid var(--color-border);
-    background-color: color-mix(in srgb, var(--color-bg) 90%, white);
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--color-surface) 92%, white) 0%, color-mix(in srgb, var(--color-blush) 8%, var(--color-surface)) 100%);
   }
 
   .collection-header__toolbar {
@@ -280,7 +452,7 @@
 
   /* Bare filter button */
   .ch-filter-btn {
-    display: inline-flex;
+    display: none;
     align-items: center;
     gap: var(--space-3);
     font-family: var(--font-body);
@@ -289,7 +461,8 @@
     letter-spacing: var(--tracking-widest);
     text-transform: uppercase;
     color: var(--color-text);
-    background-color: color-mix(in srgb, var(--color-bg) 88%, white);
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--color-surface) 92%, white) 0%, color-mix(in srgb, var(--color-blush) 10%, var(--color-surface)) 100%);
     border: 1px solid color-mix(in srgb, var(--color-gold) 18%, var(--color-border));
     border-radius: 999px;
     padding: 0.8rem 1rem;
@@ -297,13 +470,32 @@
     transition:
       opacity var(--duration-fast) var(--ease-default),
       border-color var(--duration-fast) var(--ease-default),
-      background-color var(--duration-fast) var(--ease-default);
+      background-color var(--duration-fast) var(--ease-default),
+      transform var(--duration-fast) var(--ease-default),
+      box-shadow var(--duration-fast) var(--ease-default);
+    box-shadow: 0 12px 22px color-mix(in srgb, var(--color-gold) 7%, transparent);
   }
 
   .ch-filter-btn:hover {
     opacity: 1;
     border-color: color-mix(in srgb, var(--color-gold) 42%, var(--color-border));
-    background-color: color-mix(in srgb, var(--color-gold) 6%, white);
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--color-gold) 10%, white) 0%, color-mix(in srgb, var(--color-blush) 18%, var(--color-surface)) 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 16px 28px color-mix(in srgb, var(--color-gold) 10%, transparent);
+  }
+
+  .ch-filter-btn__count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.2rem;
+    height: 1.2rem;
+    padding-inline: 0.25rem;
+    border-radius: 999px;
+    background-color: var(--color-accent);
+    color: #F8F4EA;
+    font-size: 0.5625rem;
   }
 
   /* Frameless sort select */
@@ -316,29 +508,197 @@
     letter-spacing: var(--tracking-widest);
     text-transform: uppercase;
     color: var(--color-text);
-    background-color: color-mix(in srgb, var(--color-bg) 88%, white);
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--color-surface) 92%, white) 0%, color-mix(in srgb, var(--color-blush) 10%, var(--color-surface)) 100%);
     border: 1px solid color-mix(in srgb, var(--color-gold) 18%, var(--color-border));
     border-radius: 999px;
     padding: 0.8rem 2.2rem 0.8rem 1rem;
     cursor: pointer;
     appearance: none;
     -webkit-appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='6' viewBox='0 0 9 6' fill='none'%3E%3Cpath d='M1 1L4.5 5L8 1' stroke='%23666' stroke-width='1' stroke-linecap='square'/%3E%3C/svg%3E");
+    background-image:
+      linear-gradient(45deg, transparent 50%, currentColor 50%),
+      linear-gradient(135deg, currentColor 50%, transparent 50%);
     background-repeat: no-repeat;
-    background-position: right 0.95rem center;
+    background-position:
+      calc(100% - 1rem) calc(50% - 0.12rem),
+      calc(100% - 0.72rem) calc(50% - 0.12rem);
+    background-size: 0.38rem 0.38rem, 0.38rem 0.38rem;
     outline: none;
     width: auto;
+    box-shadow: 0 12px 22px color-mix(in srgb, var(--color-gold) 7%, transparent);
   }
 
   .ch-sort-select:focus-visible {
-    outline: 1px solid var(--color-text);
-    outline-offset: 2px;
+    outline: 1px solid color-mix(in srgb, var(--color-accent) 70%, var(--color-gold));
+    outline-offset: 3px;
+  }
+
+  .collection-header__filters-row {
+    border-block-end: 1px solid var(--color-border);
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--color-surface) 96%, white) 0%, color-mix(in srgb, var(--color-bg-subtle) 100%, var(--color-bg-warm)) 100%);
+  }
+
+  .collection-header__filters-row[hidden] {
+    display: none;
+  }
+
+  .collection-header__active-filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3);
+    padding-block: var(--space-4) var(--space-2);
+  }
+
+  .collection-header__active-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .collection-header__clear-all {
+    font-size: 0.625rem;
+    letter-spacing: var(--tracking-widest);
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .collection-header__filters-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+    padding-block: var(--space-4) var(--space-6);
+  }
+
+  .collection-header__filters-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-4);
+  }
+
+  .ch-filter-group {
+    border: 1px solid color-mix(in srgb, var(--color-gold) 18%, var(--color-border));
+    border-radius: 1rem;
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--color-surface) 94%, white) 0%, color-mix(in srgb, var(--color-blush) 8%, var(--color-surface)) 100%);
+    padding: var(--space-3) var(--space-4);
+    box-shadow:
+      0 14px 26px color-mix(in srgb, var(--color-accent) 6%, transparent),
+      inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  }
+
+  .ch-filter-group__summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    cursor: pointer;
+    list-style: none;
+    font-size: 0.6875rem;
+    letter-spacing: var(--tracking-widest);
+    text-transform: uppercase;
+    color: var(--color-text);
+    transition: color var(--duration-fast) var(--ease-default);
+  }
+
+  .ch-filter-group__summary:hover {
+    color: color-mix(in srgb, var(--color-accent) 64%, var(--color-gold) 36%);
+  }
+
+  .ch-filter-group__summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .ch-filter-group__meta {
+    color: var(--color-text-muted);
+    font-size: 0.5625rem;
+  }
+
+  .ch-filter-group__body {
+    margin-top: var(--space-4);
+  }
+
+  .ch-filter-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .ch-filter-option {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: var(--space-3);
+    align-items: center;
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+    padding: 0.45rem 0.55rem;
+    border-radius: 0.8rem;
+    transition: background-color var(--duration-fast) var(--ease-default);
+  }
+
+  .ch-filter-option:hover {
+    background-color: color-mix(in srgb, var(--color-gold) 6%, transparent);
+  }
+
+  .ch-filter-option input {
+    margin: 0;
+    accent-color: var(--color-accent);
+  }
+
+  .ch-filter-option__label {
+    color: var(--color-text);
+  }
+
+  .ch-filter-option__count {
+    color: var(--color-text-muted);
+  }
+
+  .ch-filter-range {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+  }
+
+  .ch-filter-range__field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    font-size: 0.625rem;
+    letter-spacing: var(--tracking-widest);
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .ch-filter-range__field input {
+    min-height: 2.75rem;
+    padding-inline: var(--space-3);
+    border-radius: var(--radius-input);
+    border: 1px solid color-mix(in srgb, var(--color-gold) 18%, var(--color-border));
+    background-color: var(--color-input-bg);
+  }
+
+  .collection-header__filters-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
   }
 
   /* ── Mobile ─────────────────────────────────────────────── */
   @media (max-width: 48rem) {
+    .ch-filter-btn {
+      display: inline-flex;
+    }
+
     .collection-header__identity {
-      padding-block: var(--space-10) var(--space-8);
+      padding: var(--space-6);
+      margin-block: var(--space-8);
     }
 
     .collection-header__tags {
@@ -354,8 +714,61 @@
       gap: var(--space-3);
       padding-block: var(--space-3);
     }
+
+    .collection-header__filters-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .ch-filter-range {
+      grid-template-columns: 1fr;
+    }
   }
 {% endstylesheet %}
+
+{% javascript %}
+  (() => {
+    const headers = document.querySelectorAll('[data-collection-header]');
+    if (!headers.length) return;
+
+    const mobileQuery = window.matchMedia('(max-width: 47.99rem)');
+
+    headers.forEach((header) => {
+      const trigger = header.querySelector('[data-filter-trigger]');
+      const panel = header.querySelector('[data-filter-panel]');
+
+      if (!trigger || !panel) return;
+
+      let isOpen = Number(header.dataset.activeFilterCount || 0) > 0;
+
+      const sync = () => {
+        const isMobile = mobileQuery.matches;
+
+        trigger.hidden = !isMobile;
+
+        if (isMobile) {
+          panel.hidden = !isOpen;
+          trigger.setAttribute('aria-expanded', String(isOpen));
+        } else {
+          panel.hidden = false;
+          trigger.setAttribute('aria-expanded', 'true');
+        }
+      };
+
+      trigger.addEventListener('click', () => {
+        isOpen = !isOpen;
+        sync();
+      });
+
+      if (mobileQuery.addEventListener) {
+        mobileQuery.addEventListener('change', sync);
+      } else {
+        mobileQuery.addListener(sync);
+      }
+
+      sync();
+    });
+  })();
+{% endjavascript %}
 
 {% schema %}
 {
@@ -413,9 +826,9 @@
     {
       "type": "checkbox",
       "id": "show_filter_trigger",
-      "label": "Show filter button",
-      "info": "Placeholder — wire up to your filter drawer in future",
-      "default": false
+      "label": "Show filter controls",
+      "info": "Displays Shopify native storefront filters when Search & Discovery filters are configured.",
+      "default": true
     }
   ],
   "presets": [

@@ -25,8 +25,46 @@
         {%- assign quote_text   = block.settings.text -%}
         {%- assign quote_author = block.settings.author -%}
         {%- assign quote_loc    = block.settings.location -%}
+        {%- assign quote_image  = block.settings.image -%}
+        {%- assign quote_rating = block.settings.rating -%}
+        {%- assign quote_fit    = block.settings.fit_note -%}
+        {%- assign quote_product = block.settings.product_label -%}
         <li class="testimonial reveal" {{ block.shopify_attributes }}>
           <blockquote class="testimonial__quote">
+            {%- if quote_image != blank -%}
+              <div class="testimonial__media">
+                {{
+                  quote_image
+                  | image_url: width: 240
+                  | image_tag:
+                      widths: '120, 180, 240',
+                      sizes: '96px',
+                      loading: 'lazy',
+                      class: 'testimonial__image',
+                      alt: quote_author | default: quote_product
+                }}
+              </div>
+            {%- endif -%}
+
+            {%- if quote_rating != blank or quote_fit != blank or quote_product != blank -%}
+              <div class="testimonial__meta">
+                {%- if quote_rating != blank -%}
+                  <span class="testimonial__pill testimonial__pill--rating">
+                    <svg class="testimonial__pill-star" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" focusable="false" width="10" height="10">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 0 0 .95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 0 0-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 0 0-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 0 0-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 0 0 .951-.69l1.07-3.292z"/>
+                    </svg>
+                    {{ quote_rating | escape }}
+                  </span>
+                {%- endif -%}
+                {%- if quote_fit != blank -%}
+                  <span class="testimonial__pill">{{ quote_fit | escape }}</span>
+                {%- endif -%}
+                {%- if quote_product != blank -%}
+                  <span class="testimonial__pill">{{ quote_product | escape }}</span>
+                {%- endif -%}
+              </div>
+            {%- endif -%}
+
             <p class="testimonial__mark" aria-hidden="true">“</p>
             {%- if quote_text != blank -%}
               <p class="testimonial__text">{{ quote_text | escape }}</p>
@@ -120,6 +158,48 @@
     flex-direction: column;
     gap: var(--space-5);
     margin: 0;
+  }
+
+  .testimonial__media {
+    width: 5.5rem;
+    height: 6.75rem;
+    overflow: hidden;
+    border-radius: 1rem;
+    background-color: color-mix(in srgb, var(--color-bg) 84%, white);
+    border: 1px solid color-mix(in srgb, var(--color-gold) 18%, var(--color-border));
+  }
+
+  .testimonial__image {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    object-position: center top;
+  }
+
+  .testimonial__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .testimonial__pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.45rem 0.75rem;
+    border-radius: 999px;
+    background-color: color-mix(in srgb, var(--color-bg) 86%, white);
+    border: 1px solid color-mix(in srgb, var(--color-gold) 18%, var(--color-border));
+    font-size: 0.5625rem;
+    letter-spacing: var(--tracking-widest);
+    text-transform: uppercase;
+    color: var(--color-text);
+  }
+
+  .testimonial__pill-star {
+    color: var(--color-gold);
+    flex-shrink: 0;
   }
 
   .testimonial__mark {
@@ -238,6 +318,11 @@
       "name": "Quote",
       "settings": [
         {
+          "type": "image_picker",
+          "id": "image",
+          "label": "UGC image"
+        },
+        {
           "type": "textarea",
           "id": "text",
           "label": "Quote",
@@ -254,6 +339,24 @@
           "id": "location",
           "label": "Location",
           "placeholder": "London"
+        },
+        {
+          "type": "text",
+          "id": "rating",
+          "label": "Rating label",
+          "placeholder": "4.9 / 5"
+        },
+        {
+          "type": "text",
+          "id": "fit_note",
+          "label": "Fit note",
+          "placeholder": "True to size"
+        },
+        {
+          "type": "text",
+          "id": "product_label",
+          "label": "Product label",
+          "placeholder": "Ruched Mini Dress"
         }
       ]
     }

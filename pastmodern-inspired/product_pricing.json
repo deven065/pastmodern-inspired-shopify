@@ -1,0 +1,56 @@
+{
+  "currency": "USD",
+  "effective_date": "2026-03-28",
+  "market_positioning": "premium contemporary womenswear and modern bridal",
+  "products": [
+    {
+      "title": "Satin Wrap Top",
+      "handle": "satin-wrap-top",
+      "price": "149.00",
+      "reference_note": "Set near the middle of current satin and wrap-top pricing for premium contemporary labels.",
+      "reference_urls": [
+        "https://www.revolve.com/v/sleeveless-wrap-tops",
+        "https://app.revolve.com/theory-sleeveless-wrap-top-in-black/dp/THEO-WS1009/?d=Womens&itrownum=3&lc=14&page=1&srcType=dp_recs_expanded"
+      ]
+    },
+    {
+      "title": "Ruched Mini Dress",
+      "handle": "ruched-mini-dress",
+      "price": "179.00",
+      "reference_note": "Set in the middle of current premium contemporary ruched mini-dress pricing.",
+      "reference_urls": [
+        "https://www.revolve.com/v/black-ruched-bodycon-mini-dresses"
+      ]
+    },
+    {
+      "title": "Bridal Corset Blouse",
+      "handle": "bridal-corset-blouse",
+      "price": "289.00",
+      "reference_note": "Set just under current bridal corset-top pricing seen in contemporary occasionwear.",
+      "reference_urls": [
+        "https://www.meshki.us/collections/bridal",
+        "https://www.meshki.us/collections/engagement-party-dresses"
+      ]
+    },
+    {
+      "title": "Bias Cut Satin Maxi Dress",
+      "handle": "bias-cut-satin-maxi-dress",
+      "price": "239.00",
+      "reference_note": "Set to match current premium satin maxi occasionwear with a bridal-leaning silhouette.",
+      "reference_urls": [
+        "https://www.meshki.us/products/jasmine-strapless-satin-maxi-dress-white",
+        "https://www.meshki.us/collections/white-satin-dresses"
+      ]
+    },
+    {
+      "title": "Structured Column Skirt",
+      "handle": "structured-column-skirt",
+      "price": "189.00",
+      "reference_note": "Set between contemporary column-skirt pricing and premium minimalist designer pricing.",
+      "reference_urls": [
+        "https://www.meshki.us/products/cassie-column-maxi-skirt-navy-pinstripe",
+        "https://app.revolve.com/mobile/st-agni-minimal-column-skirt-in-black/dp/SAGN-WQ10/?d=Womens&itrownum=48&srcType=dp_recs_expanded"
+      ]
+    }
+  ]
+}

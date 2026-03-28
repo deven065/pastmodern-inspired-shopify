@@ -6,7 +6,7 @@
       "type": "announcement-bar",
       "settings": {
         "enable": true,
-        "message": "Complimentary shipping over $200 | Easy exchanges | Curated drops weekly",
+        "message": "New here? Unlock complimentary first-order shipping | Easy exchanges | Curated drops weekly",
         "dismissible": true,
         "bg_color": "#102A1C",
         "text_color": "#E2CB83"

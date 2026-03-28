@@ -1,7 +1,24 @@
 <!doctype html>
-<html lang="{{ request.locale.iso_code }}">
+<html lang="{{ request.locale.iso_code }}" data-color-mode="light">
   <head>
     {% render 'css-variables' %}
+    <script>
+      (function () {
+        var storageKey = 'pastmodern-color-mode';
+
+        try {
+          var storedMode = window.localStorage.getItem(storageKey);
+          var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var mode = storedMode === 'dark' || storedMode === 'light'
+            ? storedMode
+            : (prefersDark ? 'dark' : 'light');
+
+          document.documentElement.setAttribute('data-color-mode', mode);
+        } catch (error) {
+          document.documentElement.setAttribute('data-color-mode', 'light');
+        }
+      })();
+    </script>
 
     {% unless settings.type_body_font.system? %}
       <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
@@ -30,6 +47,8 @@
     <main id="main-content" tabindex="-1">
       {{ content_for_layout }}
     </main>
+
+    {% render 'welcome-capture' %}
 
     {% sections 'footer-group' %}
 

@@ -5,6 +5,36 @@
 (function () {
   'use strict';
 
+  const shopifyRoot = () => window.Shopify?.routes?.root || '/';
+  const colorModeStorageKey = 'pastmodern-color-mode';
+
+  const cartApiUrl = (path) => `${shopifyRoot()}${path}`;
+
+  const getStoredColorMode = () => {
+    try {
+      const stored = window.localStorage.getItem(colorModeStorageKey);
+      return stored === 'dark' || stored === 'light' ? stored : null;
+    } catch (_) {
+      return null;
+    }
+  };
+
+  const setStoredColorMode = (mode) => {
+    try {
+      window.localStorage.setItem(colorModeStorageKey, mode);
+    } catch (_) {}
+  };
+
+  const getSystemColorMode = () => (
+    window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+  );
+
+  const getPreferredColorMode = () => getStoredColorMode() || getSystemColorMode();
+
+  const applyColorMode = (mode) => {
+    document.documentElement.setAttribute('data-color-mode', mode);
+  };
+
   /* ─────────────────────────────────────────────────────────────
      StickyHeader
      Adds `is-sticky` to [data-header] once the page scrolls past
@@ -259,7 +289,7 @@
       btn.setAttribute('aria-busy', 'true');
 
       try {
-        const res = await fetch('/cart/add.js', {
+        const res = await fetch(cartApiUrl('cart/add.js'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ id: Number(variantId), quantity: 1 }),
@@ -294,7 +324,9 @@
       document.addEventListener('cart:close',   () => this.close());
       document.addEventListener('cart:updated', () => this._refreshCount());
 
-      el.querySelector('[data-cart-close]')?.addEventListener('click', () => this.close());
+      el.querySelectorAll('[data-cart-close]').forEach((btn) => {
+        btn.addEventListener('click', () => this.close());
+      });
       this.overlay?.addEventListener('click', () => this.close());
 
       document.addEventListener('keydown', (e) => {
@@ -316,7 +348,7 @@
 
     async _refresh() {
       try {
-        const res  = await fetch('/cart.js');
+        const res  = await fetch(cartApiUrl('cart.js'));
         const cart = await res.json();
         this._render(cart);
         this._updateCountEls(cart.item_count);
@@ -327,7 +359,7 @@
 
     async _refreshCount() {
       try {
-        const res  = await fetch('/cart.js');
+        const res  = await fetch(cartApiUrl('cart.js'));
         const cart = await res.json();
         this._updateCountEls(cart.item_count);
       } catch (_) {}
@@ -383,7 +415,7 @@
 
     async _removeItem(key) {
       try {
-        await fetch('/cart/change.js', {
+        await fetch(cartApiUrl('cart/change.js'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ id: key, quantity: 0 }),
@@ -436,6 +468,64 @@
     }
   }
 
+  /* ─────────────────────────────────────────────────────────────
+     ColorMode
+     Toggles between light and dark themes.
+     Persists explicit user preference and falls back to system mode.
+  ───────────────────────────────────────────────────────────── */
+  class ColorMode {
+    constructor() {
+      this.buttons = document.querySelectorAll('[data-theme-toggle]');
+      this.mediaQuery = window.matchMedia?.('(prefers-color-scheme: dark)');
+      if (!this.buttons.length) return;
+
+      this.buttons.forEach((button) => {
+        button.addEventListener('click', () => this.toggle());
+      });
+
+      if (this.mediaQuery) {
+        const syncToSystem = () => {
+          if (!getStoredColorMode()) {
+            applyColorMode(getSystemColorMode());
+            this.syncUI();
+          }
+        };
+
+        if (typeof this.mediaQuery.addEventListener === 'function') {
+          this.mediaQuery.addEventListener('change', syncToSystem);
+        } else if (typeof this.mediaQuery.addListener === 'function') {
+          this.mediaQuery.addListener(syncToSystem);
+        }
+      }
+
+      applyColorMode(getPreferredColorMode());
+      this.syncUI();
+    }
+
+    toggle() {
+      const currentMode = document.documentElement.getAttribute('data-color-mode') === 'dark' ? 'dark' : 'light';
+      const nextMode = currentMode === 'dark' ? 'light' : 'dark';
+
+      applyColorMode(nextMode);
+      setStoredColorMode(nextMode);
+      this.syncUI();
+    }
+
+    syncUI() {
+      const isDark = document.documentElement.getAttribute('data-color-mode') === 'dark';
+
+      this.buttons.forEach((button) => {
+        button.setAttribute('aria-pressed', String(isDark));
+        button.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+
+        const status = button.querySelector('[data-theme-toggle-status]');
+        if (status) {
+          status.textContent = isDark ? 'Dark' : 'Light';
+        }
+      });
+    }
+  }
+
   /* ─────────────────────────────────────────────────────────────────     Initialise
   ───────────────────────────────────────────────────────────── */
   document.addEventListener('DOMContentLoaded', () => {
@@ -445,6 +535,8 @@
       new StickyHeader(header);
       new HeaderMenu(header);
     }
+
+    new ColorMode();
 
     // Accordions
     document.querySelectorAll('[data-accordion]').forEach((el) => new Accordion(el));
